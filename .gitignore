@@ -1,0 +1,138 @@
+# =========================================================================
+# UltraLab - .gitignore (version alpha/public)
+#
+# Le repo public ne contient que :
+#   manifest.json, workflows/*.json, README.md, SECURITY.md, .gitignore,
+#   .github/ISSUE_TEMPLATE/*
+#
+# Le code source (Python, HTML, docs, installer, docker) reste LOCAL chez le mainteneur.
+# Ce .gitignore protege les contributeurs/forks contre les commits accidentels
+# d'artefacts sensibles, de runs perso, ou de fichiers de build.
+# =========================================================================
+
+# --- Dossiers prives du mainteneur (jamais push) ---
+src/
+static/
+docs/
+docker/
+installer/
+tools/
+README-DEV.md
+start-ultralab-dev.bat
+start-ultralab-dev.cmd
+*.spec
+
+# --- Build / dist Python ---
+build/
+dist/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+*.so
+
+# --- Environnements virtuels ---
+venv/
+.venv/
+env/
+ENV/
+.virtualenv/
+
+# --- Installeur compile (Inno Setup) ---
+Output/
+*.exe
+*.msi
+!UltraLab-Setup.exe.sig
+
+# --- Config utilisateur, secrets, credentials ---
+.env
+.env.local
+.env.*.local
+*.env
+ultralab-config.json
+config.local.json
+*credential*
+*secret*
+*token*
+*.pem
+*.key
+!example.key
+
+# --- Logs ---
+*.log
+logs/
+log-*.txt
+
+# --- Runs UltraLab (resultats locaux) ---
+ultralab-pipeline-*/
+ultralab-module-*/
+*review ultralab*/
+*-review-output/
+exports/
+results/
+
+# --- PDFs et fichiers de recherche telecharges ---
+*.pdf
+!docs/**/*.pdf
+*.ris
+*.nbib
+*.bib
+
+# --- Caches Docker / Qdrant / Ollama ---
+qdrant_storage/
+n8n_data/
+ollama_models/
+.docker/
+
+# --- IDE / Editeurs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+.history/
+
+# --- OS ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# --- Backups / tmp ---
+*.bak
+*.tmp
+*.orig
+*~
+*.old
+
+# --- Versions / releases temporaires en racine ---
+# Couvre fichiers ET dossiers (residus de scripts bash qui ecrivent dans /0.x.x-alpha)
+/0.*.*-alpha
+/0.*.*-alpha/
+/0.*.*-beta
+/0.*.*-beta/
+/v0.*
+/v0.*/
+
+# --- Outils dev locaux (utiles pour le mainteneur, non publies) ---
+requirements.txt
+requirements-dev.txt
+pyproject.toml
+setup.py
+setup.cfg
+poetry.lock
+Pipfile
+Pipfile.lock
+
+# --- Tests perso / scratchpad ---
+test-*.html
+scratch/
+tmp/
+sandbox/

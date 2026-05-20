@@ -1,0 +1,56 @@
+{
+  "name": "ultralab-qdrant-store",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6fbc1d22-3a4a-4ddc-8d3d-b949c7539ab7",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─────────────────────────────────────────────────────────────────\n// QDRANT STORE — Cree la collection et upsert les vecteurs\n// ─────────────────────────────────────────────────────────────────\nconst articles = $input.all().map(i => i.json);\nconst QDRANT = 'http://qdrant:6333';\n\n// Step 1: Ensure collection exists\ntry {\n  await this.helpers.httpRequest({\n    method: 'PUT',\n    url: QDRANT + '/collections/articles',\n    headers: { 'Content-Type': 'application/json' },\n    body: {\n      vectors: {\n        size: 768,\n        distance: 'Cosine'\n      }\n    },\n    timeout: 10000\n  });\n  console.log('Qdrant collection ensured');\n} catch(e) {\n  // Collection may already exist — that is OK\n  console.log('Qdrant collection note: ' + e.message);\n}\n\n// Step 2: Prepare and upsert points\nfunction hashCode(str) {\n  let hash = 5381;\n  for (let i = 0; i < str.length; i++) {\n    hash = ((hash << 5) + hash) + str.charCodeAt(i);\n    hash = hash & hash;\n  }\n  return Math.abs(hash) % 2147483647; // Keep within 32-bit int range\n}\n\nconst points = [];\narticles.forEach((article, i) => {\n  if (Array.isArray(article.embedding) && article.embedding.length === 768) {\n    points.push({\n      id: hashCode(article.id || article.doi || String(i)),\n      vector: article.embedding,\n      payload: {\n        title: article.title || '',\n        doi: article.doi || '',\n        year: article.year || '',\n        source: article.source || '',\n        question: article.question || ''\n      }\n    });\n  }\n});\n\nconsole.log('Points to upsert: ' + points.length + ' / ' + articles.length);\n\nif (points.length > 0) {\n  // Upsert in batches of 100\n  const BATCH = 100;\n  for (let i = 0; i < points.length; i += BATCH) {\n    const batch = points.slice(i, i + BATCH);\n    try {\n      await this.helpers.httpRequest({\n        method: 'PUT',\n        url: QDRANT + '/collections/articles/points',\n        headers: { 'Content-Type': 'application/json' },\n        body: { points: batch },\n        timeout: 30000\n      });\n      console.log('Qdrant upsert batch ' + Math.floor(i/BATCH + 1) + ': ' + batch.length + ' points');\n    } catch(e) {\n      console.log('Qdrant upsert error: ' + e.message);\n    }\n  }\n}\n\n// Return articles (without embeddings to save memory)\nreturn articles.map(a => {\n  const { embedding, ...rest } = a;\n  return { json: rest };\n});",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "8a333e83-f656-4649-80b7-4721ef384602",
+      "name": "Store in Qdrant",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        -336
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Store in Qdrant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000004",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "cenESJm4k5dbLuY2",
+  "tags": []
+}

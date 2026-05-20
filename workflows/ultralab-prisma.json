@@ -1,0 +1,124 @@
+{
+  "name": "ultralab-prisma",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7b9243a1-9e2f-40ce-a9f7-406a181bd9e0",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── Build PRISMA prompt for Ollama ───\nconst data = $input.all()[0].json;\nconst articles = data.articles || [];\nconst stats = data.stats || {};\nconst ris = data.ris || '';\nconst xlsx_base64 = data.xlsx_base64 || '';\nconst outputFolder = data.output_folder || '/desktop/review ultralab';\n\nconst question = (articles[0] && articles[0].question) || stats.question || '';\nconst criteria = (articles[0] && articles[0].criteria) || stats.criteria || '';\n\nconst total = stats.total || articles.length;\nconst included = stats.included || articles.filter(a => a.screening_decision === 'Include').length;\nconst excluded = stats.excluded || articles.filter(a => a.screening_decision === 'Exclude').length;\nconst maybe = stats.maybe || articles.filter(a => a.screening_decision === 'Maybe').length;\nconst with_pdf = stats.with_pdf || articles.filter(a => a.pdf_url).length;\nconst sources = stats.sources || [...new Set(articles.map(a => a.source).filter(Boolean))];\nconst clusters = stats.clusters || [...new Set(articles.map(a => a.cluster_label).filter(Boolean))];\nconst totalBeforeDedup = stats.total_before_dedup || total;\nconst duplicatesRemoved = stats.duplicates_removed || 0;\n\nconst topIncluded = articles\n  .filter(a => a.screening_decision === 'Include')\n  .sort((a, b) => (b.score || 0) - (a.score || 0))\n  .slice(0, 10)\n  .map(a => '- ' + (a.title || '').substring(0, 100) + ' (' + (a.year || '') + ')')\n  .join('\\n');\n\nconst clusterSummary = clusters.map(label => {\n  const count = articles.filter(a => a.cluster_label === label).length;\n  return '- ' + label + ' (' + count + ' articles)';\n}).join('\\n');\n\nconst prompt = 'Write a PRISMA 2020 systematic review protocol report based on the following data. Be scientific, concise, and professional. Write in English.\\n\\nRESEARCH QUESTION: ' + question + '\\n\\nINCLUSION/EXCLUSION CRITERIA: ' + criteria + '\\n\\nSEARCH STATISTICS:\\n- Databases: ' + sources.join(', ') + '\\n- Total records retrieved: ' + totalBeforeDedup + '\\n- Duplicates removed: ' + duplicatesRemoved + '\\n- Records after deduplication: ' + total + '\\n- After AI screening: Included=' + included + ' Excluded=' + excluded + ' Uncertain=' + maybe + '\\n- Full text available: ' + with_pdf + '\\n\\nTHEMATIC CLUSTERS:\\n' + (clusterSummary || 'No clusters') + '\\n\\nTOP INCLUDED ARTICLES:\\n' + (topIncluded || 'None') + '\\n\\nWrite these sections (use ## for headers):\\n1. Background\\n2. Search Strategy\\n3. Inclusion and Exclusion Criteria\\n4. Results Summary\\n5. Thematic Analysis\\n6. Limitations\\n7. Next Steps for Manual Review';\n\n// Extract search equations from article metadata\nconst pubmed_query = (articles[0] && articles[0].pubmed_query) || '';\nconst openalex_query = (articles[0] && articles[0].openalex_query) || '';\nconst crossref_query = (articles[0] && articles[0].crossref_query) || '';\n\nconsole.log('PRISMA prompt built: ' + prompt.length + ' chars');\nconsole.log('Search queries found: PubMed=' + (pubmed_query ? 'yes' : 'no') + ' OpenAlex=' + (openalex_query ? 'yes' : 'no') + ' Crossref=' + (crossref_query ? 'yes' : 'no'));\n\nreturn [{ json: {\n  prompt, articles, stats: { total, included, excluded, maybe, with_pdf, sources, clusters, total_before_dedup: totalBeforeDedup, duplicates_removed: duplicatesRemoved },\n  ris, xlsx_base64, outputFolder, question, criteria,\n  total, included, excluded, maybe, with_pdf, sources, clusters, totalBeforeDedup, duplicatesRemoved,\n  pubmed_query, openalex_query, crossref_query\n}}];",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "bp-prisma-001",
+      "name": "Build PRISMA Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3456/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gemma4:e2b', stream: false, prompt: $json.prompt, options: { num_predict: 2000 } }) }}",
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "hr-prisma-001",
+      "name": "Call Ollama",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -720,
+        -336
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── Generate PRISMA HTML Report & Save All Files ───\nconst fs = require('fs');\nconst path = require('path');\n\nconst ollamaResp = $input.all()[0].json;\nconst prev = $('Build PRISMA Prompt').first().json;\n\nconst prismaText = ollamaResp.response || 'Unable to generate narrative sections. Please review the statistics below.';\nconst articles = prev.articles || [];\nconst pStats = prev.stats || {};\nconst ris = prev.ris || '';\nconst xlsx_base64 = prev.xlsx_base64 || '';\nconst outputFolder = prev.outputFolder || '/desktop/review ultralab';\nconst question = prev.question || '';\nconst criteria = prev.criteria || '';\n\nconst total = prev.total || 0;\nconst included = prev.included || 0;\nconst excluded = prev.excluded || 0;\nconst maybe = prev.maybe || 0;\nconst with_pdf = prev.with_pdf || 0;\nconst sources = prev.sources || [];\nconst clusters = prev.clusters || [];\nconst totalBeforeDedup = prev.totalBeforeDedup || total;\nconst duplicatesRemoved = prev.duplicatesRemoved || 0;\nconst pubmed_query = prev.pubmed_query || '';\nconst openalex_query = prev.openalex_query || '';\nconst crossref_query = prev.crossref_query || '';\nconst dateStr = new Date().toISOString().split('T')[0];\n\n// ─── Parse LLM text to HTML ───\nfunction textToHtml(text) {\n  return text.split('\\n').map(line => {\n    const l = line.trim();\n    if (!l) return '';\n    if (l.startsWith('## ')) return '<h2>' + l.substring(3) + '</h2>';\n    if (l.startsWith('### ')) return '<h3>' + l.substring(4) + '</h3>';\n    if (l.startsWith('- ')) return '<li>' + l.substring(2) + '</li>';\n    if (l.startsWith('* ')) return '<li>' + l.substring(2) + '</li>';\n    return '<p>' + l + '</p>';\n  }).join('\\n');\n}\n\n// ─── Cluster rows ───\nconst clusterRows = clusters.map(label => {\n  const count = articles.filter(a => a.cluster_label === label).length;\n  const inc = articles.filter(a => a.cluster_label === label && a.screening_decision === 'Include').length;\n  return '<tr><td>' + label + '</td><td style=\"text-align:center\">' + count + '</td><td style=\"text-align:center\">' + inc + '</td></tr>';\n}).join('\\n');\n\n// ─── Source rows ───\nconst sourceRows = sources.map(s => {\n  const count = articles.filter(a => a.source === s).length;\n  return '<tr><td>' + s + '</td><td style=\"text-align:center\">' + count + '</td></tr>';\n}).join('\\n');\n\n// ─── Top included articles ───\nconst topArticles = articles\n  .filter(a => a.screening_decision === 'Include')\n  .sort((a, b) => (b.score || 0) - (a.score || 0))\n  .slice(0, 15)\n  .map(a => '<tr><td>' + (a.title || '').substring(0, 80) + '</td><td>' + (Array.isArray(a.authors) ? a.authors.slice(0, 3).join(', ') : '') + '</td><td style=\"text-align:center\">' + (a.year || '') + '</td><td style=\"text-align:center\">' + (a.score || '') + '</td><td>' + (a.cluster_label || '') + '</td></tr>')\n  .join('\\n');\n\n// ─── Build complete HTML ───\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>PRISMA 2020 - Systematic Review Report</title>\n<style>\n  @page { size: A4; margin: 2cm; }\n  body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; color: #333; line-height: 1.6; }\n  .cover { text-align: center; padding: 80px 0 60px 0; border-bottom: 3px solid #4472C4; margin-bottom: 40px; }\n  .cover h1 { color: #4472C4; font-size: 2.5em; margin-bottom: 10px; }\n  .cover .subtitle { color: #666; font-size: 1.3em; margin-bottom: 30px; }\n  .cover .question { font-style: italic; font-size: 1.1em; color: #333; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f7fa; border-radius: 8px; }\n  .cover .date { color: #999; font-size: 0.9em; margin-top: 30px; }\n  h1 { color: #4472C4; border-bottom: 2px solid #4472C4; padding-bottom: 8px; margin-top: 40px; }\n  h2 { color: #2e5a8e; margin-top: 30px; }\n  h3 { color: #555; }\n  table { width: 100%; border-collapse: collapse; margin: 15px 0 25px 0; }\n  th { background: #4472C4; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }\n  td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }\n  tr:nth-child(even) { background: #f8f9fa; }\n  tr:hover { background: #e8ecf1; }\n  .flow-table td, .flow-table th { border: 1px solid #ccc; }\n  .phase-id { background: #4472C4; color: white; font-weight: bold; text-align: center; }\n  .phase-screen { background: #FFA500; color: white; font-weight: bold; text-align: center; }\n  .phase-include { background: #00B050; color: white; font-weight: bold; text-align: center; }\n  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0; }\n  .stat-card { background: #f5f7fa; border-radius: 8px; padding: 15px; text-align: center; border-left: 4px solid #4472C4; }\n  .stat-card.green { border-left-color: #00B050; }\n  .stat-card.orange { border-left-color: #FFA500; }\n  .stat-card.red { border-left-color: #FF0000; }\n  .stat-card .number { font-size: 2em; font-weight: bold; color: #333; }\n  .stat-card .label { font-size: 0.85em; color: #666; margin-top: 5px; }\n  .screening-include { color: #00B050; font-weight: bold; }\n  .screening-maybe { color: #FFA500; font-weight: bold; }\n  .screening-exclude { color: #FF0000; font-weight: bold; }\n  .footer { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 0.85em; }\n  li { margin-bottom: 5px; }\n  @media print { body { padding: 0; } .cover { page-break-after: always; } }\n</style>\n</head>\n<body>\n\n<!-- COVER PAGE -->\n<div class=\"cover\">\n  <h1>PRISMA 2020</h1>\n  <div class=\"subtitle\">Systematic Review Protocol Report</div>\n  <div class=\"question\">${question || 'Systematic Review'}</div>\n  <div class=\"date\">Generated by UltraLab on ${dateStr}</div>\n</div>\n\n<!-- PRISMA FLOW DIAGRAM -->\n<h1>PRISMA 2020 Flow Diagram</h1>\n<table class=\"flow-table\">\n  <tr><td class=\"phase-id\" rowspan=\"5\">IDENTIFICATION</td><td>Records identified through database searching</td><td style=\"text-align:center;font-weight:bold\">${totalBeforeDedup}</td></tr>\n  ${sourceRows ? sources.map(s => '<tr><td>&nbsp;&nbsp;&bull; ' + s + '</td><td style=\"text-align:center\">' + articles.filter(a => a.source === s).length + '</td></tr>').join('\\n') : ''}\n  <tr><td>Duplicate records removed</td><td style=\"text-align:center;font-weight:bold\">${duplicatesRemoved}</td></tr>\n  <tr><td class=\"phase-screen\" rowspan=\"4\">SCREENING</td><td>Records after deduplication</td><td style=\"text-align:center;font-weight:bold\">${total}</td></tr>\n  <tr><td>Records screened (AI pre-screening)</td><td style=\"text-align:center\">${total}</td></tr>\n  <tr><td>Records excluded by AI</td><td style=\"text-align:center;font-weight:bold;color:#FF0000\">${excluded}</td></tr>\n  <tr><td>Records uncertain (manual review needed)</td><td style=\"text-align:center;font-weight:bold;color:#FFA500\">${maybe}</td></tr>\n  <tr><td class=\"phase-include\" rowspan=\"2\">INCLUDED</td><td>Studies included in pre-screening</td><td style=\"text-align:center;font-weight:bold;color:#00B050\">${included}</td></tr>\n  <tr><td>Full-text articles available (open access)</td><td style=\"text-align:center\">${with_pdf}</td></tr>\n</table>\n\n<!-- SEARCH EQUATIONS -->\n<h1>Search Equations</h1>\n<p>The following search equations were generated by AI and used to query each academic database:</p>\n<table>\n  <tr><th style=\"width:15%\">Database</th><th>Search Equation</th></tr>\n  <tr><td><strong>PubMed</strong></td><td><code>${pubmed_query || 'N/A'}</code></td></tr>\n  <tr><td><strong>OpenAlex</strong></td><td><code>${openalex_query || 'N/A'}</code></td></tr>\n  <tr><td><strong>Crossref</strong></td><td><code>${crossref_query || 'N/A'}</code></td></tr>\n</table>\n<p><em>Note: Search equations are generated with temperature=0 for reproducibility.</em></p>\n\n<!-- RANKING CRITERIA -->\n<h1>Relevance Ranking Criteria</h1>\n<p>Each article was scored from 0 to 100 by the AI model based on the following criteria:</p>\n<ul>\n  <li><strong>Relevance to research question:</strong> How closely the article title and abstract match the research question</li>\n  <li><strong>Keyword alignment:</strong> Presence of key terms from the research question in the article</li>\n  <li><strong>Methodological fit:</strong> Whether the study design and population match the inclusion criteria</li>\n  <li><strong>Recency and impact:</strong> Publication year and journal relevance</li>\n</ul>\n<p>The AI was instructed: <em>&quot;Score the relevance of each article for the research question. Provide a score 0-100 with a one-sentence justification.&quot;</em></p>\n<p>Individual ranking justifications are available in the Excel export file (column &quot;Critere Ranking&quot;).</p>\n\n<!-- STATISTICS -->\n<h1>Pre-screening Summary</h1>\n<div class=\"stat-grid\">\n  <div class=\"stat-card\"><div class=\"number\">${total}</div><div class=\"label\">Total Articles</div></div>\n  <div class=\"stat-card green\"><div class=\"number\">${included}</div><div class=\"label\">Inclusion probable</div></div>\n  <div class=\"stat-card orange\"><div class=\"number\">${maybe}</div><div class=\"label\">Uncertain</div></div>\n  <div class=\"stat-card red\"><div class=\"number\">${excluded}</div><div class=\"label\">Non-inclusion probable</div></div>\n</div>\n\n<p><strong>Criteria:</strong> ${criteria || 'No specific criteria provided.'}</p>\n\n<!-- THEMATIC CLUSTERS -->\n<h1>Thematic Clusters</h1>\n<table>\n  <tr><th>Cluster</th><th style=\"text-align:center\">Articles</th><th style=\"text-align:center\">Included</th></tr>\n  ${clusterRows || '<tr><td colspan=\"3\">No clusters identified</td></tr>'}\n</table>\n\n<!-- TOP INCLUDED ARTICLES -->\n<h1>Top Included Articles</h1>\n<table>\n  <tr><th>Title</th><th>Authors</th><th style=\"text-align:center\">Year</th><th style=\"text-align:center\">Score</th><th>Cluster</th></tr>\n  ${topArticles || '<tr><td colspan=\"5\">No articles included</td></tr>'}\n</table>\n\n<!-- LLM NARRATIVE -->\n<h1>Detailed Report</h1>\n${textToHtml(prismaText)}\n\n<!-- FOOTER -->\n<div class=\"footer\">\n  <p>This report was generated automatically by <strong>UltraLab Systematic Review</strong>.</p>\n  <p>AI pre-screening results are indicative and require human validation.</p>\n  <p>PRISMA 2020 guidelines: Page MJ et al. BMJ 2021;372:n71</p>\n</div>\n\n</body>\n</html>`;\n\nconsole.log('PRISMA HTML generated: ' + html.length + ' chars');\n\n// ─── Save all files to output folder ───\nlet savedFiles = [];\ntry {\n  fs.mkdirSync(outputFolder, { recursive: true });\n  \n  // Save PRISMA HTML report\n  fs.writeFileSync(path.join(outputFolder, 'PRISMA_Report.html'), html, 'utf-8');\n  savedFiles.push('PRISMA_Report.html');\n  \n  // Save RIS file\n  if (ris && ris.length > 0) {\n    fs.writeFileSync(path.join(outputFolder, 'articles.ris'), ris, 'utf-8');\n    savedFiles.push('articles.ris');\n  }\n  \n  // Save XLSX file\n  if (xlsx_base64 && xlsx_base64.length > 0) {\n    fs.writeFileSync(path.join(outputFolder, 'pre_screening.xlsx'), Buffer.from(xlsx_base64, 'base64'));\n    savedFiles.push('pre_screening.xlsx');\n  }\n  \n  console.log('Files saved to ' + outputFolder + ': ' + savedFiles.join(', '));\n} catch(e) {\n  console.log('File save error: ' + e.message + ' - files will be in response data only');\n}\n\nreturn [{\n  json: {\n    prisma_protocol: prismaText,\n    prisma_html: html,\n    prisma_stats: pStats,\n    articles,\n    ris,\n    xlsx_base64,\n    output_folder: outputFolder,\n    question,\n    saved_files: savedFiles\n  }\n}];",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "gr-prisma-001",
+      "name": "Generate Report and Save",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        -336
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Build PRISMA Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build PRISMA Prompt": {
+      "main": [
+        [
+          {
+            "node": "Call Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Ollama": {
+      "main": [
+        [
+          {
+            "node": "Generate Report and Save",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000012",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "tbY1uigU5oMbgUOH",
+  "tags": []
+}

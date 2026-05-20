@@ -1,0 +1,353 @@
+{
+  "name": "ultralab-clustering",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "60a66a72-c342-4356-bfa9-dcadc57febcd",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1600,
+        -576
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-skip-clustering",
+              "leftValue": "={{ $('Input').first().json.skip_clustering }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals",
+                "name": "filter.boolean.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-skip-clu",
+      "name": "IF Skip Clustering",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1480,
+        -576
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Skip clustering: pass articles through with default General cluster\nconst articles = $('Input').all().map(i => i.json);\nconsole.log('Clustering SKIPPED: ' + articles.length + ' articles passed through with cluster=General');\nreturn articles.map(a => ({ json: { ...a, cluster: 0, cluster_label: 'General' } }));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "pt-clu-001",
+      "name": "Pass Through Clustering",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        -456
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === CLUSTERING v2 - Formule amelioree + abstracts ===\nconst items = $input.all();\nconst articles = items.map(i => i.json);\n\nif (articles.length < 3) {\n  console.log('Clustering: < 3 articles, assigning General');\n  return articles.map(a => ({ json: { ...a, cluster: 0, cluster_label: 'General' } }));\n}\n\nconst BATCH_SIZE = 25;\n// Formule amelioree: sqrt(n), plafond a 6, plancher a 2\n// Evite la sur-segmentation tout en restant adaptatif\nconst targetClusters = Math.min(6, Math.max(2, Math.ceil(Math.sqrt(articles.length / 3))));\nconst minPerCluster = Math.max(2, Math.floor(articles.length / (targetClusters * 2)));\nconst batches = [];\n\nfor (let i = 0; i < articles.length; i += BATCH_SIZE) {\n  const batch = articles.slice(i, i + BATCH_SIZE);\n  const articleList = batch.map((a, j) => {\n    const title = (a.title || 'No title').substring(0, 120);\n    const abstract = (a.abstract || '').substring(0, 200);\n    return j + ': ' + title + (abstract ? ' -- ' + abstract : '');\n  }).join('\\n');\n\n  const prompt = `You are a scientific literature analyst specializing in thematic grouping. Organize these articles into coherent thematic clusters based on their content. Return ONLY valid JSON.\\n\\nArticles (index: title -- abstract excerpt):\\n${articleList}\\n\\nReturn this exact JSON:\\n{\"clusters\": [{\"id\": 0, \"label\": \"Descriptive Theme Name\", \"articles\": [0, 3, 7]}]}\\n\\nRULES:\\n1. Create between 2 and ${targetClusters} clusters maximum.\\n2. Each cluster MUST contain at least ${minPerCluster} articles. Do NOT create clusters with only 1 article.\\n3. Each cluster label MUST be a descriptive thematic name (e.g. \"Prevalence and Epidemiological Surveys\", \"Risk Factors and Determinants\"), NOT generic names like \"Cluster 1\" or \"Other\".\\n4. Every article index from 0 to ${batch.length - 1} must appear in exactly one cluster.\\n5. Group articles by shared research themes, methodologies, or populations studied.\\n6. Prefer fewer, broader clusters over many small ones. When in doubt, merge.`;\n\n  batches.push({ json: { prompt, batchIndex: Math.floor(i / BATCH_SIZE), batchSize: batch.length, targetClusters } });\n}\n\nconsole.log('Clustering v2: ' + articles.length + ' articles -> ' + batches.length + ' batches, target ' + targetClusters + ' clusters (min ' + minPerCluster + '/cluster)');\nreturn batches;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "pb-clu-001",
+      "name": "Prepare Batches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        -576
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3456/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gemma4:e2b', _ultralab_task: 'chat', stream: false, format: 'json', options: { temperature: 0.1, num_ctx: 8192, num_predict: 1500 }, keep_alive: '30m', prompt: $json.prompt }) }}",
+        "options": {
+          "timeout": 900000,
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 300
+            }
+          }
+        }
+      },
+      "id": "hr-clu-001",
+      "name": "Call Ollama",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1120,
+        -576
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === EXPAND v2 - Assign + consolidation intelligente ===\nconst responses = $input.all();\nconst originalItems = $('Input').all();\nconst articles = originalItems.map(i => i.json);\nconst BATCH_SIZE = 25;\nconst targetClusters = (responses[0] && responses[0].json.targetClusters) || 4;\n\nconst allLabels = new Array(articles.length).fill('Unclustered');\nconst batchLabels = [];\n\nfor (let r = 0; r < responses.length; r++) {\n  const resp = responses[r].json;\n  try {\n    const responseText = resp.response || '';\n    const inner = JSON.parse(responseText);\n    (inner.clusters || []).forEach(cluster => {\n      const label = cluster.label || ('Cluster ' + cluster.id);\n      if (!batchLabels.includes(label)) batchLabels.push(label);\n      (cluster.articles || []).forEach(idx => {\n        const globalIdx = r * BATCH_SIZE + idx;\n        if (globalIdx >= 0 && globalIdx < articles.length) {\n          allLabels[globalIdx] = label;\n        }\n      });\n    });\n  } catch(e) {\n    console.log('Clustering parse error batch ' + r + ': ' + e.message);\n  }\n}\n\nconst labelToId = {};\nlet nextId = 0;\n\nconst results = articles.map((article, i) => {\n  const label = allLabels[i];\n  if (!(label in labelToId)) labelToId[label] = nextId++;\n  return { json: { ...article, cluster: labelToId[label], cluster_label: label } };\n});\n\nconst uniqueLabels = [...new Set(allLabels.filter(l => l !== 'Unclustered'))];\nconsole.log('Clustering: ' + articles.length + ' articles in ' + uniqueLabels.length + ' clusters');\n\n// Consolidation si trop de clusters (multi-batch ou LLM qui segmente trop)\nif (uniqueLabels.length > targetClusters) {\n  console.log('Consolidation necessaire: ' + uniqueLabels.length + ' -> ' + targetClusters + ' clusters');\n  return [{ json: {\n    _needsConsolidation: true,\n    _consolidateLabels: uniqueLabels,\n    _targetClusters: targetClusters,\n    _articles: results.map(r => r.json)\n  }}];\n}\n\nreturn results;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "ex-clu-001",
+      "name": "Expand Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        -576
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-consolidation",
+              "leftValue": "={{ $json._needsConsolidation }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals",
+                "name": "filter.boolean.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-clu-consol",
+      "name": "IF Consolidate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -576
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === CONSOLIDATION v2 - Fusion agressive avec description ===\nconst data = $input.all()[0].json;\nconst labels = data._consolidateLabels || [];\nconst tc = data._targetClusters || 4;\nconst articles = data._articles || [];\n\n// Compter les articles par label pour aider le LLM\nconst labelCounts = {};\nfor (const a of articles) {\n  const l = a.cluster_label || 'Unclustered';\n  labelCounts[l] = (labelCounts[l] || 0) + 1;\n}\n\nconst labelList = labels.map((l, i) => i + ': \"' + l + '\" (' + (labelCounts[l] || 0) + ' articles)').join('\\n');\n\nconst prompt = `You are a scientific literature analyst. You must consolidate ${labels.length} thematic cluster labels into exactly ${tc} final clusters by merging similar themes. Return ONLY valid JSON.\\n\\nOriginal labels (with article counts):\\n${labelList}\\n\\nRULES:\\n1. Create exactly ${tc} consolidated clusters.\\n2. Merge similar or overlapping themes together.\\n3. Each consolidated label must be descriptive and thematic.\\n4. Every original label must be mapped to exactly one consolidated label.\\n5. Prefer merging small clusters into larger related ones.\\n\\nReturn: {\"mapping\": [{\"original\": \"label text\", \"consolidated\": \"new broader label\"}]}\\nMap ALL ${labels.length} original labels.`;\n\nreturn [{ json: { prompt, _articles: articles, _targetClusters: tc } }];",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "bcp-clu-001",
+      "name": "Build Consolidation Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -496
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3456/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gemma4:e2b', _ultralab_task: 'chat', stream: false, format: 'json', options: { temperature: 0.1, num_ctx: 8192, num_predict: 800 }, keep_alive: '30m', prompt: $json.prompt }) }}",
+        "options": {
+          "timeout": 900000
+        }
+      },
+      "id": "hr-clu-002",
+      "name": "Call Ollama Consolidate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        -496
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === APPLY LABELS v2 - Fusion + renumerotation ===\nconst ollamaResp = $input.all()[0].json;\nconst prevData = $('Build Consolidation Prompt').first().json;\nconst articles = prevData._articles || [];\n\nlet labelMap = {};\ntry {\n  const responseText = ollamaResp.response || '';\n  const inner = JSON.parse(responseText);\n  (inner.mapping || []).forEach(m => { labelMap[m.original] = m.consolidated; });\n  console.log('Consolidation: ' + Object.keys(labelMap).length + ' labels fusionnes');\n} catch(e) {\n  console.log('Consolidation parse error: ' + e.message);\n}\n\n// Appliquer le mapping et renumeroter proprement\nconst labelToId = {};\nlet nextId = 0;\nconst results = articles.map(a => {\n  let label = a.cluster_label || 'Unclustered';\n  if (labelMap[label]) label = labelMap[label];\n  if (!(label in labelToId)) labelToId[label] = nextId++;\n  return { json: { ...a, cluster_label: label, cluster: labelToId[label] } };\n});\n\n// Log des clusters finaux\nconst clusterSizes = {};\nresults.forEach(r => {\n  const l = r.json.cluster_label;\n  clusterSizes[l] = (clusterSizes[l] || 0) + 1;\n});\nconsole.log('Clusters finaux:');\nObject.entries(clusterSizes).forEach(([label, count]) => {\n  console.log('  [' + count + '] ' + label);\n});\n\nreturn results;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "al-clu-001",
+      "name": "Apply Labels",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -496
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pas de consolidation necessaire\nconst results = $input.all();\nconsole.log('Clustering: sortie directe (pas de consolidation), ' + results.length + ' articles');\nreturn results;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "do-clu-001",
+      "name": "Direct Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -656
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "IF Skip Clustering",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Skip Clustering": {
+      "main": [
+        [
+          {
+            "node": "Pass Through Clustering",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Batches": {
+      "main": [
+        [
+          {
+            "node": "Call Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Ollama": {
+      "main": [
+        [
+          {
+            "node": "Expand Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Results": {
+      "main": [
+        [
+          {
+            "node": "IF Consolidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Consolidate": {
+      "main": [
+        [
+          {
+            "node": "Build Consolidation Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Direct Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Consolidation Prompt": {
+      "main": [
+        [
+          {
+            "node": "Call Ollama Consolidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Ollama Consolidate": {
+      "main": [
+        [
+          {
+            "node": "Apply Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000008",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "RXr97zqwUBSIMwY9",
+  "tags": []
+}

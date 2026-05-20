@@ -1,0 +1,160 @@
+{
+  "name": "ultralab-embedding",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0f3f2ee4-dc3d-4b31-bdd7-290ae1b10c10",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2272,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3456/api/tags",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "tags-emb-001",
+      "name": "List Ollama Models",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2032,
+        -384
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// === DETECT EMBEDDING MODEL - Trouve le bon tag d'embeddinggemma ===\nconst tagsResp = $input.first().json;\nconst originalItems = $('Input').all();\nconst articles = originalItems.map(i => i.json);\nconst BATCH_SIZE = 10;\n\nconst availableModels = (tagsResp && tagsResp.models) ? tagsResp.models.map(m => m.name) : [];\nconsole.log('=== Modeles Ollama disponibles ===');\navailableModels.forEach(m => console.log('  - ' + m));\n\n// Chercher un modele d'embedding adequat (priorite : 300m > latest > tout autre embeddinggemma > nomic-embed-text)\nconst preferred = ['embeddinggemma:300m', 'embeddinggemma:latest', 'embeddinggemma'];\nlet selectedModel = null;\nfor (const p of preferred) {\n  if (availableModels.includes(p)) { selectedModel = p; break; }\n}\nif (!selectedModel) {\n  // Tout modele commencant par embeddinggemma\n  const found = availableModels.find(m => m.toLowerCase().startsWith('embeddinggemma'));\n  if (found) selectedModel = found;\n}\nif (!selectedModel) {\n  // Fallback nomic-embed-text\n  const fallback = availableModels.find(m => m.toLowerCase().startsWith('nomic-embed-text'));\n  if (fallback) {\n    selectedModel = fallback;\n    console.log('[WARN] embeddinggemma absent - fallback sur ' + fallback);\n  }\n}\n\nif (!selectedModel) {\n  throw new Error('Aucun modele d\\'embedding installe sur Ollama. Modeles disponibles: ' + availableModels.join(', ') + '. Lancez : ollama pull embeddinggemma:300m');\n}\n\nconsole.log('=> Modele d\\'embedding selectionne : ' + selectedModel);\n\n// Preparer les batches en injectant le modele detecte dans chaque batch\nconst batches = [];\nfor (let i = 0; i < articles.length; i += BATCH_SIZE) {\n  const batch = articles.slice(i, i + BATCH_SIZE);\n  const texts = batch.map(a =>\n    ((a.title || '') + ' ' + (a.abstract || '')).trim().substring(0, 1000) || 'no content'\n  );\n  batches.push({ json: { texts, model: selectedModel, batchIndex: Math.floor(i / BATCH_SIZE), batchSize: batch.length } });\n}\n\nconsole.log('Embedding: ' + articles.length + ' articles -> ' + batches.length + ' batches de ' + BATCH_SIZE + ' (modele=' + selectedModel + ')');\nreturn batches;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "pb-emb-001",
+      "name": "Prepare Batches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1792,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3456/api/embed",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: $json.model, _ultralab_task: 'embedding', input: $json.texts, keep_alive: '30m' }) }}",
+        "options": {
+          "timeout": 600000,
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 100
+            }
+          }
+        }
+      },
+      "id": "hr-emb-001",
+      "name": "Call Ollama Embed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1552,
+        -384
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 15000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === EXPAND - Matche embeddings <-> articles ===\nconst responses = $input.all();\nconst originalItems = $('Input').all();\nconst articles = originalItems.map(i => i.json);\nconst BATCH_SIZE = 10;\n\nconst results = [];\nfor (let r = 0; r < responses.length; r++) {\n  const resp = responses[r].json;\n  // Ollama renvoie 'embeddings' (array d'arrays) pour /api/embed\n  // ou 'embedding' (single array) pour /api/embeddings\n  let embeddings = [];\n  if (resp && Array.isArray(resp.embeddings)) embeddings = resp.embeddings;\n  else if (resp && Array.isArray(resp.embedding)) embeddings = [resp.embedding];\n  const start = r * BATCH_SIZE;\n  const end = Math.min(start + BATCH_SIZE, articles.length);\n  for (let i = start; i < end; i++) {\n    results.push({\n      json: {\n        ...articles[i],\n        embedding: embeddings[i - start] || []\n      }\n    });\n  }\n}\n\nconst withEmb = results.filter(r => r.json.embedding && r.json.embedding.length > 0).length;\nconsole.log('Embedding complete: ' + withEmb + '/' + results.length + ' avec embeddings');\nif (withEmb === 0) {\n  console.log('[WARN] Aucun embedding genere - verifier les logs du proxy/relay.');\n}\nreturn results;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "ex-emb-001",
+      "name": "Expand Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1312,
+        -384
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "List Ollama Models",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Ollama Models": {
+      "main": [
+        [
+          {
+            "node": "Prepare Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Batches": {
+      "main": [
+        [
+          {
+            "node": "Call Ollama Embed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Ollama Embed": {
+      "main": [
+        [
+          {
+            "node": "Expand Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000004",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "JaszSPhNwKe2HfWD",
+  "tags": []
+}

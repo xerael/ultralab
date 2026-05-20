@@ -1,0 +1,120 @@
+{
+  "name": "ultralab-pdf-fetch",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0330b7dd-1688-4846-9f96-cbafd54b3efc",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1952,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-skip-pdf",
+              "leftValue": "={{ $('Input').first().json.skip_pdf }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals",
+                "name": "filter.boolean.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-skip-pdf",
+      "name": "IF Skip PDF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1832,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Skip PDF fetch: pass articles through without downloading\nconst articles = $('Input').all().map(i => i.json);\nconsole.log('PDF Fetch SKIPPED: ' + articles.length + ' articles passed through without PDF download');\nreturn articles.map(a => ({ json: { ...a, pdf_url: null, pdf_local: null, pdf_source: null, is_oa: false, oa_status: 'pdf_fetch_skipped' } }));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "pt-pdf-001",
+      "name": "Pass Through PDF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1696,
+        232
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === PDF FETCH v2 - Telechargement reel des PDFs ===\n// Sources: 1) Unpaywall (OA legal) 2) CORE.ac.uk (fallback OA)\n// Telecharge les fichiers via le proxy /download\n\nconst PROXY = 'http://host.docker.internal:3456';\nconst EMAIL = 'ultralab-review@systematic-review.org';\nconst items = $input.all();\n\nif (!items || items.length === 0) {\n  return [{ json: { error: 'no_input' } }];\n}\n\nconst allArticles = items.map(i => i.json);\nconst outputFolder = (allArticles[0] && allArticles[0].output_folder) || 'C:\\\\Users\\\\Mika\\\\Desktop\\\\review ultralab';\nconst pdfFolder = outputFolder + '\\\\pdfs';\n\nconst toFetch = allArticles.filter(a => a.screening_decision === 'Include' || a.screening_decision === 'Maybe');\nconst excluded = allArticles.filter(a => a.screening_decision === 'Exclude');\n\nconsole.log('PDF Fetch v2: ' + toFetch.length + ' articles a traiter, ' + excluded.length + ' exclus');\nconsole.log('Dossier PDFs: ' + pdfFolder);\n\nlet stats = { unpaywall: 0, core: 0, downloaded: 0, failed: 0, no_doi: 0 };\nconst results = [];\n\nfunction sanitizeFilename(name) {\n  return (name || 'article').substring(0, 80).replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_');\n}\n\nfor (let i = 0; i < toFetch.length; i++) {\n  const article = { ...toFetch[i] };\n  const doi = (article.doi || '').trim();\n  let pdf_url = null;\n  let pdf_source = null;\n  let pdf_local = null;\n\n  if (!doi) {\n    stats.no_doi++;\n    if (i < 5) console.log('  [' + (i+1) + '] Pas de DOI - ' + (article.title || '').substring(0, 50));\n    results.push({ ...article, pdf_url: null, pdf_local: null, is_oa: false, oa_status: 'no_doi', pdf_source: null });\n    continue;\n  }\n\n  // === SOURCE 1: Unpaywall (OA legal, gratuit) ===\n  try {\n    const targetUrl = 'https://api.unpaywall.org/v2/' + encodeURIComponent(doi) + '?email=' + EMAIL;\n    const proxyUrl = PROXY + '?url=' + encodeURIComponent(targetUrl);\n    const uw = await this.helpers.httpRequest({ method: 'GET', url: proxyUrl, timeout: 20000 });\n\n    if (uw && uw.best_oa_location) {\n      pdf_url = uw.best_oa_location.url_for_pdf || null;\n    }\n    if (!pdf_url && uw && Array.isArray(uw.oa_locations)) {\n      for (const loc of uw.oa_locations) {\n        if (loc.url_for_pdf) { pdf_url = loc.url_for_pdf; break; }\n      }\n    }\n    if (pdf_url) {\n      pdf_source = 'unpaywall';\n      stats.unpaywall++;\n    }\n    article.is_oa = (uw && uw.is_oa) || false;\n    article.oa_status = (uw && uw.oa_status) || 'unknown';\n  } catch(e) {\n    article.is_oa = false;\n    article.oa_status = 'unpaywall_error';\n  }\n\n  // === SOURCE 2: CORE.ac.uk (fallback OA, gratuit sans cle) ===\n  if (!pdf_url && doi) {\n    try {\n      const coreUrl = 'https://api.core.ac.uk/v3/search/works?q=doi:' + encodeURIComponent(doi) + '&limit=1';\n      const coreProxyUrl = PROXY + '?url=' + encodeURIComponent(coreUrl);\n      const coreResp = await this.helpers.httpRequest({ method: 'GET', url: coreProxyUrl, timeout: 15000 });\n\n      if (coreResp && Array.isArray(coreResp.results) && coreResp.results.length > 0) {\n        const work = coreResp.results[0];\n        if (work.downloadUrl) {\n          pdf_url = work.downloadUrl;\n          pdf_source = 'core';\n          stats.core++;\n        } else if (work.sourceFulltextUrls && work.sourceFulltextUrls.length > 0) {\n          pdf_url = work.sourceFulltextUrls[0];\n          pdf_source = 'core';\n          stats.core++;\n        }\n      }\n    } catch(e) {\n      // CORE indisponible, on continue\n    }\n  }\n\n  // === SOURCE 3: Europe PMC (gratuit, large couverture biomed) ===\n  if (!pdf_url && doi) {\n    try {\n      const epmcUrl = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:' + encodeURIComponent(doi) + '&resultType=core&format=json';\n      const epmcProxyUrl = PROXY + '?url=' + encodeURIComponent(epmcUrl);\n      const epmcResp = await this.helpers.httpRequest({ method: 'GET', url: epmcProxyUrl, timeout: 15000 });\n      const result = epmcResp && epmcResp.resultList && epmcResp.resultList.result && epmcResp.resultList.result[0];\n      if (result) {\n        // Europe PMC fournit des fullTextUrlList avec type=Article + documentStyle=pdf\n        const urls = (result.fullTextUrlList && result.fullTextUrlList.fullTextUrl) || [];\n        for (const u of urls) {\n          if (u.documentStyle === 'pdf' && (u.availability === 'Open access' || u.availability === 'Free')) {\n            pdf_url = u.url; pdf_source = 'europepmc'; stats.europepmc = (stats.europepmc||0)+1; break;\n          }\n        }\n        // Fallback : PMCID -> URL directe PDF\n        if (!pdf_url && result.pmcid) {\n          pdf_url = 'https://europepmc.org/articles/' + result.pmcid + '?pdf=render';\n          pdf_source = 'europepmc'; stats.europepmc = (stats.europepmc||0)+1;\n        }\n      }\n    } catch(e) { /* EPMC indispo */ }\n  }\n\n  // === TELECHARGEMENT REEL DU PDF ===\n  if (pdf_url) {\n    try {\n      const filename = sanitizeFilename(article.title) + '.pdf';\n      const savePath = pdfFolder + '\\\\' + filename;\n\n      const dlResp = await this.helpers.httpRequest({\n        method: 'POST',\n        url: PROXY + '/download',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({ url: pdf_url, save_to: savePath }),\n        timeout: 60000\n      });\n\n      if (dlResp && dlResp.success) {\n        pdf_local = savePath;\n        stats.downloaded++;\n        if (i < 10) console.log('  [' + (i+1) + '] PDF OK (' + pdf_source + ') - ' + filename.substring(0, 40));\n      } else {\n        stats.failed++;\n        if (i < 10) console.log('  [' + (i+1) + '] Echec DL - ' + (dlResp && dlResp.error || 'unknown'));\n      }\n    } catch(e) {\n      stats.failed++;\n      if (i < 5) console.log('  [' + (i+1) + '] Erreur download: ' + e.message.substring(0, 60));\n    }\n  } else {\n    article.url = article.url || ('https://doi.org/' + doi);\n  }\n\n  results.push({ ...article, pdf_url, pdf_local, pdf_source });\n\n  // Rate limiting (200ms entre chaque requete)\n  if (i < toFetch.length - 1) {\n    await new Promise(resolve => setTimeout(resolve, 200));\n  }\n}\n\n// Ajouter les exclus sans modification\nconst excludedResults = excluded.map(a => ({\n  ...a, pdf_url: null, pdf_local: null, pdf_source: null, is_oa: false, oa_status: 'excluded_from_fetch'\n}));\n\nconst allResults = [...results, ...excludedResults];\n\nconst noOaUrl = toFetch.length - stats.no_doi - stats.unpaywall - (stats.core||0) - (stats.europepmc||0);\nconsole.log('=== PDF FETCH v3 SUMMARY ===');\nconsole.log('Articles a traiter      : ' + toFetch.length);\nconsole.log('  Sans DOI (skip)       : ' + stats.no_doi);\nconsole.log('  URL OA trouvee :');\nconsole.log('    Unpaywall            : ' + stats.unpaywall);\nconsole.log('    CORE.ac.uk           : ' + (stats.core||0));\nconsole.log('    Europe PMC           : ' + (stats.europepmc||0));\nconsole.log('  Aucune URL OA trouvee : ' + Math.max(0, noOaUrl) + ' (probablement derriere paywall)');\nconsole.log('Telecharges sur disque  : ' + stats.downloaded);\nconsole.log('Echecs download HTTP    : ' + stats.failed);\nconsole.log('');\nconsole.log('Pour augmenter le taux de recuperation :');\nconsole.log('  - Configurez vos creds institutionnels dans Settings (a venir)');\nconsole.log('  - Utilisez le module dedie de recherche API qui privilegie les articles OA');\n\nreturn allResults.map(r => ({ json: r }));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "0e23017f-b64a-4b76-97bc-c6d3531d0312",
+      "name": "Fetch PDF URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1696,
+        112
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "IF Skip PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Skip PDF": {
+      "main": [
+        [
+          {
+            "node": "Pass Through PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch PDF URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000010",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "iHVBghWXos2uM1IF",
+  "tags": []
+}

@@ -1,0 +1,195 @@
+{
+  "name": "ultralab-screening",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1ed1b3c2-dc67-4ce3-8dd6-4f992b4e9e1e",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1264,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-skip-screening",
+              "leftValue": "={{ $('Input').first().json.skip_screening }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals",
+                "name": "filter.boolean.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-skip-scr",
+      "name": "IF Skip Screening",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1144,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Skip screening: pass articles through with default Maybe decision\nconst articles = $('Input').all().map(i => i.json);\nconsole.log('Screening SKIPPED: ' + articles.length + ' articles passed through with decision=Maybe');\nreturn articles.map(a => ({ json: { ...a, screening_decision: 'Maybe', screening_reason: 'Screening skipped by user', screening_color: 'orange' } }));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "pt-scr-001",
+      "name": "Pass Through Screening",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1024,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === SCREENING v3 - Prompt simplifie + batches reduits ===\nconst items = $input.all();\nconst articles = items.map(i => i.json);\nconst BATCH_SIZE = 3;\nconst question = (articles[0] && articles[0].question) || '';\nconst criteria = (articles[0] && articles[0].criteria) || '';\n// (A3) Reglages IA personnalises injectes par l'UI dans articles[0]._ai_settings\nconst aiSettings = (articles[0] && articles[0]._ai_settings) || {};\nconst strictness = (typeof aiSettings.strictness === 'number') ? aiSettings.strictness : 50;\nconst customRules = (aiSettings.custom_rules || '').toString().trim();\n// Mapping strictesse -> indication au LLM\nlet strictnessGuidance = '';\nif (strictness <= 25) {\n  strictnessGuidance = '\\n\\n=== TONE GUIDANCE ===\\nBe CONSERVATIVE: when in doubt, prefer Include or Maybe over Exclude. The user wants to capture as many potentially relevant articles as possible at this stage.';\n} else if (strictness >= 75) {\n  strictnessGuidance = '\\n\\n=== TONE GUIDANCE ===\\nBe STRICT: only mark Include if all criteria are clearly met. When in doubt, prefer Exclude. The user wants a tightly filtered set of highly relevant articles.';\n} else if (strictness >= 60) {\n  strictnessGuidance = '\\n\\n=== TONE GUIDANCE ===\\nBe slightly strict: when in doubt, lean toward Exclude rather than Maybe.';\n} else if (strictness <= 40) {\n  strictnessGuidance = '\\n\\n=== TONE GUIDANCE ===\\nBe slightly conservative: when in doubt, lean toward Maybe rather than Exclude.';\n}\nconst customRulesBlock = customRules\n  ? '\\n\\n=== USER-DEFINED RULES (must be respected) ===\\n' + customRules\n  : '';\nconst batches = [];\n\nfunction sanitize(text) {\n  return (text || '').replace(/[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]/g, ' ').replace(/\\s+/g, ' ').trim();\n}\n\nfor (let i = 0; i < articles.length; i += BATCH_SIZE) {\n  const batch = articles.slice(i, i + BATCH_SIZE);\n  const articleList = batch.map((a, j) => {\n    const title = sanitize(a.title || 'No title').substring(0, 120);\n    const abstract = sanitize(a.abstract || 'No abstract').substring(0, 400);\n    return '[' + j + '] TITLE: ' + title + '\\nABSTRACT: ' + abstract;\n  }).join('\\n\\n');\n\n  const prompt = `You are a systematic review screener. Decide for each article: Include / Maybe / Exclude.\\n\\nRESEARCH QUESTION:\\n${sanitize(question).substring(0, 500)}\\n\\nINCLUSION/EXCLUSION CRITERIA:\\n${sanitize(criteria).substring(0, 500)}\\n\\n=== ARTICLES TO SCREEN ===\\n${articleList}\\n\\n=== DECISION RULES ===\\n- Include = ALL inclusion criteria clearly met AND no exclusion criterion applies (population, study type, period, language all match)\\n- Maybe = at least one criterion is unclear from the abstract OR the abstract is too brief to decide\\n- Exclude = clearly fails at least one inclusion criterion OR clearly meets an exclusion criterion\\n\\nWhen genuinely uncertain: choose Maybe (be inclusive at this stage).\\n\\n=== OUTPUT FORMAT ===\\nReturn ONLY a JSON object with this exact structure (no markdown, no extra text):\\n{\"decisions\":[{\"index\":0,\"decision\":\"Include\",\"reason\":\"brief justification mentioning which criteria match\"}]}\\n\\nProvide one entry per article, indexes 0 to ${batch.length - 1}. The decision field MUST be exactly \"Include\", \"Maybe\", or \"Exclude\".${strictnessGuidance}${customRulesBlock}`;\n\n  batches.push({ json: { prompt, batchIndex: Math.floor(i / BATCH_SIZE), batchSize: batch.length } });\n}\n\nconsole.log('Screening v3: ' + articles.length + ' articles -> ' + batches.length + ' batches de ' + BATCH_SIZE);\nreturn batches;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "pb-scr-001",
+      "name": "Prepare Batches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1024,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3456/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gemma4:e2b', stream: false, format: 'json', options: { temperature: 0, num_predict: 500, num_ctx: 8192 }, keep_alive: '15m', prompt: $json.prompt }) }}",
+        "options": {
+          "timeout": 900000,
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 300
+            }
+          }
+        }
+      },
+      "id": "hr-scr-001",
+      "name": "Call Ollama",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -784,
+        -304
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === EXPAND v3 - Parser JSON robuste ===\nconst responses = $input.all();\nconst originalItems = $('Input').all();\nconst articles = originalItems.map(i => i.json);\nconst BATCH_SIZE = 3;\nconst colorMap = { 'Include': 'green', 'Maybe': 'orange', 'Exclude': 'red' };\n\nfunction extractJson(text) {\n  if (!text) return null;\n  text = text.replace(/```json\\s*/gi, '').replace(/```\\s*/g, '');\n  const start = text.indexOf('{');\n  if (start === -1) return null;\n  let depth = 0, inString = false, escape = false;\n  for (let i = start; i < text.length; i++) {\n    const c = text[i];\n    if (escape) { escape = false; continue; }\n    if (c === '\\\\') { escape = true; continue; }\n    if (c === '\"') { inString = !inString; continue; }\n    if (inString) continue;\n    if (c === '{') depth++;\n    else if (c === '}') {\n      depth--;\n      if (depth === 0) {\n        try { return JSON.parse(text.substring(start, i + 1)); } catch(e) { return null; }\n      }\n    }\n  }\n  return null;\n}\n\nconst results = [];\nlet totalInc = 0, totalExc = 0, totalMay = 0;\nlet okBatches = 0, failedBatches = 0;\nconst diagnostics = [];\n\nfor (let r = 0; r < responses.length; r++) {\n  const resp = responses[r].json || {};\n  let decisionMap = {};\n  let batchOk = false;\n\n  if (resp.response) {\n    const parsed = extractJson(resp.response);\n    if (parsed && Array.isArray(parsed.decisions)) {\n      // (Fix 2026-05-19) Tolerer index manquant : assumer ordre sequentiel du batch.\n      // Avant : on dropait les decisions sans index -> beaucoup d'articles en \"Index missing\".\n      parsed.decisions.forEach((d, autoIdx) => {\n        const idx = (d.index !== undefined) ? d.index : autoIdx;\n        let decision = (d.decision || 'Maybe').toString().trim();\n        // Normaliser vers Include/Maybe/Exclude (tolere variations de casse)\n        const lower = decision.toLowerCase();\n        if (lower.startsWith('inc')) decision = 'Include';\n        else if (lower.startsWith('exc')) decision = 'Exclude';\n        else decision = 'Maybe';\n        decisionMap[idx] = { decision, reason: d.reason || '' };\n      });\n      batchOk = Object.keys(decisionMap).length > 0;\n    } else {\n      diagnostics.push('Batch ' + r + ' parse failed - response starts: ' + (resp.response || '').substring(0, 200));\n    }\n  } else if (resp.error) {\n    diagnostics.push('Batch ' + r + ' API error: ' + (resp.error.message || resp.error).toString().substring(0, 100));\n  } else {\n    diagnostics.push('Batch ' + r + ' empty response');\n  }\n\n  if (batchOk) okBatches++; else failedBatches++;\n\n  const start = r * BATCH_SIZE;\n  const end = Math.min(start + BATCH_SIZE, articles.length);\n  for (let i = start; i < end; i++) {\n    const localIdx = i - start;\n    const decision = decisionMap[localIdx] !== undefined ? decisionMap[localIdx].decision : 'Maybe';\n    if (decision === 'Include') totalInc++;\n    else if (decision === 'Exclude') totalExc++;\n    else totalMay++;\n    results.push({\n      json: {\n        ...articles[i],\n        screening_decision: decision,\n        screening_reason: decisionMap[localIdx] !== undefined ? decisionMap[localIdx].reason : (batchOk ? 'Index missing in response' : 'Batch failed - defaulted to Maybe'),\n        screening_color: colorMap[decision] || 'orange'\n      }\n    });\n  }\n}\n\nconsole.log('=== Screening v3 complete ===');\nconsole.log('Articles: ' + results.length + ' | Batches OK: ' + okBatches + ' | Batches KO: ' + failedBatches);\nconsole.log('Decisions: Include=' + totalInc + ' Maybe=' + totalMay + ' Exclude=' + totalExc);\nif (diagnostics.length > 0) {\n  console.log('--- Diagnostics ---');\n  diagnostics.slice(0, 3).forEach(d => console.log(d));\n}\nreturn results;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "ex-scr-001",
+      "name": "Expand Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        -304
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "IF Skip Screening",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Skip Screening": {
+      "main": [
+        [
+          {
+            "node": "Pass Through Screening",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Batches": {
+      "main": [
+        [
+          {
+            "node": "Call Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Ollama": {
+      "main": [
+        [
+          {
+            "node": "Expand Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000009",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "KGL9l8LCxrnYBFtW",
+  "tags": []
+}

@@ -1,0 +1,165 @@
+{
+  "name": "ultralab-search-apis",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f310f40c-4d78-410f-b85b-4372f2a3b41c",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── OPENALEX — Fetch via proxy (paginated, heartbeat-safe) ───\nconst input = $input.all()[0].json;\nconst query = encodeURIComponent(input.openalex_query || input.search_query || '');\nconst meta = {\n  question: input.question || '',\n  criteria: input.criteria || '',\n  search_query: input.search_query || '',\n  output_folder: input.output_folder || '',\n  prefilter_enabled: input.prefilter_enabled,\n  prefilter_count: input.prefilter_count,\n  max_results: input.max_results,\n  pubmed_query: input.pubmed_query || '',\n  openalex_query: input.openalex_query || '',\n  crossref_query: input.crossref_query || ''\n};\n\nconst PROXY = 'http://host.docker.internal:3456';\nconst PER_PAGE = 200;\nconst MAX_RESULTS = parseInt(input.max_results) || 1000;\n\nlet cursor = '*';\nlet allResults = [];\nlet pageNum = 0;\n\ntry {\n  while (cursor && allResults.length < MAX_RESULTS) {\n    pageNum++;\n    const targetUrl = `https://api.openalex.org/works?search=${query}&per-page=${PER_PAGE}&cursor=${encodeURIComponent(cursor)}&select=id,doi,title,display_name,abstract_inverted_index,authorships,publication_year,primary_location&mailto=ultralab@review.org`;\n    const proxyUrl = PROXY + '?url=' + encodeURIComponent(targetUrl);\n\n    let resp;\n    try {\n      resp = await this.helpers.httpRequest({ method: 'GET', url: proxyUrl, timeout: 120000 });\n    } catch(e) {\n      console.log('OpenAlex HTTP error page ' + pageNum + ': ' + e.message);\n      break;\n    }\n\n    const works = resp.results || [];\n    if (works.length === 0) break;\n\n    for (const w of works) {\n      const journal = (w.primary_location && w.primary_location.source)\n        ? (w.primary_location.source.display_name || '') : '';\n\n      let abstract = '';\n      if (w.abstract_inverted_index) {\n        const pairs = [];\n        for (const [word, positions] of Object.entries(w.abstract_inverted_index)) {\n          for (const pos of positions) { pairs.push([pos, word]); }\n        }\n        pairs.sort((a, b) => a[0] - b[0]);\n        abstract = pairs.map(p => p[1]).join(' ');\n      }\n\n      const authors = (w.authorships || []).map(a => a.author ? a.author.display_name : '').filter(Boolean);\n\n      allResults.push({\n        _source: 'openalex',\n        id: w.id || '',\n        doi: w.doi || '',\n        title: w.display_name || w.title || '',\n        abstract: abstract,\n        authors: authors,\n        year: w.publication_year || '',\n        journal: journal,\n        ...meta\n      });\n    }\n\n    cursor = (resp.meta && resp.meta.next_cursor) ? resp.meta.next_cursor : null;\n    console.log(`OpenAlex page ${pageNum}: +${works.length} (total: ${allResults.length})`);\n\n    await new Promise(r => setTimeout(r, 150));\n  }\n} catch(e) {\n  console.log('OpenAlex fatal error: ' + e.message);\n}\n\nconsole.log('OpenAlex DONE: ' + allResults.length + ' articles');\n\nif (allResults.length === 0) {\n  return [{ json: { _source: 'openalex', _empty: true, ...meta } }];\n}\nreturn allResults.map(r => ({ json: r }));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "daf80939-4e01-4dbf-920f-8e6fb5d51026",
+      "name": "OpenAlex Fetch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── CROSSREF — Fetch via proxy (paginated, heartbeat-safe) ───\nconst input = $input.all()[0].json;\nconst query = encodeURIComponent(input.crossref_query || input.search_query || '');\nconst meta = {\n  question: input.question || '',\n  criteria: input.criteria || '',\n  search_query: input.search_query || '',\n  output_folder: input.output_folder || '',\n  prefilter_enabled: input.prefilter_enabled,\n  prefilter_count: input.prefilter_count,\n  max_results: input.max_results,\n  pubmed_query: input.pubmed_query || '',\n  openalex_query: input.openalex_query || '',\n  crossref_query: input.crossref_query || ''\n};\n\nconst PROXY = 'http://host.docker.internal:3456';\nconst ROWS = 200;\nconst MAX_RESULTS = parseInt(input.max_results) || 1000;\n\nlet cursor = '*';\nlet allResults = [];\nlet pageNum = 0;\n\ntry {\n  while (cursor && allResults.length < MAX_RESULTS) {\n    pageNum++;\n    const targetUrl = `https://api.crossref.org/works?query=${query}&rows=${ROWS}&cursor=${encodeURIComponent(cursor)}&select=DOI,title,abstract,author,published,container-title&mailto=ultralab@review.org`;\n    const proxyUrl = PROXY + '?url=' + encodeURIComponent(targetUrl);\n\n    let resp;\n    try {\n      resp = await this.helpers.httpRequest({ method: 'GET', url: proxyUrl, timeout: 120000 });\n    } catch(e) {\n      console.log('Crossref HTTP error page ' + pageNum + ': ' + e.message);\n      break;\n    }\n\n    const items = (resp.message && resp.message.items) ? resp.message.items : [];\n    if (items.length === 0) break;\n\n    for (const w of items) {\n      const authors = (w.author || []).map(a => [a.given, a.family].filter(Boolean).join(' ')).filter(Boolean);\n      const title = Array.isArray(w.title) ? w.title[0] || '' : (w.title || '');\n      const journal = Array.isArray(w['container-title']) ? w['container-title'][0] || '' : (w['container-title'] || '');\n      let year = '';\n      if (w.published && w.published['date-parts'] && w.published['date-parts'][0]) {\n        year = w.published['date-parts'][0][0] || '';\n      }\n\n      allResults.push({\n        _source: 'crossref',\n        id: w.DOI ? 'doi:' + w.DOI : '',\n        doi: w.DOI || '',\n        title: title,\n        abstract: (w.abstract || '').replace(/<[^>]+>/g, ''),\n        authors: authors,\n        year: String(year),\n        journal: journal,\n        ...meta\n      });\n    }\n\n    cursor = (resp.message && resp.message['next-cursor']) ? resp.message['next-cursor'] : null;\n    console.log(`Crossref page ${pageNum}: +${items.length} (total: ${allResults.length})`);\n\n    await new Promise(r => setTimeout(r, 150));\n  }\n} catch(e) {\n  console.log('Crossref fatal error: ' + e.message);\n}\n\nconsole.log('Crossref DONE: ' + allResults.length + ' articles');\n\nif (allResults.length === 0) {\n  return [{ json: { _source: 'crossref', _empty: true, ...meta } }];\n}\nreturn allResults.map(r => ({ json: r }));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "0587cd60-736d-4596-80ce-27d6e8a112e9",
+      "name": "Crossref Fetch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── PUBMED — efetch via proxy (paginated, heartbeat-safe) ───\nconst input = $input.all()[0].json;\nconst query = encodeURIComponent(input.pubmed_query || input.search_query || '');\nconst meta = {\n  question: input.question || '',\n  criteria: input.criteria || '',\n  search_query: input.search_query || '',\n  output_folder: input.output_folder || '',\n  prefilter_enabled: input.prefilter_enabled,\n  prefilter_count: input.prefilter_count,\n  max_results: input.max_results,\n  pubmed_query: input.pubmed_query || '',\n  openalex_query: input.openalex_query || '',\n  crossref_query: input.crossref_query || ''\n};\n\nconst PROXY = 'http://host.docker.internal:3456';\nconst BATCH = 200;\nconst MAX_RESULTS = parseInt(input.max_results) || 1000;\nlet allArticles = [];\n\ntry {\n  // esearch\n  const searchTarget = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${query}&retmax=0&usehistory=y&retmode=json`;\n  const searchResp = await this.helpers.httpRequest({\n    method: 'GET',\n    url: PROXY + '?url=' + encodeURIComponent(searchTarget),\n    timeout: 60000\n  });\n\n  const sr = searchResp.esearchresult || {};\n  const totalCount = Math.min(parseInt(sr.count || '0'), MAX_RESULTS);\n  const webEnv = sr.webenv || '';\n  const queryKey = sr.querykey || '';\n\n  console.log(`PubMed: ${sr.count} results found, fetching up to ${totalCount}`);\n\n  if (totalCount === 0 || !webEnv) {\n    return [{ json: { _source: 'pubmed', _empty: true, ...meta } }];\n  }\n\n  // efetch in batches\n  for (let retStart = 0; retStart < totalCount; retStart += BATCH) {\n    const fetchTarget = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&WebEnv=${encodeURIComponent(webEnv)}&query_key=${queryKey}&retstart=${retStart}&retmax=${BATCH}&rettype=xml&retmode=xml`;\n\n    let xmlText;\n    try {\n      const xmlResp = await this.helpers.httpRequest({\n        method: 'GET',\n        url: PROXY + '?url=' + encodeURIComponent(fetchTarget),\n        timeout: 120000\n      });\n      xmlText = typeof xmlResp === 'string' ? xmlResp : JSON.stringify(xmlResp);\n    } catch(e) {\n      console.log('PubMed batch error at ' + retStart + ': ' + e.message);\n      continue;\n    }\n\n    const blocks = xmlText.split('<PubmedArticle>');\n    for (let i = 1; i < blocks.length; i++) {\n      const b = blocks[i];\n      const title = ((b.match(/<ArticleTitle>([\\s\\S]*?)<\\/ArticleTitle>/) || [])[1] || '').replace(/<[^>]+>/g, '').trim();\n\n      let abstract = '';\n      const absMatch = b.match(/<Abstract>([\\s\\S]*?)<\\/Abstract>/);\n      if (absMatch) {\n        const parts = absMatch[1].match(/<AbstractText[^>]*>([\\s\\S]*?)<\\/AbstractText>/g);\n        if (parts) abstract = parts.map(t => t.replace(/<[^>]*>/g, '').trim()).join(' ');\n      }\n\n      const authors = [];\n      const authMatches = b.match(/<Author[^>]*>[\\s\\S]*?<\\/Author>/g);\n      if (authMatches) {\n        for (const a of authMatches) {\n          const last = ((a.match(/<LastName>([^<]+)<\\/LastName>/) || [])[1] || '');\n          const fore = ((a.match(/<ForeName>([^<]+)<\\/ForeName>/) || [])[1] || '');\n          if (last) authors.push((fore + ' ' + last).trim());\n        }\n      }\n\n      const year = ((b.match(/<PubDate>[\\s\\S]*?<Year>(\\d{4})<\\/Year>/) || [])[1] || '');\n      const journal = ((b.match(/<Title>([^<]+)<\\/Title>/) || [])[1] || '').trim();\n      const doi = ((b.match(/<ArticleId IdType=\"doi\">([^<]+)<\\/ArticleId>/) || [])[1] || '').trim();\n      const pmid = ((b.match(/<PMID[^>]*>(\\d+)<\\/PMID>/) || [])[1] || '');\n\n      if (title) {\n        allArticles.push({\n          _source: 'pubmed',\n          id: pmid ? 'pmid:' + pmid : '',\n          doi: doi,\n          title: title,\n          abstract: abstract,\n          authors: authors,\n          year: year,\n          journal: journal,\n          ...meta\n        });\n      }\n    }\n\n    console.log(`PubMed batch ${retStart}: +${blocks.length - 1} (total: ${allArticles.length})`);\n    await new Promise(r => setTimeout(r, 400));\n  }\n} catch(e) {\n  console.log('PubMed fatal error: ' + e.message);\n}\n\nconsole.log('PubMed DONE: ' + allArticles.length + ' articles');\n\nif (allArticles.length === 0) {\n  return [{ json: { _source: 'pubmed', _empty: true, ...meta } }];\n}\nreturn allArticles.map(a => ({ json: a }));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "8b1af029-f9de-4b0b-b7c5-fd3cea421c6e",
+      "name": "PubMed Fetch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst filtered = items.filter(item => !item.json._empty);\n\n// Count per source for diagnostics\nconst counts = {};\nfor (const item of filtered) {\n  const src = item.json._source || 'unknown';\n  counts[src] = (counts[src] || 0) + 1;\n}\n\nconsole.log('=== SEARCH RESULTS SUMMARY ===');\nconsole.log('OpenAlex: ' + (counts.openalex || 0) + ' articles');\nconsole.log('Crossref: ' + (counts.crossref || 0) + ' articles');\nconsole.log('PubMed: ' + (counts.pubmed || 0) + ' articles');\nconsole.log('TOTAL: ' + filtered.length + ' articles');\n\nif (counts.openalex === 0) console.log('WARNING: OpenAlex returned 0 results!');\nif (counts.crossref === 0) console.log('WARNING: Crossref returned 0 results!');\nif (counts.pubmed === 0) console.log('WARNING: PubMed returned 0 results!');\n\nif (filtered.length === 0) {\n  return [{ json: { error: 'No results from any API', _source: 'none' } }];\n}\n\nreturn filtered;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "f8352252-040f-4685-b242-1724d5d5f04b",
+      "name": "Filter Empty",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "aacfc2f5-6ed0-4a43-9d67-ea2f680560bb",
+      "name": "Merge All",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -480,
+        -256
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "OpenAlex Fetch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Crossref Fetch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "PubMed Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAlex Fetch": {
+      "main": [
+        [
+          {
+            "node": "Merge All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crossref Fetch": {
+      "main": [
+        [
+          {
+            "node": "Merge All",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "PubMed Fetch": {
+      "main": [
+        [
+          {
+            "node": "Merge All",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge All": {
+      "main": [
+        [
+          {
+            "node": "Filter Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000001",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "pTdf37HBUjTmEf7p",
+  "tags": []
+}

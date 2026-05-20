@@ -1,0 +1,72 @@
+{
+  "$comment": "Manifest UltraLab - exemple a publier sur GitHub raw. URL configurable dans Parametres.",
+  "$comment_workflow": "Quand on modifie un workflow .json : (1) commit dans le repo, (2) incrementer workflows.version ici, (3) push. Les apps detecteront la mise a jour au prochain check.",
+  "$comment_app": "Quand on release une nouvelle version de l'app : (1) build + Inno Setup, (2) creer une release GitHub avec UltraLab-Setup.exe, (3) mettre a jour app.latest_version + download_url ici.",
+  "app": {
+    "latest_version": "0.2.3-alpha",
+    "release_date": "2026-05-19",
+    "download_url": "https://github.com/xerael/ultralab/releases/latest/download/UltraLab-Setup.exe",
+    "release_notes_url": "https://github.com/xerael/ultralab/releases/latest"
+  },
+  "workflows": {
+    "version": "0.2.3-alpha",
+    "files": [
+      {
+        "name": "ultralab-systematicreview-orchestrator.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-systematicreview-orchestrator.json"
+      },
+      {
+        "name": "ultralab-search-apis.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-search-apis.json"
+      },
+      {
+        "name": "ultralab-normalize.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-normalize.json"
+      },
+      {
+        "name": "ultralab-embedding.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-embedding.json"
+      },
+      {
+        "name": "ultralab-qdrant-store.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-qdrant-store.json"
+      },
+      {
+        "name": "ultralab-deduplicate.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-deduplicate.json"
+      },
+      {
+        "name": "ultralab-ranking.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-ranking.json"
+      },
+      {
+        "name": "ultralab-clustering.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-clustering.json"
+      },
+      {
+        "name": "ultralab-screening.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-screening.json"
+      },
+      {
+        "name": "ultralab-pdf-fetch.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-pdf-fetch.json"
+      },
+      {
+        "name": "ultralab-pdf-extract.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-pdf-extract.json"
+      },
+      {
+        "name": "ultralab-export.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-export.json"
+      },
+      {
+        "name": "ultralab-prisma.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-prisma.json"
+      },
+      {
+        "name": "ultralab-module.json",
+        "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-module.json"
+      }
+    ]
+  }
+}

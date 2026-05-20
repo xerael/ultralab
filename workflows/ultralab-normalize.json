@@ -1,0 +1,81 @@
+{
+  "name": "ultralab-normalize",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6fb7ff8f-1f99-4e6d-8696-7768b48c92c6",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -912,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── NORMALIZE — Uses pre-extracted fields from search-apis ───\nconst items = $input.all();\n\nconst normalized = items.map((item, index) => {\n  const d = item.json;\n  if (d.error || d._empty) return null;\n\n  const src = d._source || d.source || 'unknown';\n  const originalId = d.id || '';\n\n  // Use pre-extracted fields from search-apis (already normalized)\n  let title = d.title || d.display_name || '';\n  let abstract = d.abstract || '';\n  let authors = Array.isArray(d.authors) ? d.authors : [];\n  let year = d.year ? String(d.year) : '';\n  let journal = d.journal || '';\n  let doi = d.doi || '';\n\n  // Fallback: try source-specific raw fields ONLY if pre-extracted are empty\n  if (src === 'openalex') {\n    if (!title) title = d.display_name || '';\n    if (authors.length === 0 && d.authorships) {\n      authors = (d.authorships || []).map(a => (a.author && a.author.display_name) || '').filter(Boolean);\n    }\n    if (!year && d.publication_year) year = String(d.publication_year);\n    if (!journal && d.primary_location && d.primary_location.source) {\n      journal = d.primary_location.source.display_name || '';\n    }\n    if (!abstract && d.abstract_inverted_index && typeof d.abstract_inverted_index === 'object') {\n      const words = {};\n      Object.keys(d.abstract_inverted_index).forEach(word => {\n        const positions = d.abstract_inverted_index[word];\n        if (Array.isArray(positions)) positions.forEach(pos => { words[pos] = word; });\n      });\n      abstract = Object.keys(words).sort((a, b) => Number(a) - Number(b)).map(k => words[k]).join(' ');\n    }\n  } else if (src === 'crossref') {\n    if (!title && Array.isArray(d.title)) title = d.title[0] || '';\n    if (authors.length === 0 && d.author) {\n      authors = (d.author || []).map(a => ((a.given || '') + ' ' + (a.family || '')).trim()).filter(Boolean);\n    }\n    if (!year && d.published && d.published['date-parts'] && d.published['date-parts'][0]) {\n      year = String(d.published['date-parts'][0][0] || '');\n    }\n    if (!journal && d['container-title']) {\n      journal = Array.isArray(d['container-title']) ? d['container-title'][0] : (d['container-title'] || '');\n    }\n    if (!doi && d.DOI) doi = d.DOI;\n  }\n\n  // Clean DOI format\n  if (doi && doi.startsWith('https://doi.org/')) doi = doi.replace('https://doi.org/', '');\n\n  // Construct article URL\n  let url = '';\n  if (doi) {\n    url = 'https://doi.org/' + doi;\n  } else if (originalId && originalId.startsWith('https://')) {\n    url = originalId;\n  } else if (originalId && originalId.startsWith('pmid:')) {\n    url = 'https://pubmed.ncbi.nlm.nih.gov/' + originalId.replace('pmid:', '');\n  }\n\n  if (!title || !title.trim()) return null;\n\n  return {\n    json: {\n      id: doi ? 'doi:' + doi : (originalId || src + ':' + index),\n      title: title.trim(),\n      abstract: abstract.trim(),\n      authors,\n      year,\n      journal,\n      doi,\n      url,\n      source: src,\n      question: d.question || '',\n      criteria: d.criteria || '',\n      search_query: d.search_query || '',\n      pubmed_query: d.pubmed_query || '',\n      openalex_query: d.openalex_query || '',\n      crossref_query: d.crossref_query || '',\n      output_folder: d.output_folder || '',\n      prefilter_enabled: d.prefilter_enabled,\n      prefilter_count: d.prefilter_count,\n      max_results: d.max_results\n    }\n  };\n}).filter(item => item !== null);\n\nconsole.log('Normalized: ' + normalized.length + ' articles (filtered from ' + items.length + ')');\nconst withAuthors = normalized.filter(n => n.json.authors.length > 0).length;\nconst withYear = normalized.filter(n => n.json.year).length;\nconst withDoi = normalized.filter(n => n.json.doi).length;\nconst withUrl = normalized.filter(n => n.json.url).length;\nconsole.log('  Authors: ' + withAuthors + '/' + normalized.length + ' | Year: ' + withYear + ' | DOI: ' + withDoi + ' | URL: ' + withUrl);\nreturn normalized;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "d68c835a-ecde-44be-8902-2e016d2be087",
+      "name": "Normalize Metadata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -656,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── Save complete RIS of ALL articles from API (before screening) ───\nconst fs = require('fs');\nconst path = require('path');\nconst items = $input.all();\nconst articles = items.map(i => i.json);\nconst outputFolder = (articles[0] && articles[0].output_folder) || '/desktop/review ultralab';\n\nlet ris = '';\narticles.forEach(a => {\n  ris += 'TY  - JOUR\\n';\n  ris += 'TI  - ' + (a.title || '').replace(/\\n/g, ' ') + '\\n';\n  if (Array.isArray(a.authors)) a.authors.forEach(au => { ris += 'AU  - ' + au + '\\n'; });\n  if (a.year) ris += 'PY  - ' + a.year + '\\n';\n  if (a.journal) ris += 'JO  - ' + (a.journal || '').replace(/\\n/g, ' ') + '\\n';\n  if (a.doi) ris += 'DO  - ' + a.doi + '\\n';\n  if (a.url) ris += 'UR  - ' + a.url + '\\n';\n  if (a.abstract) ris += 'AB  - ' + (a.abstract || '').replace(/\\n/g, ' ').substring(0, 2000) + '\\n';\n  if (a.source) ris += 'DB  - ' + a.source + '\\n';\n  ris += 'ER  -\\n\\n';\n});\n\ntry {\n  fs.mkdirSync(outputFolder, { recursive: true });\n  fs.writeFileSync(path.join(outputFolder, 'articles_complet_API.ris'), ris, 'utf-8');\n  console.log('Saved articles_complet_API.ris: ' + articles.length + ' articles to ' + outputFolder);\n} catch(e) {\n  console.log('Save RIS error: ' + e.message);\n}\n\n// Pass all articles through unchanged\nreturn items;",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "save-ris-complete-001",
+      "name": "Save Complete RIS",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -224
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Normalize Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Metadata": {
+      "main": [
+        [
+          {
+            "node": "Save Complete RIS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000005",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "ilp2vTmMzWooJWNF",
+  "tags": []
+}

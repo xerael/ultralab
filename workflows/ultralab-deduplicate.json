@@ -1,0 +1,56 @@
+{
+  "name": "ultralab-deduplicate",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2b77e7fa-872d-45d1-ab26-7eda3b02e707",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─────────────────────────────────────────────────────────────────\n// DEDUPLICATE — By DOI (primary) then by normalized title (fallback)\n// ─────────────────────────────────────────────────────────────────\nconst items = $input.all();\nconst seenDOI = new Set();\nconst seenTitle = new Set();\nlet dupCount = 0;\n\nfunction normalizeTitle(t) {\n  return (t || '').toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 60);\n}\n\nconst deduped = items.filter(item => {\n  const doi = (item.json.doi || '').toLowerCase().trim();\n  const titleKey = normalizeTitle(item.json.title);\n\n  if (doi) {\n    if (seenDOI.has(doi)) { dupCount++; return false; }\n    seenDOI.add(doi);\n  } else {\n    if (seenTitle.has(titleKey)) { dupCount++; return false; }\n    seenTitle.add(titleKey);\n  }\n  return true;\n});\n\nconsole.log('Deduplication: ' + items.length + ' -> ' + deduped.length + ' (' + dupCount + ' duplicates removed)');\n\nreturn deduped.map(item => ({\n  json: {\n    ...item.json,\n    _deduplication_key: item.json.doi || normalizeTitle(item.json.title),\n    _total_before_dedup: items.length,\n    _duplicates_removed: dupCount\n  }\n}));",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "d4bd1738-3559-48f6-9b4a-d92c96b40494",
+      "name": "DOI + Title Dedup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        48
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "DOI + Title Dedup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000006",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "AxHfdqd893kaPzlz",
+  "tags": []
+}
