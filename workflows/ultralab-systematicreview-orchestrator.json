@@ -35,7 +35,7 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ model: 'gemma4:e2b', _ultralab_task: 'chat', stream: false, format: 'json', options: { temperature: 0.1, num_ctx: 8192, num_predict: 800 }, keep_alive: '30m', prompt: 'You are an expert systematic review librarian. Generate optimized search queries for 3 academic databases based on this research question.\\n\\nResearch question: ' + ($json.body && $json.body.question || $json.question) + '\\nInclusion/exclusion criteria: ' + (($json.body && $json.body.criteria || $json.criteria) || 'none specified') + '\\n\\nGenerate queries adapted to each database syntax:\\n1. PubMed: Use MeSH terms and PubMed boolean syntax (AND, OR, [MeSH Terms], [tiab]). Be thorough.\\n2. OpenAlex: Use natural language search terms, space-separated keywords.\\n3. Crossref: Use free-text keywords with the most important terms.\\n\\nReturn ONLY valid JSON with these keys: pubmed_query, openalex_query, crossref_query' }) }}",
         "options": {
-          "timeout": 600000
+          "timeout": 1800000
         }
       },
       "id": "a1b2c3d4-0001-0001-0001-000000000001",
@@ -527,6 +527,67 @@
         5500,
         -560
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-custom-query",
+              "leftValue": "={{ (function(){var b=$('User Input').first().json.body;var d=$('User Input').first().json;var x=(b&&b.custom_pubmed_query!==undefined)?b.custom_pubmed_query:d.custom_pubmed_query;return (typeof x==='string' && x.trim().length>0);})() }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals",
+                "name": "filter.boolean.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-custom-query-001",
+      "name": "IF Custom Query",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2900,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === RESPOND IMMEDIATELY (async webhook pattern) ===\n// Envoie une reponse rapide au browser pour qu'il puisse fermer la connexion HTTP\n// et basculer sur le polling. Le workflow continue en parallele.\nconst input = $input.first().json;\nconst body = input.body || input;\nconst question = (body.question || '').toString();\nconst now = new Date();\nconst pad = n => String(n).padStart(2, '0');\nconst timestamp = now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate()) + '-' + pad(now.getHours()) + pad(now.getMinutes());\n// Le pipeline ecrit son dossier dans /desktop/<topic> review ultralab/\nconst topic = question.substring(0, 50).replace(/[^a-zA-Z0-9 ]/g, '').trim();\nconst expectedFolder = '/desktop/' + (topic || 'untitled') + ' review ultralab';\nreturn [{\n  json: {\n    started: true,\n    async: true,\n    mode: 'pipeline',\n    expected_folder: expectedFolder,\n    started_at: now.toISOString(),\n    message: 'Pipeline systematique demarre en background sur n8n. Le browser doit poller /api/last-result pour le resultat final.'\n  }\n}];",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "build-async-resp-pipeline-001",
+      "name": "Build Async Response Pipeline",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3000,
+        -760
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "respond-immediate-pipeline-001",
+      "name": "Respond Immediately Pipeline",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        -760
+      ]
     }
   ],
   "pinData": {},
@@ -535,7 +596,12 @@
       "main": [
         [
           {
-            "node": "Call Ollama",
+            "node": "Build Async Response Pipeline",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF Custom Query",
             "type": "main",
             "index": 0
           }
@@ -778,6 +844,35 @@
           }
         ]
       ]
+    },
+    "IF Custom Query": {
+      "main": [
+        [
+          {
+            "node": "Extract Params",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Async Response Pipeline": {
+      "main": [
+        [
+          {
+            "node": "Respond Immediately Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -786,7 +881,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "a1b2c3d4-0000-0000-0000-000000000004",
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000018",
   "meta": {
     "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
   },
