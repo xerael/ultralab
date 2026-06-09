@@ -83,6 +83,84 @@
               "name": "output_folder",
               "type": "string",
               "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.output_folder!==undefined)?b.output_folder:d.output_folder;return (x||'/desktop').toString();})() }}"
+            },
+            {
+              "id": "p-doaj-query",
+              "name": "doaj_query",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.doaj_query!==undefined)?b.doaj_query:d.doaj_query;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-base-query",
+              "name": "base_query",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.base_query!==undefined)?b.base_query:d.base_query;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-lens-query",
+              "name": "lens_query",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.lens_query!==undefined)?b.lens_query:d.lens_query;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-sciencedirect-query",
+              "name": "sciencedirect_query",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.sciencedirect_query!==undefined)?b.sciencedirect_query:d.sciencedirect_query;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-semanticscholar-query",
+              "name": "semanticscholar_query",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.semanticscholar_query!==undefined)?b.semanticscholar_query:d.semanticscholar_query;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-cap-semanticscholar",
+              "name": "cap_semanticscholar",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.cap_semanticscholar!==undefined)?b.cap_semanticscholar:d.cap_semanticscholar;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-cap-doaj",
+              "name": "cap_doaj",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.cap_doaj!==undefined)?b.cap_doaj:d.cap_doaj;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-cap-base",
+              "name": "cap_base",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.cap_base!==undefined)?b.cap_base:d.cap_base;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-cap-lens",
+              "name": "cap_lens",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.cap_lens!==undefined)?b.cap_lens:d.cap_lens;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-cap-sciencedirect",
+              "name": "cap_sciencedirect",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.cap_sciencedirect!==undefined)?b.cap_sciencedirect:d.cap_sciencedirect;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-maxres",
+              "name": "max_results",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body||{}; if(b.unlimited===true) return '100000'; var n=parseInt(b.cap_global); return (n&&n>0)?String(n):'1000'; })() }}"
+            },
+            {
+              "id": "p-date-start",
+              "name": "date_start",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.date_start!==undefined)?b.date_start:d.date_start;return (x||'').toString();})() }}"
+            },
+            {
+              "id": "p-date-end",
+              "name": "date_end",
+              "type": "string",
+              "value": "={{ (function(){var b=$('Webhook').first().json.body;var d=$('Webhook').first().json;var x=(b&&b.date_end!==undefined)?b.date_end:d.date_end;return (x||'').toString();})() }}"
             }
           ]
         },
@@ -174,7 +252,7 @@
     },
     {
       "parameters": {
-        "numberInputs": 3
+        "numberInputs": 8
       },
       "id": "merge-count-001",
       "name": "Merge Count",
@@ -187,7 +265,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// Combine les 3 counts en un seul JSON avec total et warnings\nconst items = $input.all().map(i => i.json);\nconst counts = { pubmed: 0, openalex: 0, crossref: 0 };\nconst errors = {};\n\nfor (const item of items) {\n  const src = item._source;\n  if (src && counts[src] !== undefined) {\n    counts[src] = item.count || 0;\n    if (item.error) errors[src] = item.error;\n  }\n}\n\nconst total = counts.pubmed + counts.openalex + counts.crossref;\nconst warnings = [];\n\nif (total === 0) {\n  warnings.push('Aucun resultat trouve sur les 3 bases. Verifiez votre equation.');\n}\nif (total > 10000) {\n  warnings.push('Plus de 10 000 resultats. Le traitement risque de saturer la RAM. Pensez a poser un cap.');\n}\nif (total > 50000) {\n  warnings.push('CRITIQUE : plus de 50 000 resultats. Tres fortement deconseille sans cap strict.');\n}\nif (Object.keys(errors).length > 0) {\n  warnings.push('Erreurs API : ' + JSON.stringify(errors));\n}\n\nconsole.log('Count summary: pubmed=' + counts.pubmed + ' openalex=' + counts.openalex + ' crossref=' + counts.crossref + ' total=' + total);\n\nreturn [{ json: {\n  action: 'count',\n  success: true,\n  pubmed_count: counts.pubmed,\n  openalex_count: counts.openalex,\n  crossref_count: counts.crossref,\n  total,\n  warnings,\n  errors\n}}];\n",
+        "jsCode": "\n// Combine les counts des 7 sources en un seul JSON avec total et warnings\nconst items = $input.all().map(i => i.json);\nconst counts = { pubmed: 0, openalex: 0, crossref: 0, semanticscholar: 0, doaj: 0, base: 0, lens: 0, sciencedirect: 0 };\nconst errors = {};\n\nfor (const item of items) {\n  const src = item._source;\n  if (src && counts[src] !== undefined) {\n    counts[src] = item.count || 0;\n    if (item.error) errors[src] = item.error;\n  }\n}\n\nconst total = counts.pubmed + counts.openalex + counts.crossref + counts.semanticscholar + counts.doaj + counts.base + counts.lens + counts.sciencedirect;\nconst warnings = [];\n\nif (total === 0) {\n  warnings.push('Aucun resultat trouve sur les 8 bases. Verifiez votre equation.');\n}\nif (total > 10000) {\n  warnings.push('Plus de 10 000 resultats. Le traitement risque de saturer la RAM. Pensez a poser un cap.');\n}\nif (total > 50000) {\n  warnings.push('CRITIQUE : plus de 50 000 resultats. Tres fortement deconseille sans cap strict.');\n}\nif (Object.keys(errors).length > 0) {\n  warnings.push('Erreurs API : ' + JSON.stringify(errors));\n}\n\nconsole.log('Count summary: pubmed=' + counts.pubmed + ' openalex=' + counts.openalex + ' crossref=' + counts.crossref + ' semanticscholar=' + counts.semanticscholar + ' doaj=' + counts.doaj + ' base=' + counts.base + ' lens=' + counts.lens + ' sciencedirect=' + counts.sciencedirect + ' total=' + total);\n\nreturn [{ json: {\n  action: 'count',\n  success: true,\n  pubmed_count: counts.pubmed,\n  openalex_count: counts.openalex,\n  crossref_count: counts.crossref,\n  semanticscholar_count: counts.semanticscholar,\n  doaj_count: counts.doaj,\n  base_count: counts.base,\n  lens_count: counts.lens,\n  sciencedirect_count: counts.sciencedirect,\n  total,\n  warnings,\n  errors\n}}];\n",
         "mode": "runOnceForAllItems"
       },
       "id": "agg-count-001",
@@ -216,62 +294,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// PUBMED FETCH avec cap par source\nconst input = $('Extract Params').first().json;\nconst query = encodeURIComponent(input.pubmed_query || '');\nconst PROXY = 'http://host.docker.internal:3456';\nconst BATCH = 200;\nconst cap = parseInt(input.cap_pubmed) || 0;  // 0 = pas de cap par base\nconst unlimited = input.unlimited === true;\nconst MAX_RESULTS = unlimited ? Number.MAX_SAFE_INTEGER : (cap > 0 ? cap : 1000);\n\nlet allArticles = [];\n\nif (!query) {\n  return [{ json: { _source: 'pubmed', _empty: true } }];\n}\n\ntry {\n  const searchTarget = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${query}&retmax=0&usehistory=y&retmode=json`;\n  const searchResp = await this.helpers.httpRequest({\n    method: 'GET',\n    url: PROXY + '?url=' + encodeURIComponent(searchTarget),\n    timeout: 60000\n  });\n  const sr = searchResp.esearchresult || {};\n  const totalCount = Math.min(parseInt(sr.count || '0'), MAX_RESULTS);\n  const webEnv = sr.webenv || '';\n  const queryKey = sr.querykey || '';\n  console.log(`PubMed fetch: ${sr.count} found, fetching up to ${totalCount}`);\n  if (totalCount === 0 || !webEnv) {\n    return [{ json: { _source: 'pubmed', _empty: true } }];\n  }\n\n  for (let retStart = 0; retStart < totalCount; retStart += BATCH) {\n    const fetchTarget = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&WebEnv=${encodeURIComponent(webEnv)}&query_key=${queryKey}&retstart=${retStart}&retmax=${BATCH}&rettype=xml&retmode=xml`;\n    let xmlText;\n    try {\n      const xmlResp = await this.helpers.httpRequest({\n        method: 'GET',\n        url: PROXY + '?url=' + encodeURIComponent(fetchTarget),\n        timeout: 120000\n      });\n      xmlText = typeof xmlResp === 'string' ? xmlResp : JSON.stringify(xmlResp);\n    } catch(e) {\n      console.log('PubMed batch error at ' + retStart + ': ' + e.message);\n      continue;\n    }\n    const blocks = xmlText.split('<PubmedArticle>');\n    for (let i = 1; i < blocks.length; i++) {\n      const b = blocks[i];\n      const title = ((b.match(/<ArticleTitle>([\\s\\S]*?)<\\/ArticleTitle>/) || [])[1] || '').replace(/<[^>]+>/g, '').trim();\n      let abstract = '';\n      const absMatch = b.match(/<Abstract>([\\s\\S]*?)<\\/Abstract>/);\n      if (absMatch) {\n        const parts = absMatch[1].match(/<AbstractText[^>]*>([\\s\\S]*?)<\\/AbstractText>/g);\n        if (parts) abstract = parts.map(t => t.replace(/<[^>]*>/g, '').trim()).join(' ');\n      }\n      const authors = [];\n      const authMatches = b.match(/<Author[^>]*>[\\s\\S]*?<\\/Author>/g);\n      if (authMatches) {\n        for (const a of authMatches) {\n          const last = ((a.match(/<LastName>([^<]+)<\\/LastName>/) || [])[1] || '');\n          const fore = ((a.match(/<ForeName>([^<]+)<\\/ForeName>/) || [])[1] || '');\n          if (last) authors.push((fore + ' ' + last).trim());\n        }\n      }\n      const year = ((b.match(/<PubDate>[\\s\\S]*?<Year>(\\d{4})<\\/Year>/) || [])[1] || '');\n      const journal = ((b.match(/<Title>([^<]+)<\\/Title>/) || [])[1] || '').trim();\n      const doi = ((b.match(/<ArticleId IdType=\"doi\">([^<]+)<\\/ArticleId>/) || [])[1] || '').trim();\n      const pmid = ((b.match(/<PMID[^>]*>(\\d+)<\\/PMID>/) || [])[1] || '');\n      const volume = ((b.match(/<Volume>([^<]+)<\\/Volume>/) || [])[1] || '').trim();\n      const issue = ((b.match(/<Issue>([^<]+)<\\/Issue>/) || [])[1] || '').trim();\n      const pages = ((b.match(/<MedlinePgn>([^<]+)<\\/MedlinePgn>/) || [])[1] || '').trim();\n      if (title) {\n        allArticles.push({\n          _source: 'pubmed', pmid, doi, title, abstract, authors, year, journal, volume, issue, pages\n        });\n      }\n    }\n    console.log(`PubMed batch ${retStart}: total=${allArticles.length}`);\n    await new Promise(r => setTimeout(r, 400));\n  }\n} catch(e) {\n  console.log('PubMed fatal: ' + e.message);\n}\n\nconsole.log('PubMed DONE: ' + allArticles.length);\nif (allArticles.length === 0) return [{ json: { _source: 'pubmed', _empty: true } }];\nreturn allArticles.map(a => ({ json: a }));\n",
-        "mode": "runOnceForAllItems"
-      },
-      "id": "fetch-pubmed-001",
-      "name": "PubMed Search",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        600,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "\n// OPENALEX FETCH avec cap par source\nconst input = $('Extract Params').first().json;\nconst query = encodeURIComponent(input.openalex_query || '');\nconst PROXY = 'http://host.docker.internal:3456';\nconst PER_PAGE = 200;\nconst cap = parseInt(input.cap_openalex) || 0;\nconst unlimited = input.unlimited === true;\nconst MAX_RESULTS = unlimited ? Number.MAX_SAFE_INTEGER : (cap > 0 ? cap : 1000);\n\nlet cursor = '*';\nlet allResults = [];\nlet pageNum = 0;\n\nif (!query) return [{ json: { _source: 'openalex', _empty: true } }];\n\ntry {\n  while (cursor && allResults.length < MAX_RESULTS) {\n    pageNum++;\n    const targetUrl = `https://api.openalex.org/works?search=${query}&per-page=${PER_PAGE}&cursor=${encodeURIComponent(cursor)}&select=id,doi,title,display_name,abstract_inverted_index,authorships,publication_year,primary_location,biblio&mailto=ultralab@review.org`;\n    let resp;\n    try {\n      resp = await this.helpers.httpRequest({ method: 'GET', url: PROXY + '?url=' + encodeURIComponent(targetUrl), timeout: 120000 });\n    } catch(e) {\n      console.log('OpenAlex HTTP error page ' + pageNum + ': ' + e.message);\n      break;\n    }\n    const works = resp.results || [];\n    if (works.length === 0) break;\n    for (const w of works) {\n      const journal = (w.primary_location && w.primary_location.source) ? (w.primary_location.source.display_name || '') : '';\n      let abstract = '';\n      if (w.abstract_inverted_index) {\n        const pairs = [];\n        for (const [word, positions] of Object.entries(w.abstract_inverted_index)) {\n          for (const pos of positions) pairs.push([pos, word]);\n        }\n        pairs.sort((a, b) => a[0] - b[0]);\n        abstract = pairs.map(p => p[1]).join(' ');\n      }\n      const authors = (w.authorships || []).map(a => a.author ? a.author.display_name : '').filter(Boolean);\n      const biblio = w.biblio || {};\n      allResults.push({\n        _source: 'openalex',\n        openalex_id: (w.id || '').replace('https://openalex.org/', ''),\n        doi: (w.doi || '').replace('https://doi.org/', ''),\n        title: w.display_name || w.title || '',\n        abstract, authors,\n        year: w.publication_year || '',\n        journal,\n        volume: biblio.volume || '',\n        issue: biblio.issue || '',\n        pages: (biblio.first_page && biblio.last_page) ? (biblio.first_page + '-' + biblio.last_page) : (biblio.first_page || '')\n      });\n    }\n    cursor = (resp.meta && resp.meta.next_cursor) ? resp.meta.next_cursor : null;\n    console.log(`OpenAlex page ${pageNum}: total=${allResults.length}`);\n    await new Promise(r => setTimeout(r, 150));\n  }\n} catch(e) {\n  console.log('OpenAlex fatal: ' + e.message);\n}\n\nconsole.log('OpenAlex DONE: ' + allResults.length);\nif (allResults.length === 0) return [{ json: { _source: 'openalex', _empty: true } }];\nreturn allResults.slice(0, MAX_RESULTS).map(r => ({ json: r }));\n",
-        "mode": "runOnceForAllItems"
-      },
-      "id": "fetch-openalex-001",
-      "name": "OpenAlex Search",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        600,
-        450
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "\n// CROSSREF FETCH avec cap par source\nconst input = $('Extract Params').first().json;\nconst query = encodeURIComponent(input.crossref_query || '');\nconst PROXY = 'http://host.docker.internal:3456';\nconst ROWS = 200;\nconst cap = parseInt(input.cap_crossref) || 0;\nconst unlimited = input.unlimited === true;\nconst MAX_RESULTS = unlimited ? Number.MAX_SAFE_INTEGER : (cap > 0 ? cap : 1000);\n\nlet cursor = '*';\nlet allResults = [];\nlet pageNum = 0;\n\nif (!query) return [{ json: { _source: 'crossref', _empty: true } }];\n\ntry {\n  while (cursor && allResults.length < MAX_RESULTS) {\n    pageNum++;\n    const targetUrl = `https://api.crossref.org/works?query=${query}&rows=${ROWS}&cursor=${encodeURIComponent(cursor)}&select=DOI,title,abstract,author,published,container-title,volume,issue,page,type&mailto=ultralab@review.org`;\n    let resp;\n    try {\n      resp = await this.helpers.httpRequest({ method: 'GET', url: PROXY + '?url=' + encodeURIComponent(targetUrl), timeout: 120000 });\n    } catch(e) {\n      console.log('Crossref HTTP error page ' + pageNum + ': ' + e.message);\n      break;\n    }\n    const items = (resp.message && resp.message.items) ? resp.message.items : [];\n    if (items.length === 0) break;\n    for (const w of items) {\n      const authors = (w.author || []).map(a => [a.given, a.family].filter(Boolean).join(' ')).filter(Boolean);\n      const title = Array.isArray(w.title) ? w.title[0] || '' : (w.title || '');\n      const journal = Array.isArray(w['container-title']) ? w['container-title'][0] || '' : (w['container-title'] || '');\n      let year = '';\n      if (w.published && w.published['date-parts'] && w.published['date-parts'][0]) year = w.published['date-parts'][0][0] || '';\n      allResults.push({\n        _source: 'crossref',\n        doi: w.DOI || '',\n        title,\n        abstract: (w.abstract || '').replace(/<[^>]+>/g, ''),\n        authors,\n        year: String(year),\n        journal,\n        volume: w.volume || '',\n        issue: w.issue || '',\n        pages: w.page || '',\n        type: w.type || ''\n      });\n    }\n    cursor = (resp.message && resp.message['next-cursor']) ? resp.message['next-cursor'] : null;\n    console.log(`Crossref page ${pageNum}: total=${allResults.length}`);\n    await new Promise(r => setTimeout(r, 150));\n  }\n} catch(e) {\n  console.log('Crossref fatal: ' + e.message);\n}\n\nconsole.log('Crossref DONE: ' + allResults.length);\nif (allResults.length === 0) return [{ json: { _source: 'crossref', _empty: true } }];\nreturn allResults.slice(0, MAX_RESULTS).map(r => ({ json: r }));\n",
-        "mode": "runOnceForAllItems"
-      },
-      "id": "fetch-crossref-001",
-      "name": "Crossref Search",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        600,
-        600
-      ]
-    },
-    {
-      "parameters": {
-        "numberInputs": 3
-      },
-      "id": "merge-search-001",
-      "name": "Merge Search",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        820,
-        450
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "\n// GENERATE NBIB + SAVE FILE\n// Format MEDLINE/nbib :\n//   TAG - VALUE\n//   Article separator : ligne vide\n//\n// Tags utilises :\n//   PMID, PT (publication type), TI, AU, FAU, DP (date), TA (journal abbrev),\n//   JT (journal full), AB (abstract), AID (article ID = doi), VI (volume),\n//   IP (issue), PG (pages), LID (location ID), OWN (owner), STAT\nconst fs = require('fs');\nconst path = require('path');\n\nconst allItems = $input.all().map(i => i.json).filter(a => !a._empty);\nconst inputParams = $('Extract Params').first().json;\nconst capGlobal = parseInt(inputParams.cap_global) || 0;\nconst unlimited = inputParams.unlimited === true;\n\n// Apply global cap (apres merge de toutes les sources)\nlet articles = allItems;\nif (!unlimited && capGlobal > 0 && articles.length > capGlobal) {\n  console.log(`Apply cap_global ${capGlobal} on ${articles.length} -> ${capGlobal}`);\n  articles = articles.slice(0, capGlobal);\n}\n\nconst counts = { pubmed: 0, openalex: 0, crossref: 0 };\nfor (const a of articles) {\n  if (counts[a._source] !== undefined) counts[a._source]++;\n}\n\n// Format MEDLINE one entry\nfunction fmt(tag, value) {\n  if (!value && value !== 0) return '';\n  const v = String(value).replace(/\\r/g, '').replace(/\\n/g, ' ').trim();\n  if (!v) return '';\n  // MEDLINE format : 4 chars tag, \" - \", value, continuation lines indented 6 spaces\n  // For simplicity we don't wrap long lines (nbib parsers handle long lines).\n  return tag.padEnd(4) + '- ' + v + '\\n';\n}\n\nfunction toNbib(a) {\n  let out = '';\n  // PMID first if available\n  if (a.pmid) out += fmt('PMID', a.pmid);\n  out += fmt('OWN', 'NLM');\n  out += fmt('STAT', 'MEDLINE');\n  out += fmt('PT', 'Journal Article');\n  // Title\n  out += fmt('TI', a.title);\n  // Authors\n  if (Array.isArray(a.authors)) {\n    for (const au of a.authors) {\n      if (au) {\n        out += fmt('FAU', au);\n        // Build AU as \"Surname FI\" if possible (assume \"First Last\")\n        const parts = au.trim().split(/\\s+/);\n        if (parts.length >= 2) {\n          const last = parts[parts.length - 1];\n          const initials = parts.slice(0, -1).map(p => p.charAt(0).toUpperCase()).join('');\n          out += fmt('AU', last + ' ' + initials);\n        } else {\n          out += fmt('AU', au);\n        }\n      }\n    }\n  }\n  // Journal info\n  if (a.journal) {\n    out += fmt('JT', a.journal);\n    out += fmt('TA', a.journal);\n  }\n  if (a.volume) out += fmt('VI', a.volume);\n  if (a.issue) out += fmt('IP', a.issue);\n  if (a.pages) out += fmt('PG', a.pages);\n  // Date\n  if (a.year) out += fmt('DP', a.year);\n  // Abstract\n  if (a.abstract) out += fmt('AB', a.abstract);\n  // IDs\n  if (a.doi) {\n    out += fmt('AID', a.doi + ' [doi]');\n    out += fmt('LID', a.doi + ' [doi]');\n  }\n  if (a.openalex_id) out += fmt('LID', a.openalex_id + ' [openalex]');\n  // Source tag (custom, mais utile pour traçabilite)\n  out += fmt('SO', '[source:' + a._source + ']');\n  return out + '\\n';\n}\n\nconst nbibContent = articles.map(toNbib).join('');\n\n// Sauvegarde fichier\n// output_folder vient du parametre user (ex: /desktop/MaRecherche)\n// le volume docker mappe /desktop -> Desktop user\nlet outputFolder = (inputParams.output_folder || '/desktop').trim();\nif (!outputFolder.startsWith('/desktop')) {\n  // Securite : forcer dans /desktop pour eviter ecriture hors zone\n  outputFolder = '/desktop';\n}\ntry {\n  if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder, { recursive: true });\n} catch(e) {\n  console.log('mkdir error: ' + e.message);\n}\n\nconst timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);\nconst filename = 'ultralab-search-' + timestamp + '.nbib';\nconst fullPath = path.join(outputFolder, filename);\n\nlet saveSuccess = false;\nlet saveError = null;\ntry {\n  fs.writeFileSync(fullPath, nbibContent, 'utf-8');\n  saveSuccess = true;\n  console.log('NBIB saved: ' + fullPath + ' (' + articles.length + ' articles, ' + nbibContent.length + ' bytes)');\n} catch(e) {\n  saveError = e.message;\n  console.log('NBIB save error: ' + e.message);\n}\n\nreturn [{ json: {\n  action: 'search',\n  success: saveSuccess,\n  file_path: fullPath,\n  file_name: filename,\n  output_folder: outputFolder,\n  bytes: nbibContent.length,\n  total_articles: articles.length,\n  count_by_source: counts,\n  capped: !unlimited && capGlobal > 0 && allItems.length > capGlobal,\n  original_total: allItems.length,\n  error: saveError\n}}];\n",
+        "jsCode": "// MODULE_DELEGATE_SEARCH_v1\n\n// GENERATE NBIB + SAVE FILE\n// Format MEDLINE/nbib :\n//   TAG - VALUE\n//   Article separator : ligne vide\n//\n// Tags utilises :\n//   PMID, PT (publication type), TI, AU, FAU, DP (date), TA (journal abbrev),\n//   JT (journal full), AB (abstract), AID (article ID = doi), VI (volume),\n//   IP (issue), PG (pages), LID (location ID), OWN (owner), STAT\nconst fs = require('fs');\nconst path = require('path');\n\nconst allItems = $input.all().map(i => i.json).filter(a => !a._empty);\nconst inputParams = $('Extract Params').first().json;\nconst capGlobal = parseInt(inputParams.cap_global) || 0;\nconst unlimited = inputParams.unlimited === true;\n\n// Apply global cap (apres merge de toutes les sources)\nlet articles = allItems;\nif (!unlimited && capGlobal > 0 && articles.length > capGlobal) {\n  console.log(`Apply cap_global ${capGlobal} on ${articles.length} -> ${capGlobal}`);\n  articles = articles.slice(0, capGlobal);\n}\n\nconst counts = { pubmed: 0, openalex: 0, crossref: 0, semanticscholar: 0, doaj: 0, base: 0, lens: 0, sciencedirect: 0 };\nfor (const a of articles) {\n  if (counts[a._source || a.source] !== undefined) counts[a._source || a.source]++;\n}\n\n// Format MEDLINE one entry\nfunction fmt(tag, value) {\n  if (!value && value !== 0) return '';\n  const v = String(value).replace(/\\r/g, '').replace(/\\n/g, ' ').trim();\n  if (!v) return '';\n  // MEDLINE format : 4 chars tag, \" - \", value, continuation lines indented 6 spaces\n  // For simplicity we don't wrap long lines (nbib parsers handle long lines).\n  return tag.padEnd(4) + '- ' + v + '\\n';\n}\n\nfunction toNbib(a) {\n  let out = '';\n  // PMID first if available\n  if (a.pmid) out += fmt('PMID', a.pmid);\n  out += fmt('OWN', 'NLM');\n  out += fmt('STAT', 'MEDLINE');\n  out += fmt('PT', 'Journal Article');\n  // Title\n  out += fmt('TI', a.title);\n  // Authors\n  if (Array.isArray(a.authors)) {\n    for (const au of a.authors) {\n      if (au) {\n        out += fmt('FAU', au);\n        // Build AU as \"Surname FI\" if possible (assume \"First Last\")\n        const parts = au.trim().split(/\\s+/);\n        if (parts.length >= 2) {\n          const last = parts[parts.length - 1];\n          const initials = parts.slice(0, -1).map(p => p.charAt(0).toUpperCase()).join('');\n          out += fmt('AU', last + ' ' + initials);\n        } else {\n          out += fmt('AU', au);\n        }\n      }\n    }\n  }\n  // Journal info\n  if (a.journal) {\n    out += fmt('JT', a.journal);\n    out += fmt('TA', a.journal);\n  }\n  if (a.volume) out += fmt('VI', a.volume);\n  if (a.issue) out += fmt('IP', a.issue);\n  if (a.pages) out += fmt('PG', a.pages);\n  // Date\n  if (a.year) out += fmt('DP', a.year);\n  // Abstract\n  if (a.abstract) out += fmt('AB', a.abstract);\n  // IDs\n  if (a.doi) {\n    out += fmt('AID', a.doi + ' [doi]');\n    out += fmt('LID', a.doi + ' [doi]');\n  }\n  if (a.openalex_id) out += fmt('LID', a.openalex_id + ' [openalex]');\n  // Source tag (custom, mais utile pour traçabilite)\n  out += fmt('SO', '[source:' + (a._source || a.source || '') + ']');\n  return out + '\\n';\n}\n\nconst nbibContent = articles.map(toNbib).join('');\n\n// Sauvegarde fichier\n// output_folder vient du parametre user (ex: /desktop/MaRecherche)\n// le volume docker mappe /desktop -> Desktop user\nlet outputFolder = (inputParams.output_folder || '/desktop').trim();\nif (!outputFolder.startsWith('/desktop')) {\n  // Securite : forcer dans /desktop pour eviter ecriture hors zone\n  outputFolder = '/desktop';\n}\ntry {\n  if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder, { recursive: true });\n} catch(e) {\n  console.log('mkdir error: ' + e.message);\n}\n\nconst timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);\nconst filename = 'ultralab-search-' + timestamp + '.nbib';\nconst fullPath = path.join(outputFolder, filename);\n\nlet saveSuccess = false;\nlet saveError = null;\ntry {\n  fs.writeFileSync(fullPath, nbibContent, 'utf-8');\n  saveSuccess = true;\n  console.log('NBIB saved: ' + fullPath + ' (' + articles.length + ' articles, ' + nbibContent.length + ' bytes)');\n} catch(e) {\n  saveError = e.message;\n  console.log('NBIB save error: ' + e.message);\n}\n\n// METHODS_LOG_v1 - log de reproductibilite (section Methodes d'une revue systematique)\n  try {\n    var __methods = {\n      generated_at: new Date().toISOString(),\n      tool: 'UltraLab', module: 'recherche-api',\n      nbib_file: filename,\n      search: {\n        pubmed_equation: inputParams.pubmed_query || '',\n        per_base_queries: {\n          openalex: inputParams.openalex_query || '', crossref: inputParams.crossref_query || '',\n          semanticscholar: inputParams.semanticscholar_query || '', doaj: inputParams.doaj_query || '',\n          base: inputParams.base_query || '', lens: inputParams.lens_query || '', sciencedirect: inputParams.sciencedirect_query || ''\n        },\n        date_range: { start: inputParams.date_start || '', end: inputParams.date_end || '' },\n        count_by_source: counts,\n        total_after_dedup: articles.length\n      }\n    };\n    fs.writeFileSync(path.join(outputFolder, 'methods-' + timestamp + '.json'), JSON.stringify(__methods, null, 2), 'utf-8');\n    console.log('methods.json saved (reproductibilite)');\n  } catch (e) { console.log('methods write error: ' + e.message); }\n\n  return [{ json: {\n  action: 'search',\n  success: saveSuccess,\n  file_path: fullPath,\n  file_name: filename,\n  output_folder: outputFolder,\n  bytes: nbibContent.length,\n  total_articles: articles.length,\n  count_by_source: counts,\n  capped: !unlimited && capGlobal > 0 && allItems.length > capGlobal,\n  original_total: allItems.length,\n  error: saveError\n}}];\n",
         "mode": "runOnceForAllItems"
       },
       "id": "gen-nbib-001",
@@ -297,6 +320,96 @@
         1220,
         450
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Semantic Scholar Count - compte rapide (limit=1, on lit total)\nconst input = $('Extract Params').first().json;\nconst query = encodeURIComponent(input.semanticscholar_query || input.openalex_query || input.pubmed_query || input.question || '');\nconst PROXY = 'http://host.docker.internal:3456';\n// SEMANTIC_SCHOLAR_KEY_v1 - cle API optionnelle (x-api-key, appel direct car le proxy ne porte pas les headers)\nlet __ssKey = '';\ntry { const __k = await this.helpers.httpRequest({ method: 'GET', url: 'http://host.docker.internal:8080/api/get-secret?field=semanticscholar_api_key', timeout: 5000, json: true }); __ssKey = (__k && __k.value) || ''; } catch (e) {}\nif (!query) return [{ json: { _source: 'semanticscholar', count: 0 } }];\ntry {\n  const url = 'https://api.semanticscholar.org/graph/v1/paper/search?query=' + query + '&limit=1';\n  const __opts = __ssKey ? { method: 'GET', url: url, headers: { 'x-api-key': __ssKey }, timeout: 30000, json: true }\n                         : { method: 'GET', url: PROXY + '?url=' + encodeURIComponent(url), timeout: 30000, json: true };\n  const resp = await this.helpers.httpRequest(__opts);\n  const count = (resp && resp.total) || 0;\n  return [{ json: { _source: 'semanticscholar', count: count } }];\n} catch (e) {\n  return [{ json: { _source: 'semanticscholar', count: 0, error: e.message } }];\n}\n",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "ss-count-iso-001",
+      "name": "Semantic Scholar Count",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// PER_BASE_QUERY_v1\n// DOAJ Count\nconst input = $('Extract Params').first().json;\nconst query = input.doaj_query || input.openalex_query || input.pubmed_query || input.question || '';\nconst PROXY = 'http://host.docker.internal:3456';\nif (!query) return [{ json: { _source: 'doaj', count: 0 } }];\ntry {\n  const url = 'https://doaj.org/api/search/articles/' + encodeURIComponent(query) + '?pageSize=1';\n  const resp = await this.helpers.httpRequest({\n    method: 'GET', url: PROXY + '?url=' + encodeURIComponent(url), timeout: 30000, json: true\n  });\n  return [{ json: { _source: 'doaj', count: (resp && resp.total) || 0 } }];\n} catch (e) {\n  return [{ json: { _source: 'doaj', count: 0, error: e.message } }];\n}\n",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "doaj-count-iso-001",
+      "name": "DOAJ Count",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1800,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// BASE_IP_TRANSPARENCY_v1\n// BASE Count\nconst input = $('Extract Params').first().json;\nconst query = input.base_query || input.openalex_query || input.pubmed_query || input.question || '';\nconst PROXY = 'http://host.docker.internal:3456';\nif (!query) return [{ json: { _source: 'base', count: 0 } }];\ntry {\n  const url = 'https://api.base-search.net/cgi-bin/BaseHttpSearchInterface.fcgi?func=PerformSearch&query=' +\n              encodeURIComponent(query) + '&hits=1&format=json';\n  const resp = await this.helpers.httpRequest({\n    method: 'GET', url: PROXY + '?url=' + encodeURIComponent(url), timeout: 30000, json: true\n  });\n  if (resp && resp.error && /access denied/i.test(resp.error)) {\n    return [{ json: { _source: 'base', count: 0, error: 'ip_not_registered' } }];\n  }\n  const total = (resp && resp.response && resp.response.numFound) || 0;\n  return [{ json: { _source: 'base', count: total } }];\n} catch (e) {\n  return [{ json: { _source: 'base', count: 0, error: e.message } }];\n}\n",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "base-count-iso-001",
+      "name": "BASE Count",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lens.org Count - necessite cle API\nconst input = $('Extract Params').first().json;\nconst query = input.lens_query || input.openalex_query || input.pubmed_query || input.question || '';\nif (!query) return [{ json: { _source: 'lens', count: 0 } }];\n\nlet apiKey = '';\ntry {\n  const keyResp = await this.helpers.httpRequest({\n    method: 'GET',\n    url: 'http://host.docker.internal:8080/api/get-secret?field=lens_api_key',\n    timeout: 5000, json: true\n  });\n  apiKey = (keyResp && keyResp.value) || '';\n} catch (e) {}\nif (!apiKey) return [{ json: { _source: 'lens', count: 0, error: 'no API key' } }];\n\ntry {\n  const payload = JSON.stringify({ query: { query_string: { query: query } }, size: 1 });\n  const resp = await this.helpers.httpRequest({\n    method: 'POST', url: 'https://api.lens.org/scholarly/search',\n    body: payload,\n    headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },\n    timeout: 30000, json: true\n  });\n  return [{ json: { _source: 'lens', count: (resp && resp.total) || 0 } }];\n} catch (e) {\n  return [{ json: { _source: 'lens', count: 0, error: e.message } }];\n}\n",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "lens-count-iso-001",
+      "name": "Lens.org Count",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        -200
+      ]
+    },
+    {
+      "id": "sd-count-iso-001",
+      "name": "ScienceDirect Count",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        -200
+      ],
+      "parameters": {
+        "jsCode": "// ScienceDirect Count - SCIENCEDIRECT_SOURCE_v1 - necessite cle API Elsevier (X-ELS-APIKey)\nconst input = $('Extract Params').first().json;\nconst query = input.sciencedirect_query || input.openalex_query || input.pubmed_query || input.question || '';\nif (!query) return [{ json: { _source: 'sciencedirect', count: 0 } }];\n\nlet apiKey = '', instToken = '';\ntry {\n  const k = await this.helpers.httpRequest({ method: 'GET', url: 'http://host.docker.internal:8080/api/get-secret?field=sciencedirect_api_key', timeout: 5000, json: true });\n  apiKey = (k && k.value) || '';\n  const t = await this.helpers.httpRequest({ method: 'GET', url: 'http://host.docker.internal:8080/api/get-secret?field=sciencedirect_inst_token', timeout: 5000, json: true });\n  instToken = (t && t.value) || '';\n} catch (e) {}\nif (!apiKey) return [{ json: { _source: 'sciencedirect', count: 0, error: 'no_key' } }];\n\ntry {\n  const headers = { 'X-ELS-APIKey': apiKey, 'Accept': 'application/json' };\n  if (instToken) headers['X-ELS-Insttoken'] = instToken;\n  const url = 'https://api.elsevier.com/content/search/sciencedirect?count=1&query=' + encodeURIComponent(query);\n  const resp = await this.helpers.httpRequest({ method: 'GET', url: url, headers: headers, timeout: 30000, json: true });\n  const sr = (resp && resp['search-results']) || {};\n  const total = parseInt(sr['opensearch:totalResults']) || 0;\n  return [{ json: { _source: 'sciencedirect', count: total } }];\n} catch (e) {\n  const msg = (e && e.message) ? e.message : String(e);\n  const code = /429/.test(msg) ? 'rate_limited' : (/40[13]/.test(msg) ? 'invalid_key' : 'error');\n  console.log('[ScienceDirect Count] error: ' + msg);\n  return [{ json: { _source: 'sciencedirect', count: 0, error: code } }];\n}\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "call-search-engine-001",
+      "name": "Call Search Engine",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        450
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "pTdf37HBUjTmEf7p"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
     }
   ],
   "pinData": {},
@@ -340,21 +453,36 @@
             "node": "Crossref Count",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Semantic Scholar Count",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DOAJ Count",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BASE Count",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Lens.org Count",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ScienceDirect Count",
+            "type": "main",
+            "index": 0
           }
         ],
         [
           {
-            "node": "PubMed Search",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "OpenAlex Search",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Crossref Search",
+            "node": "Call Search Engine",
             "type": "main",
             "index": 0
           }
@@ -416,55 +544,77 @@
         ]
       ]
     },
-    "PubMed Search": {
-      "main": [
-        [
-          {
-            "node": "Merge Search",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAlex Search": {
-      "main": [
-        [
-          {
-            "node": "Merge Search",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Crossref Search": {
-      "main": [
-        [
-          {
-            "node": "Merge Search",
-            "type": "main",
-            "index": 2
-          }
-        ]
-      ]
-    },
-    "Merge Search": {
-      "main": [
-        [
-          {
-            "node": "Generate NBIB",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Generate NBIB": {
       "main": [
         [
           {
             "node": "Respond Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Semantic Scholar Count": {
+      "main": [
+        [
+          {
+            "node": "Merge Count",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "DOAJ Count": {
+      "main": [
+        [
+          {
+            "node": "Merge Count",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "BASE Count": {
+      "main": [
+        [
+          {
+            "node": "Merge Count",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Lens.org Count": {
+      "main": [
+        [
+          {
+            "node": "Merge Count",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "ScienceDirect Count": {
+      "main": [
+        [
+          {
+            "node": "Merge Count",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "Call Search Engine": {
+      "main": [
+        [
+          {
+            "node": "Generate NBIB",
             "type": "main",
             "index": 0
           }
@@ -478,7 +628,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "a1b2c3d4-0000-0000-0000-000000000011",
+  "versionId": "a1b2c3d4-0000-0000-0000-000000000019",
   "meta": {
     "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
   },
