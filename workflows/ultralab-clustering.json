@@ -87,7 +87,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ model: 'gemma4:e2b', _ultralab_task: 'chat', stream: false, format: 'json', options: { temperature: 0.1, num_ctx: 8192, num_predict: 1500 }, keep_alive: '30m', prompt: $json.prompt }) }}",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3.2:latest', _ultralab_task: 'chat', stream: false, format: 'json', options: { temperature: 0.1, num_ctx: 8192, num_predict: 1500 }, keep_alive: '30m', prompt: $json.prompt }) }}",
         "options": {
           "timeout": 900000,
           "batching": {
@@ -186,7 +186,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ model: 'gemma4:e2b', _ultralab_task: 'chat', stream: false, format: 'json', options: { temperature: 0.1, num_ctx: 8192, num_predict: 800 }, keep_alive: '30m', prompt: $json.prompt }) }}",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3.2:latest', _ultralab_task: 'chat', stream: false, format: 'json', options: { temperature: 0.1, num_ctx: 8192, num_predict: 800 }, keep_alive: '30m', prompt: $json.prompt }) }}",
         "options": {
           "timeout": 900000
         }

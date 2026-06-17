@@ -1,146 +1,143 @@
 <div align="center">
 
-# ultraLab
+# UltraLab
 
 **Automatisation de revues systématiques de la littérature scientifique**
+**Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-alpha-orange)
+![Version](https://img.shields.io/badge/version-0.2.8--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
-![Statut](https://img.shields.io/badge/statut-en%20développement-yellow)
+![Statut](https://img.shields.io/badge/statut-alpha-yellow)
+![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
 
-[**📥 Télécharger la dernière version**](https://github.com/xerael/ultralab/releases/latest) · [Guide d'installation](#installation) · [Premier lancement](#premier-lancement) · [Signaler un bug](https://github.com/xerael/Ultralab/issues)
+[**📥 Télécharger / Download**](https://github.com/xerael/ultralab/releases/latest) · [Installation](#installation) · [Bug](https://github.com/xerael/ultralab/issues)
 
 </div>
 
 ---
 
+# 🇫🇷 Version française
+
 ## Présentation
 
-UltraLab est une application de bureau qui automatise les étapes d'une revue systématique de littérature scientifique :
+UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref (et bientôt Embase, Scopus...)
-- 🧠 **Screening IA** : décisions Include/Maybe/Exclude assistées par LLM local
-- 📊 **Ranking et clustering** thématique automatisés
-- 📄 **Téléchargement de PDFs** OA (Unpaywall, Europe PMC, CORE)
-- 📋 **Extraction structurée** (PICOS) depuis PDFs via LLM
-- 📑 **Export PRISMA** + RIS + Excel
+### Fonctionnalités (v0.2.8)
 
-L'IA tourne **localement** sur votre PC (via Ollama) ou sur un PC distant (via Tailscale) — vos données ne quittent jamais votre infrastructure.
+- 🌍 **Interface 100 % bilingue FR / EN** (bascule instantanée dans Paramètres)
+- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — équation adaptée par base, dates natives, plafonds par base, activation/désactivation par base
+- ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **récupération des abstracts manquants** par DOI via Semantic Scholar
+- 🧠 **Pré-screening IA** (Include / Maybe / Exclude) : justification **critère par critère** (esprit PRISMA), **score de confiance**, drapeau « vérification humaine »
+- 👥 **Double relecture optionnelle** : 2ᵉ modèle (obligatoirement différent) + **accord inter-juges (kappa de Cohen)** ; s'applique au screening, à la lecture intégrale et à l'extraction
+- 📖 **Lecture intégrale** (full-text) : réévaluation de l'inclusion sur le PDF complet
+- 📊 **Ranking** (score de pertinence 0-100) et **clustering** thématique
+- 🚩 **Détection de revues prédatrices** (liste Beall + heuristiques éditeur)
+- 📄 **Téléchargement de PDFs** en libre accès (Unpaywall, Europe PMC, CORE, Zotero)
+- 📋 **Extraction de données structurée** adaptable à tout cadre méthodologique : **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + champs personnalisés
+- 📑 **Diagramme de flux PRISMA 2020** (visuel) + **motifs d'exclusion** + `methods.json` (reproductibilité) + export RIS / nbib / BibTeX / Excel
+- 🔐 **Tout en local** : l'IA tourne sur votre PC (Ollama) ou un PC distant privé (Tailscale). Aucune donnée utilisateur n'est envoyée à des tiers, aucune télémétrie.
 
----
+## ⚠️ Statut : alpha en développement actif
 
-## ⚠️ Statut : Alpha en développement actif
-
-Cette version est destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. Pour signaler un bug, ouvrez une issue [ici](https://github.com/xerael/ultralab/issues).
-
----
+Destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. [Signaler un bug](https://github.com/xerael/ultralab/issues).
 
 ## Installation
 
-### 1. Télécharger l'installateur
-
-➡ **[Page Releases : télécharger UltraLab-Setup.exe](https://github.com/xerael/ultralab/releases/latest)**
-
-Cliquez sur le fichier `UltraLab-Setup.exe` dans la liste **Assets** de la dernière release.
-
-### 2. Pré-requis
-
-Avant de lancer l'installateur, installez ces 2 outils gratuits :
-
-| Outil | Lien | Pourquoi |
-|---|---|---|
-| **Docker Desktop** | https://www.docker.com/products/docker-desktop/ | Fait tourner n8n + Qdrant (la base de données vectorielle) |
-| **Ollama** | https://ollama.com/download | Fait tourner les modèles LLM en local |
-
-L'installateur UltraLab vous redemandera ces 2 outils s'ils sont manquants — vous pouvez aussi les installer après.
-
-### 3. Lancer l'installateur
-
-1. Double-cliquez sur `UltraLab-Setup.exe`
-2. **Windows va probablement afficher "SmartScreen a protégé votre PC"** (signature self-signed). Cliquez sur **Informations complémentaires** → **Exécuter quand même**. *(C'est normal pour une app alpha non signée EV — c'est l'équivalent ~300€/an, on l'achètera plus tard quand l'app sera stable.)*
-3. Suivez l'assistant (Suivant, Suivant, Installer)
-4. UltraLab démarre et affiche son icône dans la zone de notification Windows (à côté de l'horloge — cliquez la flèche `^` si vous ne la voyez pas)
-
-### 4. Vérifier l'intégrité du fichier (optionnel mais recommandé)
-
-Chaque release contient un fichier `UltraLab-Setup.exe.sha256`. Vérifiez que le hash correspond :
-
-```powershell
-certutil -hashfile UltraLab-Setup.exe SHA256
-```
-
-Le hash affiché doit être identique à celui du `.sha256`. Si différent, **ne lancez pas l'installateur** et signalez-le.
-
----
+1. **Télécharger** `UltraLab-Setup.exe` depuis la [dernière release](https://github.com/xerael/ultralab/releases/latest).
+2. **Pré-requis** : Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) (UltraLab aide à les détecter/lancer).
+3. **Lancer l'installateur** (l'exe interne est signé self-signed « Mika Gavaudan » ; SmartScreen peut demander une confirmation).
+4. **Vérifier l'intégrité** (optionnel) : comparer le SHA256 indiqué dans les notes de release.
 
 ## Premier lancement
 
-À la première ouverture, un **wizard** vous guide en 5 étapes :
-
-1. **Vérification** : confirme que Docker et Ollama sont bien installés
-2. **Mode** : Local (l'IA tourne sur ce PC) ou Distant (autre PC via Tailscale)
-3. **Modèle de chat** : choix du LLM principal (par défaut `qwen2.5:3b` — léger, équilibré). Téléchargé automatiquement.
-4. **Modèle d'embedding** : pour la recherche sémantique (par défaut `embeddinggemma:300m` — très léger)
-5. **Finalisation** : tout est prêt, le wizard se ferme et l'UI principale s'ouvre dans votre navigateur
-
-Le premier téléchargement des modèles peut prendre 5-15 min selon votre connexion (les modèles font 1-3 Go chacun).
-
----
+Un assistant en 5 étapes : vérification Docker/Ollama → mode (local / distant Tailscale) → modèle de chat → modèle d'embedding → finalisation. Le 1ᵉʳ téléchargement des modèles prend 5-15 min (1-3 Go chacun).
 
 ## Utilisation
 
-L'UI s'ouvre sur `http://localhost:3456/`. Vous avez 2 onglets :
+L'UI s'ouvre sur `http://localhost:3456/`. Deux onglets :
+- **Pipeline complet** : question + critères → recherche → dédup → ranking → clustering → screening → PDFs → extraction → export PRISMA.
+- **Module isolé** : lancer une seule étape (ex. extraction depuis des PDFs, ou recherche API → fichier .nbib).
 
-- **Pipeline complet** : saisissez votre question + critères, le pipeline fait tout de A à Z (recherche → screening → ranking → clustering → PDFs → extraction → export PRISMA)
-- **Module isolé** : si vous avez déjà un fichier RIS/BibTeX, vous pouvez lancer un module précis (ex : juste l'extraction de données depuis des PDFs)
+Les résultats sont regroupés dans un dossier dédié sur le Bureau.
 
-Tous les résultats sont sauvegardés sur votre Bureau dans un dossier `<question> review ultralab/`.
+## Réglages avancés IA / LLM (Paramètres)
 
----
+Un seul encart contrôle le comportement des modèles pour **tous les modules et le pipeline** :
+- **Strictesse** + **règles personnalisées** pour le screening, le ranking et l'extraction.
+- **Double relecture IA** (optionnelle, défaut OFF) : active un 2ᵉ modèle de contrôle + le calcul de l'accord inter-juges pour tous les modules qui le permettent. À réserver aux machines suffisamment puissantes (coût ~2× le temps de traitement).
 
 ## Mises à jour
 
-L'app vérifie automatiquement les mises à jour au démarrage. Quand une nouvelle version est disponible :
-
-1. Settings → Mises à jour → **Une mise à jour est disponible**
-2. Bouton **Télécharger la nouvelle version** → ouvre la page Releases GitHub
-3. Téléchargez le nouveau `UltraLab-Setup.exe`
-4. Relancez l'installateur (votre config est préservée)
-
-Pour les workflows uniquement (sans nouvelle version d'app) : Settings → **Mettre à jour les workflows** (re-fetch automatique depuis GitHub).
-
----
-
-## Désinstallation
-
-3 options :
-
-1. **Windows** : Panneau de configuration → Programmes → UltraLab → Désinstaller
-2. **Via l'installateur** : si vous avez gardé `UltraLab-Setup.exe`, relancez-le → option Uninstall
-3. **Script complet** (recommandé pour tout nettoyer) : téléchargez [`uninstall-ultralab.bat`](https://github.com/xerael/ultralab/releases/latest) (dans la même release), lancez-le. Il propose étape par étape de supprimer les containers Docker, les volumes, la config user, les modèles Ollama, les exclusions Defender.
-
----
-
-## Aide & support
-
-- 🐛 **Bug** : ouvrir une issue sur https://github.com/xerael/ultralab/issues
-- 💡 **Suggestion** : idem, label "enhancement"
-- 📧 **Contact direct** : *(à compléter)*
-
----
+Vérification automatique au démarrage. Nouvelle version → Paramètres → Mises à jour → télécharger le nouveau Setup et relancer (config préservée). Workflows seuls : Paramètres → Mettre à jour les workflows.
 
 ## Confidentialité
 
-- **Vos données restent locales** : les articles, PDFs et résultats ne quittent pas votre PC
-- **L'IA est locale** (Ollama) : les prompts envoyés au LLM ne transitent pas par un serveur externe
-- **Mode distant optionnel** : si vous utilisez un PC distant via Tailscale, les données transitent uniquement entre vos deux PCs (réseau privé chiffré)
-- **APIs externes consultées** : PubMed, OpenAlex, Crossref, Europe PMC, CORE — uniquement pour la recherche bibliographique (queries publiques, aucune donnée utilisateur envoyée)
-- **Aucune télémétrie** dans UltraLab (pas de tracking, pas d'analytics)
-
----
+Vos données (articles, PDFs, résultats) restent sur votre PC. L'IA est locale (Ollama). Les APIs externes ne sont consultées que pour la recherche bibliographique (requêtes publiques). Aucune télémétrie.
 
 ## Crédits
 
-UltraLab est développé par [@xerael](https://github.com/xerael).
+Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask · n8n · Ollama · Qdrant · Docker.
 
-Stack : Python · Flask · pystray · PyInstaller · n8n · Ollama · Qdrant · Docker
+---
+
+# 🇬🇧 English version
+
+## Overview
+
+UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
+
+### Features (v0.2.8)
+
+- 🌍 **Fully bilingual UI (FR / EN)** with instant switching in Settings
+- 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — per-database query syntax, native date filters, per-database caps and on/off toggles
+- ♻️ **Deduplication** (DOI then title+year, field merge) + **missing-abstract recovery** by DOI via Semantic Scholar
+- 🧠 **AI pre-screening** (Include / Maybe / Exclude): **per-criterion** justification (PRISMA-minded), **confidence score**, "human review" flag
+- 👥 **Optional double review**: a 2nd (necessarily different) model + **inter-rater agreement (Cohen's kappa)**; applies to screening, full-text and extraction
+- 📖 **Full-text screening**: re-assess inclusion on the complete PDF
+- 📊 **Ranking** (0-100 relevance) and thematic **clustering**
+- 🚩 **Predatory journal detection** (Beall list + publisher heuristics)
+- 📄 **Open-access PDF fetching** (Unpaywall, Europe PMC, CORE, Zotero)
+- 📋 **Structured data extraction** adaptable to any framework: **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + custom fields
+- 📑 **PRISMA 2020 flow diagram** (visual) + **exclusion reasons** + `methods.json` (reproducibility) + RIS / nbib / BibTeX / Excel export
+- 🔐 **Fully local**: AI runs on your PC (Ollama) or a private remote PC (Tailscale). No user data sent to third parties, no telemetry.
+
+## ⚠️ Status: active alpha
+
+For **alpha testers**. Expect bugs and rapid changes. [Report a bug](https://github.com/xerael/ultralab/issues).
+
+## Installation
+
+1. **Download** `UltraLab-Setup.exe` from the [latest release](https://github.com/xerael/ultralab/releases/latest).
+2. **Requirements**: Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) (UltraLab helps detect/start them).
+3. **Run the installer** (inner exe is self-signed "Mika Gavaudan"; SmartScreen may prompt).
+4. **Verify integrity** (optional): compare the SHA256 in the release notes.
+
+## First launch
+
+A 5-step wizard: Docker/Ollama check → mode (local / remote Tailscale) → chat model → embedding model → finish. First model download takes 5-15 min (1-3 GB each).
+
+## Usage
+
+The UI opens at `http://localhost:3456/`. Two tabs:
+- **Full pipeline**: question + criteria → search → dedup → ranking → clustering → screening → PDFs → extraction → PRISMA export.
+- **Single module**: run one step (e.g. extraction from PDFs, or API search → .nbib file).
+
+Results are grouped in a dedicated folder on the Desktop.
+
+## Advanced AI / LLM settings (Settings)
+
+A single panel drives model behaviour for **all modules and the pipeline**:
+- **Strictness** + **custom rules** for screening, ranking and extraction.
+- **Double AI review** (optional, default OFF): enables a 2nd control model + inter-rater agreement for every module that supports it. Best on capable machines (~2× processing time).
+
+## Updates
+
+Automatic check on startup. New version → Settings → Updates → download the new Setup and reinstall (config preserved). Workflows only: Settings → Update workflows.
+
+## Privacy
+
+Your data (articles, PDFs, results) stays on your PC. The AI is local (Ollama). External APIs are queried only for bibliographic search (public queries). No telemetry.
+
+## Credits
+
+Built by [@xerael](https://github.com/xerael). Stack: Python · Flask · n8n · Ollama · Qdrant · Docker.
