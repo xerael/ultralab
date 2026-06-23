@@ -10,7 +10,7 @@
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
 
-[**📥 Télécharger / Download**](https://github.com/xerael/ultralab/releases/latest) · [Installation](#installation) · [Bug](https://github.com/xerael/ultralab/issues)
+[**📥 Télécharger / Download**](https://github.com/xerael/ultralab/releases/latest) · [Installation](#installation) · [Protocole scientifique](PROTOCOL.md) · [Bug](https://github.com/xerael/ultralab/issues)
 
 </div>
 
@@ -22,24 +22,26 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.2.9)
+### Fonctionnalités (v0.3.0)
 
 - 🌍 **Interface 100 % bilingue FR / EN** (bascule instantanée dans Paramètres)
-- 🧪 **Évaluation du risque de biais** : 9 outils au choix (RoB 2, Jadad, PEDro, ROBINS-I, Newcastle-Ottawa, Downs & Black, AXIS, QUADAS-2, AMSTAR-2, ROBIS) — détection automatique du devis + override, une colonne par item + justification + score global, double relecture IA
-- 🔗 **Snowballing (chaînage de citations)** : références (backward) et citations (forward) via OpenAlex, Semantic Scholar, Europe PMC et OpenCitations, dédupliquées vs le corpus (candidats prêts à re-screener)
-- 📋 **Checklist PRISMA 2020 (27 items)** auto-remplie depuis un run existant (HTML + Markdown)
-- 🔁 **Living review + favoris de requêtes** : requêtes sauvegardées, relance et signalement des **nouveaux articles depuis la dernière exécution**
-- 🚩 **Détection de rétractations** (Crossref) intégrée au scan des revues prédatrices
 - 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — équation adaptée par base, dates natives, plafonds par base, activation/désactivation par base
-- ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **récupération des abstracts manquants** par DOI via Semantic Scholar
+- 🧪 **Littérature grise** : ClinicalTrials.gov (registres d'essais, optionnel) pour réduire le biais de publication
+- ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **enrichissement des abstracts manquants** multi-sources (Semantic Scholar + OpenAlex)
 - 🧠 **Pré-screening IA** (Include / Maybe / Exclude) : justification **critère par critère** (esprit PRISMA), **score de confiance**, drapeau « vérification humaine »
 - 👥 **Double relecture optionnelle** : 2ᵉ modèle (obligatoirement différent) + **accord inter-juges (kappa de Cohen)** ; s'applique au screening, à la lecture intégrale et à l'extraction
+- 🙋 **Relecture humaine intégrée** (opt-in, a posteriori) avec accord humain–IA (κ)
 - 📖 **Lecture intégrale** (full-text) : réévaluation de l'inclusion sur le PDF complet
-- 📊 **Ranking** (score de pertinence 0-100, double notation optionnelle avec **ICC + Spearman**) et **clustering** thématique
-- 🚩 **Détection de revues prédatrices** (liste Beall + heuristiques éditeur)
+- 📊 **Ranking** (score de pertinence 0-100) et **clustering** thématique
+- 🩺 **Évaluation du risque de biais** : 10 outils (RoB 2, ROBINS-I, Newcastle-Ottawa, AMSTAR-2…), score par item + double relecture (κ)
+- 🔗 **Snowballing** (chaînage de citations) : OpenAlex, Semantic Scholar, Europe PMC, OpenCitations
+- 🚩 **Détection de revues prédatrices** (liste Beall + heuristiques) + **rétractations** (Crossref)
 - 📄 **Téléchargement de PDFs** en libre accès (Unpaywall, Europe PMC, CORE, Zotero)
-- 📋 **Extraction de données structurée** adaptable à tout cadre méthodologique : **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + champs personnalisés
-- 📑 **Diagramme de flux PRISMA 2020** (visuel) + **motifs d'exclusion** + `methods.json` (reproductibilité) + export RIS / nbib / BibTeX / Excel
+- 📋 **Extraction de données structurée** : **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + champs personnalisés
+- 📈 **Méta-analyse** (forest/funnel, I², effets poolés) + **GRADE** (certitude des preuves, Summary of Findings)
+- 🧩 **Mode Fusion** (multi-dossiers → corpus unifié) + **rapport consolidé** prêt-soumission
+- ✅ **Checklist + diagramme de flux PRISMA 2020** + `methods.json` (reproductibilité) + export RIS / nbib / BibTeX / Excel
+- ⏱️ **Avancement temps réel** par module + **reprise de run** interrompu (cache LLM) + **living review** (favoris de requêtes)
 - 🔐 **Tout en local** : l'IA tourne sur votre PC (Ollama) ou un PC distant privé (Tailscale). Aucune donnée utilisateur n'est envoyée à des tiers, aucune télémétrie.
 
 ## ⚠️ Statut : alpha en développement actif
@@ -91,24 +93,26 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.2.9)
+### Features (v0.3.0)
 
 - 🌍 **Fully bilingual UI (FR / EN)** with instant switching in Settings
-- 🧪 **Risk-of-bias assessment**: choose from 9 tools (RoB 2, Jadad, PEDro, ROBINS-I, Newcastle-Ottawa, Downs & Black, AXIS, QUADAS-2, AMSTAR-2, ROBIS) — automatic design detection + override, one column per item + justification + global score, AI double review
-- 🔗 **Snowballing (citation chasing)**: backward references and forward citations via OpenAlex, Semantic Scholar, Europe PMC and OpenCitations, deduplicated against your corpus (candidates ready to re-screen)
-- 📋 **PRISMA 2020 checklist (27 items)** auto-filled from an existing run (HTML + Markdown)
-- 🔁 **Living review + favorite queries**: saved queries, re-run and flagging of **new articles since the last run**
-- 🚩 **Retraction detection** (Crossref) integrated into the predatory-journal scan
 - 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — per-database query syntax, native date filters, per-database caps and on/off toggles
-- ♻️ **Deduplication** (DOI then title+year, field merge) + **missing-abstract recovery** by DOI via Semantic Scholar
+- 🧪 **Grey literature**: ClinicalTrials.gov (trial registries, optional) to reduce publication bias
+- ♻️ **Deduplication** (DOI then title+year, field merge) + **multi-source missing-abstract enrichment** (Semantic Scholar + OpenAlex)
 - 🧠 **AI pre-screening** (Include / Maybe / Exclude): **per-criterion** justification (PRISMA-minded), **confidence score**, "human review" flag
 - 👥 **Optional double review**: a 2nd (necessarily different) model + **inter-rater agreement (Cohen's kappa)**; applies to screening, full-text and extraction
+- 🙋 **Built-in human review** (opt-in, after the fact) with human–AI agreement (κ)
 - 📖 **Full-text screening**: re-assess inclusion on the complete PDF
-- 📊 **Ranking** (0-100 relevance, optional double scoring with **ICC + Spearman**) and thematic **clustering**
-- 🚩 **Predatory journal detection** (Beall list + publisher heuristics)
+- 📊 **Ranking** (0-100 relevance) and thematic **clustering**
+- 🩺 **Risk-of-bias assessment**: 10 tools (RoB 2, ROBINS-I, Newcastle-Ottawa, AMSTAR-2…), per-item score + double review (κ)
+- 🔗 **Snowballing** (citation chasing): OpenAlex, Semantic Scholar, Europe PMC, OpenCitations
+- 🚩 **Predatory journal detection** (Beall list + heuristics) + **retractions** (Crossref)
 - 📄 **Open-access PDF fetching** (Unpaywall, Europe PMC, CORE, Zotero)
-- 📋 **Structured data extraction** adaptable to any framework: **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + custom fields
-- 📑 **PRISMA 2020 flow diagram** (visual) + **exclusion reasons** + `methods.json` (reproducibility) + RIS / nbib / BibTeX / Excel export
+- 📋 **Structured data extraction**: **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + custom fields
+- 📈 **Meta-analysis** (forest/funnel, I², pooled effects) + **GRADE** (certainty of evidence, Summary of Findings)
+- 🧩 **Fusion mode** (multiple folders → unified corpus) + **submission-ready consolidated report**
+- ✅ **PRISMA 2020 checklist + flow diagram** + `methods.json` (reproducibility) + RIS / nbib / BibTeX / Excel export
+- ⏱️ **Real-time per-module progress** + **resume interrupted runs** (LLM cache) + **living review** (favorite queries)
 - 🔐 **Fully local**: AI runs on your PC (Ollama) or a private remote PC (Tailscale). No user data sent to third parties, no telemetry.
 
 ## ⚠️ Status: active alpha
