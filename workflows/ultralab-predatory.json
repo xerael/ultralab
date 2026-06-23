@@ -1,0 +1,55 @@
+{
+  "name": "ultralab-predatory",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6870c3e2-a3aa-4223-81ac-1933324737a7",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === RUN PREDATORY SCAN (D.6 Phase 2) ===\n// Appelle l'endpoint Flask /api/predatory-check qui fait le scoring via predatory_check.py\n// Timeout 30 min car les APIs DOAJ/MEDLINE/Crossref peuvent etre lentes sur gros volumes.\nconst articles = $input.all().map(i => i.json);\nconst FLASK = 'http://host.docker.internal:8080';\n\nconsole.log('[PredatoryScan] Envoi ' + articles.length + ' articles a /api/predatory-check');\n\nconst resp = await this.helpers.httpRequest({\n  method: 'POST',\n  url: FLASK + '/api/predatory-check',\n  body: JSON.stringify({ articles: articles, do_external_apis: true }),\n  headers: { 'Content-Type': 'application/json' },\n  timeout: 1800000,  // 30 min\n  json: true,\n});\n\nif (!resp || !resp.success) {\n  const errMsg = (resp && resp.error) || 'Reponse Flask invalide';\n  console.log('[PredatoryScan] Erreur : ' + errMsg);\n  // On retourne quand meme les articles non-scores pour ne pas tout perdre\n  return articles.map(a => ({ json: { ...a, _predatory_error: errMsg, _predatory_score: null, _predatory_level: 'unknown', _predatory_flag: 'gray', _predatory_reasons: [] } }));\n}\n\nconst scanned = resp.scanned || [];\nconst summary = resp.summary || {};\nconsole.log('[PredatoryScan] OK : ' + scanned.length + ' articles scannes');\nconsole.log('[PredatoryScan] Repartition : ' + JSON.stringify(summary.by_level || {}));\n\nreturn scanned.map(a => ({ json: a }));\n"
+      },
+      "id": "7e34261e-03b0-4500-843e-1cd11c17e8b3",
+      "name": "Run Predatory Scan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3700,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Run Predatory Scan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "6aea8b90-ed1e-4469-95a4-c722edd1a626",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "ulPredatoryWF01",
+  "tags": []
+}

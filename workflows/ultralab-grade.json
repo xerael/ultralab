@@ -1,0 +1,55 @@
+{
+  "name": "ultralab-grade",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "efb8ce40-098b-4213-8bd7-71f6bf82c1dc",
+      "name": "Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// GRADE_v1 (v0.3) - certitude des preuves par outcome (Summary of Findings).\n// Consomme les sorties meta-analyse (_meta_summary : I2, IC groupe, Egger, k) et RoB (_rob_level)\n// si presentes dans le corpus ; 1 appel LLM pour le caractere indirect (et le risque de biais si pas de RoB).\nconst PROXY = 'http://host.docker.internal:3456';\nconst items = $input.all();\nconst articles = items.map(i => i.json);\nconst a0 = articles[0] || {};\nconst QUESTION = (a0.question || a0._meta_outcome || '').toString();\nconst ms = a0._meta_summary || null;\nconsole.log('[GRADE] ' + articles.length + ' etudes, meta=' + (!!ms) );\n\nfunction extractJson(raw){ if(!raw) return null; let s=String(raw).replace(/```json/gi,'').replace(/```/g,''); const i=s.indexOf('{'),j=s.lastIndexOf('}'); if(i<0||j<=i) return null; const f=s.substring(i,j+1); try{return JSON.parse(f);}catch(e){} try{return JSON.parse(f.replace(/,\\s*([}\\]])/g,'$1'));}catch(e){} return null; }\nfunction detectDesign(a){ const t=((a.title||'')+' '+(a.abstract||'')).toLowerCase(); if(/randomi[sz]ed[^.]{0,20}(controlled )?trial|\\brct\\b|randomi[sz]ed[^.]{0,20}(study|design)|randomly (assigned|allocated)|double-blind|placebo-controlled/.test(t)) return 'rct'; if(/cohort|case-control|case control|observational|cross-sectional|registry|retrospective|prospective (cohort|study)|non-randomi/.test(t)) return 'nonrandomized'; return 'unknown'; }\n\n// devis majoritaire (heuristique ; secours = LLM si tout 'unknown')\nlet nrct=0,nnr=0; for(const a of articles){ const d=detectDesign(a); if(d==='rct')nrct++; else if(d==='nonrandomized')nnr++; }\nlet design = (nrct>=nnr && nrct>0) ? 'rct' : (nnr>0 ? 'nonrandomized' : 'unknown');\n\n// signal risque de biais depuis le module RoB si present\nlet robN=0, robHigh=0; for(const a of articles){ if(a._rob_level){ robN++; if(a._rob_level==='high')robHigh++; } }\nconst robProp = robN ? robHigh/robN : null;\n\n// 1 appel LLM : caractere indirect (+ risque de biais si pas de donnees RoB)\nconst titles = articles.map(function(a){return (a.title||'').substring(0,90);}).filter(Boolean).slice(0,8);\nlet llm = { indirectness:'none', indirectness_reason:'', risk_of_bias:'low', rob_reason:'' };\ntry {\n  const prompt = [\n    'You are applying the GRADE approach. Judge the body of evidence answering this question.',\n    'QUESTION: ' + QUESTION.substring(0,300),\n    'Number of studies: ' + articles.length + '. Predominant design: ' + design + '.',\n    'Sample study titles:', titles.join('\\n'),\n    '',\n    'Return STRICT JSON ONLY:',\n    '{ \"design\": \"rct\" | \"nonrandomized\", \"indirectness\": \"none\" | \"serious\", \"indirectness_reason\": \"<short>\", \"risk_of_bias\": \"low\" | \"some\" | \"high\", \"rob_reason\": \"<short>\" }',\n    'design = predominant study design of this body of evidence.',\n    'Indirectness = PICO mismatch with the question (different population/intervention/comparator, or only surrogate/indirect outcomes).',\n    'risk_of_bias = your overall impression of study quality from the titles/design (used only if no formal RoB data).'\n  ].join('\\n');\n  const rp = await this.helpers.httpRequest({ method:'POST', url:PROXY+'/api/generate', body:JSON.stringify({ model:'qwen2.5:3b', prompt:prompt, stream:false, format:'json', options:{temperature:0,num_predict:300,num_ctx:8192}, keep_alive:'30m', _ultralab_task:'chat' }), headers:{'Content-Type':'application/json'}, json:true, timeout:900000 });\n  const p = extractJson((rp&&rp.response)||''); if(p) llm=Object.assign(llm,p);\n} catch(e) { console.log('[GRADE] llm err ' + e.message); }\n\n// devis : secours LLM si l'heuristique n'a rien trouve\nif (design==='unknown') design = (llm.design==='rct'||llm.design==='nonrandomized') ? llm.design : 'nonrandomized';\n\nconst start = (design==='rct') ? 4 : 2;\nlet downs=0, ups=0; const domains={}; const upNotes=[];\n\n// 1. Risque de biais\nif (robProp!=null){ if(robProp>0.5){ domains.risk_of_bias={rating:'serious (-1)',note:'module RoB : '+robHigh+'/'+robN+' a risque eleve'}; downs-=1; } else domains.risk_of_bias={rating:'not serious',note:'module RoB : '+robHigh+'/'+robN+' a risque eleve'}; }\nelse { if((llm.risk_of_bias||'')==='high'){ domains.risk_of_bias={rating:'serious (-1)',note:'jugement IA : '+(llm.rob_reason||'')}; downs-=1; } else domains.risk_of_bias={rating:'not serious',note:'jugement IA (pas de run RoB) : '+(llm.rob_reason||'')}; }\n\n// 2. Incoherence (I2)\nif (ms && ms.heterogeneity){ const i2=ms.heterogeneity.I2; if(i2>=50){ domains.inconsistency={rating:'serious (-1)',note:'I2='+i2+'%'}; downs-=1; } else domains.inconsistency={rating:'not serious',note:'I2='+i2+'%'}; }\nelse domains.inconsistency={rating:'non evaluable',note:'pas de meta-analyse en entree (lancer le module meta-analyse d abord)'};\n\n// 3. Imprecision (IC groupe / nb d etudes)\nif (ms && ms.random){ const lo=ms.random.ci_low, hi=ms.random.ci_high, nv=(ms.null_value!=null?ms.null_value:(ms.is_log?1:0)); const crosses=(lo<=nv && hi>=nv); if(crosses){ domains.imprecision={rating:'serious (-1)',note:'IC95% franchit le nul ['+lo+', '+hi+']'}; downs-=1; } else if((ms.k||0)<4){ domains.imprecision={rating:'serious (-1)',note:'peu d etudes (k='+ms.k+')'}; downs-=1; } else domains.imprecision={rating:'not serious',note:'IC95% ['+lo+', '+hi+'], k='+ms.k}; }\nelse domains.imprecision={rating:'non evaluable',note:'pas de meta-analyse en entree'};\n\n// 4. Caractere indirect (LLM)\nif ((llm.indirectness||'')==='serious'){ domains.indirectness={rating:'serious (-1)',note:llm.indirectness_reason||'jugement IA (PICO vs question)'}; downs-=1; }\nelse domains.indirectness={rating:'not serious',note:llm.indirectness_reason||'jugement IA (PICO vs question)'};\n\n// 5. Biais de publication (Egger / k)\nif (ms && ms.egger){ const t=Math.abs(ms.egger.t||0); if(t>=1.96){ domains.publication_bias={rating:'suspected (-1)',note:'test d Egger t='+ms.egger.t}; downs-=1; } else domains.publication_bias={rating:'undetected',note:'test d Egger t='+ms.egger.t}; }\nelse if (ms && ms.k!=null && ms.k<10) domains.publication_bias={rating:'undetected',note:'k<10 : funnel peu informatif'};\nelse domains.publication_bias={rating:'non evaluable',note:'pas de meta-analyse en entree'};\n\n// Reclassement (observationnel uniquement, effet large)\nif (design==='nonrandomized' && ms && ms.random && ms.is_log){ const e=ms.random.effect; if(e>0){ if(e<0.2||e>5){ ups+=2; upNotes.push('effet tres large (RR/OR '+e+')'); } else if(e<0.5||e>2){ ups+=1; upNotes.push('effet large (RR/OR '+e+')'); } } }\n\nlet lvl=start+downs+ups; if(lvl<1)lvl=1; if(lvl>4)lvl=4;\nconst certaintyMap={4:'high',3:'moderate',2:'low',1:'very low'};\nconst certaintyFr={high:'Élevée',moderate:'Modérée',low:'Faible','very low':'Très faible'};\nconst certainty=certaintyMap[lvl];\n\na0._grade_summary = {\n  outcome: (ms&&ms.outcome) || QUESTION || '(outcome principal)',\n  design: design,\n  start_level: (design==='rct')?'Élevée (ECR)':'Faible (observationnel)',\n  downgrades: -downs, upgrades: ups,\n  certainty: certainty, certainty_fr: certaintyFr[certainty], certainty_symbol: '⊕'.repeat(lvl)+'⊖'.repeat(4-lvl),\n  domains: domains, k: ms?ms.k:articles.length,\n  pooled: ms?ms.random:null, measure: ms?ms.measure:null,\n  used_meta: !!ms, used_rob: (robProp!=null), upgrade_notes: upNotes\n};\nconsole.log('[GRADE] certitude=' + certainty + ' (start '+start+' down '+downs+' up '+ups+')');\nreturn articles.map(function(x){ return { json:x }; });\n"
+      },
+      "id": "d6baa69b-7e3f-426c-be35-5c8d30e944ab",
+      "name": "Run GRADE",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3700,
+        1380
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Run GRADE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3cd07c47-5162-4e8f-972d-b3ce7838255c",
+  "meta": {
+    "instanceId": "fd21ae21426f59c89f8963a136703cbf2a049d0a9eb6f435af497a2b2c1ac5ff"
+  },
+  "id": "ulGradeWF00001",
+  "tags": []
+}

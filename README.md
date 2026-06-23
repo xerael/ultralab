@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.2.9--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.3.0--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
