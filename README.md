@@ -5,12 +5,12 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.3.0--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.1--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
 
-[**📥 Télécharger / Download**](https://github.com/xerael/ultralab/releases/latest) · [Installation](#installation) · [Protocole scientifique](PROTOCOL.md) · [Bug](https://github.com/xerael/ultralab/issues)
+[**📥 Télécharger / Download**](https://github.com/xerael/ultralab/releases/latest) · [Installation](#installation) · [Bug](https://github.com/xerael/ultralab/issues)
 
 </div>
 
@@ -22,27 +22,31 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.3.0)
+### Fonctionnalités (v0.4.1)
 
-- 🌍 **Interface 100 % bilingue FR / EN** (bascule instantanée dans Paramètres)
-- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — équation adaptée par base, dates natives, plafonds par base, activation/désactivation par base
-- 🧪 **Littérature grise** : ClinicalTrials.gov (registres d'essais, optionnel) pour réduire le biais de publication
-- ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **enrichissement des abstracts manquants** multi-sources (Semantic Scholar + OpenAlex)
+- 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix — interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
+- 📁 **Mode projet** : les runs de tous les modules regroupés dans un dossier projet, réutilisables comme corpus par les autres modules — avec **pipeline pré-programmé** (recherche → dédup → screening → … → rapport) et **reprise depuis l'étape en échec**
+- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — équation adaptée par base, dates natives, plafonds et activation par base
+- 🧪 **Littérature grise** : ClinicalTrials.gov, **Europe PMC (préprints)** et **ISRCTN** (optionnels) pour réduire le biais de publication
+- ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **enrichissement des abstracts manquants** multi-sources
 - 🧠 **Pré-screening IA** (Include / Maybe / Exclude) : justification **critère par critère** (esprit PRISMA), **score de confiance**, drapeau « vérification humaine »
 - 👥 **Double relecture optionnelle** : 2ᵉ modèle (obligatoirement différent) + **accord inter-juges (kappa de Cohen)** ; s'applique au screening, à la lecture intégrale et à l'extraction
 - 🙋 **Relecture humaine intégrée** (opt-in, a posteriori) avec accord humain–IA (κ)
 - 📖 **Lecture intégrale** (full-text) : réévaluation de l'inclusion sur le PDF complet
 - 📊 **Ranking** (score de pertinence 0-100) et **clustering** thématique
-- 🩺 **Évaluation du risque de biais** : 10 outils (RoB 2, ROBINS-I, Newcastle-Ottawa, AMSTAR-2…), score par item + double relecture (κ)
+- 🩺 **Évaluation du risque de biais** : 7 outils (RoB 2, ROBINS-I, Newcastle-Ottawa cohorte & cas-témoins, AXIS, QUADAS-2, AMSTAR-2) + **outil personnalisé** (JSON ou PDF), réponses question par question → Excel détaillé + synthèse prête pour publication
 - 🔗 **Snowballing** (chaînage de citations) : OpenAlex, Semantic Scholar, Europe PMC, OpenCitations
 - 🚩 **Détection de revues prédatrices** (liste Beall + heuristiques) + **rétractations** (Crossref)
 - 📄 **Téléchargement de PDFs** en libre accès (Unpaywall, Europe PMC, CORE, Zotero)
 - 📋 **Extraction de données structurée** : **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + champs personnalisés
 - 📈 **Méta-analyse** (forest/funnel, I², effets poolés) + **GRADE** (certitude des preuves, Summary of Findings)
-- 🧩 **Mode Fusion** (multi-dossiers → corpus unifié) + **rapport consolidé** prêt-soumission
+- 📊 **Analyse statistique en langage naturel (R)** : 3 modes (Automatique / Guidé / Libre), import CSV/Excel ou run UltraLab, figures interactives, **rapport HTML Quarto** en un clic, ouverture dans **RStudio** — nécessite R installé
+- 🔬 **Rigueur scientifique** : **benchmark du screening** (WSS@95 %, rappel, travail économisé), **journal d'audit** horodaté, **bundle de reproductibilité** par run
+- 🧩 **Mode Fusion** (multi-dossiers ou projet entier → corpus unifié) + **rapport consolidé** prêt-soumission
 - ✅ **Checklist + diagramme de flux PRISMA 2020** + `methods.json` (reproductibilité) + export RIS / nbib / BibTeX / Excel
 - ⏱️ **Avancement temps réel** par module + **reprise de run** interrompu (cache LLM) + **living review** (favoris de requêtes)
-- 🔐 **Tout en local** : l'IA tourne sur votre PC (Ollama) ou un PC distant privé (Tailscale). Aucune donnée utilisateur n'est envoyée à des tiers, aucune télémétrie.
+- 🔌 **Connecteurs** : cartes par service (Semantic Scholar, Lens, ScienceDirect, Unpaywall, Zotero…) avec badge d'état et **test réel en un clic**
+- 🔐 **Tout en local** : l'IA tourne sur votre PC (Ollama) ou un PC distant privé (Tailscale), plusieurs utilisateurs en parallèle (file d'attente + instances dédiées). Aucune donnée utilisateur envoyée à des tiers, aucune télémétrie.
 
 ## ⚠️ Statut : alpha en développement actif
 
@@ -51,27 +55,23 @@ Destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. [Sign
 ## Installation
 
 1. **Télécharger** `UltraLab-Setup.exe` depuis la [dernière release](https://github.com/xerael/ultralab/releases/latest).
-2. **Pré-requis** : Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) (UltraLab aide à les détecter/lancer).
-3. **Lancer l'installateur** (l'exe interne est signé self-signed « Mika Gavaudan » ; SmartScreen peut demander une confirmation).
+2. **Pré-requis** : Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) — UltraLab les détecte et peut les **installer automatiquement** (winget). Optionnel : [R](https://cran.r-project.org/) pour le module d'analyse statistique (+ RStudio, Quarto).
+3. **Lancer l'installateur** (installeur et application signés self-signed « Mika Gavaudan » ; SmartScreen peut demander une confirmation).
 4. **Vérifier l'intégrité** (optionnel) : comparer le SHA256 indiqué dans les notes de release.
 
 ## Premier lancement
 
-Un assistant en 5 étapes : vérification Docker/Ollama → mode (local / distant Tailscale) → modèle de chat → modèle d'embedding → finalisation. Le 1ᵉʳ téléchargement des modèles prend 5-15 min (1-3 Go chacun).
+Un assistant vérifie les composants, peut installer les prérequis, puis configure : interface (native / web) → mode IA (local / distant Tailscale) → modèles recommandés selon votre machine. Le bouton **« ⚙ Configurer les services »** calibre Docker + n8n pas à pas (1ᵉʳ téléchargement d'images ~400 Mo — les phases s'affichent en direct). Le 1ᵉʳ téléchargement des modèles prend 5-15 min (1-3 Go chacun).
 
 ## Utilisation
 
-L'UI s'ouvre sur `http://localhost:3456/`. Deux onglets :
-- **Pipeline complet** : question + critères → recherche → dédup → ranking → clustering → screening → PDFs → extraction → export PRISMA.
-- **Module isolé** : lancer une seule étape (ex. extraction depuis des PDFs, ou recherche API → fichier .nbib).
+- **Navigation par étapes PRISMA** : chaque module explique à quoi il sert ; corpus chargeable depuis un run, un projet, Zotero, un dossier de PDFs ou un fichier (glisser-déposer).
+- **Projets** : créez un projet, pré-programmez une séquence de modules et suivez la timeline en direct ; tous les runs restent réutilisables.
+- Les résultats sont regroupés dans des dossiers dédiés sur le Bureau. **Ctrl+K** pour naviguer au clavier.
 
-Les résultats sont regroupés dans un dossier dédié sur le Bureau.
+## Réglages (Paramètres)
 
-## Réglages avancés IA / LLM (Paramètres)
-
-Un seul encart contrôle le comportement des modèles pour **tous les modules et le pipeline** :
-- **Strictesse** + **règles personnalisées** pour le screening, le ranking et l'extraction.
-- **Double relecture IA** (optionnelle, défaut OFF) : active un 2ᵉ modèle de contrôle + le calcul de l'accord inter-juges pour tous les modules qui le permettent. À réserver aux machines suffisamment puissantes (coût ~2× le temps de traitement).
+Onglets clairs : **IA et modèles** (modèles + strictesse + règles personnalisées + double relecture), **Connecteurs** (clés API avec test), **Mode distant** (IP, test, ports), **Rigueur scientifique** (journal d'audit, cache LLM), **Application**, **Avancé** (console, diagnostic, maintenance Docker/n8n).
 
 ## Mises à jour
 
@@ -83,7 +83,7 @@ Vos données (articles, PDFs, résultats) restent sur votre PC. L'IA est locale 
 
 ## Crédits
 
-Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask · n8n · Ollama · Qdrant · Docker.
+Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask · Tauri · Svelte · n8n · Ollama · Qdrant · Docker · R.
 
 ---
 
@@ -93,27 +93,31 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.3.0)
+### Features (v0.4.1)
 
-- 🌍 **Fully bilingual UI (FR / EN)** with instant switching in Settings
+- 🖥️ **Native app** (window) or **web version** (browser) — UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
+- 📁 **Project mode**: runs from every module grouped in one project folder and reusable as corpus by other modules — with a **pre-programmed pipeline** (search → dedup → screening → … → report) and **resume from the failed step**
 - 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — per-database query syntax, native date filters, per-database caps and on/off toggles
-- 🧪 **Grey literature**: ClinicalTrials.gov (trial registries, optional) to reduce publication bias
-- ♻️ **Deduplication** (DOI then title+year, field merge) + **multi-source missing-abstract enrichment** (Semantic Scholar + OpenAlex)
+- 🧪 **Grey literature**: ClinicalTrials.gov, **Europe PMC (preprints)** and **ISRCTN** (optional) to reduce publication bias
+- ♻️ **Deduplication** (DOI then title+year, field merge) + **multi-source missing-abstract enrichment**
 - 🧠 **AI pre-screening** (Include / Maybe / Exclude): **per-criterion** justification (PRISMA-minded), **confidence score**, "human review" flag
 - 👥 **Optional double review**: a 2nd (necessarily different) model + **inter-rater agreement (Cohen's kappa)**; applies to screening, full-text and extraction
 - 🙋 **Built-in human review** (opt-in, after the fact) with human–AI agreement (κ)
 - 📖 **Full-text screening**: re-assess inclusion on the complete PDF
 - 📊 **Ranking** (0-100 relevance) and thematic **clustering**
-- 🩺 **Risk-of-bias assessment**: 10 tools (RoB 2, ROBINS-I, Newcastle-Ottawa, AMSTAR-2…), per-item score + double review (κ)
+- 🩺 **Risk-of-bias assessment**: 7 tools (RoB 2, ROBINS-I, Newcastle-Ottawa cohort & case-control, AXIS, QUADAS-2, AMSTAR-2) + **custom tool** (JSON or PDF), question-by-question answers → detailed Excel + publication-ready summary
 - 🔗 **Snowballing** (citation chasing): OpenAlex, Semantic Scholar, Europe PMC, OpenCitations
 - 🚩 **Predatory journal detection** (Beall list + heuristics) + **retractions** (Crossref)
 - 📄 **Open-access PDF fetching** (Unpaywall, Europe PMC, CORE, Zotero)
 - 📋 **Structured data extraction**: **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + custom fields
 - 📈 **Meta-analysis** (forest/funnel, I², pooled effects) + **GRADE** (certainty of evidence, Summary of Findings)
-- 🧩 **Fusion mode** (multiple folders → unified corpus) + **submission-ready consolidated report**
+- 📊 **Natural-language statistical analysis (R)**: 3 modes (Automatic / Guided / Free), CSV/Excel or UltraLab-run input, interactive figures, one-click **Quarto HTML report**, open in **RStudio** — requires R installed
+- 🔬 **Scientific rigor**: **screening benchmark** (WSS@95%, recall, work saved), timestamped **audit log**, per-run **reproducibility bundle**
+- 🧩 **Fusion mode** (multiple folders or a whole project → unified corpus) + **submission-ready consolidated report**
 - ✅ **PRISMA 2020 checklist + flow diagram** + `methods.json` (reproducibility) + RIS / nbib / BibTeX / Excel export
 - ⏱️ **Real-time per-module progress** + **resume interrupted runs** (LLM cache) + **living review** (favorite queries)
-- 🔐 **Fully local**: AI runs on your PC (Ollama) or a private remote PC (Tailscale). No user data sent to third parties, no telemetry.
+- 🔌 **Connectors**: one card per service (Semantic Scholar, Lens, ScienceDirect, Unpaywall, Zotero…) with status badge and **real one-click test**
+- 🔐 **Fully local**: AI runs on your PC (Ollama) or a private remote PC (Tailscale), several users in parallel (queue + dedicated instances). No user data sent to third parties, no telemetry.
 
 ## ⚠️ Status: active alpha
 
@@ -122,27 +126,23 @@ For **alpha testers**. Expect bugs and rapid changes. [Report a bug](https://git
 ## Installation
 
 1. **Download** `UltraLab-Setup.exe` from the [latest release](https://github.com/xerael/ultralab/releases/latest).
-2. **Requirements**: Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) (UltraLab helps detect/start them).
-3. **Run the installer** (inner exe is self-signed "Mika Gavaudan"; SmartScreen may prompt).
+2. **Requirements**: Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) — UltraLab detects them and can **install them automatically** (winget). Optional: [R](https://cran.r-project.org/) for the statistical analysis module (+ RStudio, Quarto).
+3. **Run the installer** (installer and app are self-signed "Mika Gavaudan"; SmartScreen may prompt).
 4. **Verify integrity** (optional): compare the SHA256 in the release notes.
 
 ## First launch
 
-A 5-step wizard: Docker/Ollama check → mode (local / remote Tailscale) → chat model → embedding model → finish. First model download takes 5-15 min (1-3 GB each).
+A wizard checks components, can install prerequisites, then configures: interface (native / web) → AI mode (local / remote Tailscale) → models recommended for your machine. The **"⚙ Configure services"** button calibrates Docker + n8n step by step (first image download ~400 MB — phases shown live). First model download takes 5-15 min (1-3 GB each).
 
 ## Usage
 
-The UI opens at `http://localhost:3456/`. Two tabs:
-- **Full pipeline**: question + criteria → search → dedup → ranking → clustering → screening → PDFs → extraction → PRISMA export.
-- **Single module**: run one step (e.g. extraction from PDFs, or API search → .nbib file).
+- **PRISMA-stage navigation**: every module explains its purpose; corpus loadable from a run, a project, Zotero, a PDF folder or a file (drag & drop).
+- **Projects**: create a project, pre-program a module sequence and follow the live timeline; every run stays reusable.
+- Results are grouped in dedicated folders on the Desktop. **Ctrl+K** for keyboard navigation.
 
-Results are grouped in a dedicated folder on the Desktop.
+## Settings
 
-## Advanced AI / LLM settings (Settings)
-
-A single panel drives model behaviour for **all modules and the pipeline**:
-- **Strictness** + **custom rules** for screening, ranking and extraction.
-- **Double AI review** (optional, default OFF): enables a 2nd control model + inter-rater agreement for every module that supports it. Best on capable machines (~2× processing time).
+Clear tabs: **AI & models** (models + strictness + custom rules + double review), **Connectors** (API keys with tests), **Remote mode** (IP, test, ports), **Scientific rigor** (audit log, LLM cache), **Application**, **Advanced** (console, diagnostics, Docker/n8n maintenance).
 
 ## Updates
 
@@ -154,4 +154,4 @@ Your data (articles, PDFs, results) stays on your PC. The AI is local (Ollama). 
 
 ## Credits
 
-Built by [@xerael](https://github.com/xerael). Stack: Python · Flask · n8n · Ollama · Qdrant · Docker.
+Built by [@xerael](https://github.com/xerael). Stack: Python · Flask · Tauri · Svelte · n8n · Ollama · Qdrant · Docker · R.
