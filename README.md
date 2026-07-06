@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.1--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.2--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -22,9 +22,16 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.4.1)
+### Fonctionnalités (v0.4.2)
 
 - 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix — interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
+- 🤖 **Screening par apprentissage actif** (type ASReview) : file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
+- 📐 **Calibration de la confiance IA** (ECE / fiabilité) + **sensibilité du seuil** + **courbe rappel vs proportion lue** dans le benchmark
+- 🔎 **Aide à la revue de l'équation (PRESS)** : vérifications automatiques + suggestions (synonymes, MeSH, orthographe)
+- 🗣️ **Assistant IA de configuration** : réglez le logiciel en langage naturel (avec confirmation) ; **screening multilingue**
+- 🧠 **Rapport d'interprétation du module R** : significativité, précautions et lecture globale, reliées à chaque graphique ; **méta-analyse en réseau** + analyses de sensibilité/sous-groupes
+- ♻️ **Déduplication sémantique** (embeddings) en complément du DOI + titre
+- 📝 **Protocole PROSPERO-ready**, **PRISMA-ScR** (revues de portée), **export RevMan / GRADEpro**, **rapports Word (.docx)**
 - 📁 **Mode projet** : les runs de tous les modules regroupés dans un dossier projet, réutilisables comme corpus par les autres modules — avec **pipeline pré-programmé** (recherche → dédup → screening → … → rapport) et **reprise depuis l'étape en échec**
 - 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — équation adaptée par base, dates natives, plafonds et activation par base
 - 🧪 **Littérature grise** : ClinicalTrials.gov, **Europe PMC (préprints)** et **ISRCTN** (optionnels) pour réduire le biais de publication
@@ -93,9 +100,16 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.4.1)
+### Features (v0.4.2)
 
 - 🖥️ **Native app** (window) or **web version** (browser) — UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
+- 🤖 **Active-learning screening** (ASReview-like): a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
+- 📐 **AI confidence calibration** (ECE / reliability) + **threshold sensitivity** + **recall vs proportion screened curve** in the benchmark
+- 🔎 **Search-string review help (PRESS)**: automatic checks + suggestions (synonyms, MeSH, spelling)
+- 🗣️ **AI configuration assistant**: tune the app in natural language (with confirmation); **multilingual screening**
+- 🧠 **R-module interpretation report**: significance, caveats and global reading, tied to each chart; **network meta-analysis** + sensitivity/subgroup analyses
+- ♻️ **Semantic deduplication** (embeddings) on top of DOI + title
+- 📝 **PROSPERO-ready protocol**, **PRISMA-ScR** (scoping reviews), **RevMan / GRADEpro export**, **Word (.docx) reports**
 - 📁 **Project mode**: runs from every module grouped in one project folder and reusable as corpus by other modules — with a **pre-programmed pipeline** (search → dedup → screening → … → report) and **resume from the failed step**
 - 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — per-database query syntax, native date filters, per-database caps and on/off toggles
 - 🧪 **Grey literature**: ClinicalTrials.gov, **Europe PMC (preprints)** and **ISRCTN** (optional) to reduce publication bias
