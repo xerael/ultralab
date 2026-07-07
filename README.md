@@ -25,7 +25,7 @@ UltraLab est une application de bureau (Windows) qui automatise les étapes d'un
 ### Fonctionnalités (v0.4.2)
 
 - 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix — interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
-- 🤖 **Screening par apprentissage actif** (type ASReview) : file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
+- 🤖 **Screening par apprentissage actif** : file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
 - 📐 **Calibration de la confiance IA** (ECE / fiabilité) + **sensibilité du seuil** + **courbe rappel vs proportion lue** dans le benchmark
 - 🔎 **Aide à la revue de l'équation (PRESS)** : vérifications automatiques + suggestions (synonymes, MeSH, orthographe)
 - 🗣️ **Assistant IA de configuration** : réglez le logiciel en langage naturel (avec confirmation) ; **screening multilingue**
