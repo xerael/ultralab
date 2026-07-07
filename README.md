@@ -63,7 +63,7 @@ Destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. [Sign
 
 1. **Télécharger** `UltraLab-Setup.exe` depuis la [dernière release](https://github.com/xerael/ultralab/releases/latest).
 2. **Pré-requis** : Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) — UltraLab les détecte et peut les **installer automatiquement** (winget). Optionnel : [R](https://cran.r-project.org/) pour le module d'analyse statistique (+ RStudio, Quarto).
-3. **Lancer l'installateur** (installeur et application signés self-signed « Mika Gavaudan » ; SmartScreen peut demander une confirmation).
+3. **Lancer l'installateur** (installeur et application signés self-signed; SmartScreen peut demander une confirmation).
 4. **Vérifier l'intégrité** (optionnel) : comparer le SHA256 indiqué dans les notes de release.
 
 ## Premier lancement
@@ -103,7 +103,7 @@ UltraLab is a Windows desktop app that automates the steps of a systematic liter
 ### Features (v0.4.2)
 
 - 🖥️ **Native app** (window) or **web version** (browser) — UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
-- 🤖 **Active-learning screening** (ASReview-like): a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
+- 🤖 **Active-learning screening** : a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
 - 📐 **AI confidence calibration** (ECE / reliability) + **threshold sensitivity** + **recall vs proportion screened curve** in the benchmark
 - 🔎 **Search-string review help (PRESS)**: automatic checks + suggestions (synonyms, MeSH, spelling)
 - 🗣️ **AI configuration assistant**: tune the app in natural language (with confirmation); **multilingual screening**
@@ -141,7 +141,7 @@ For **alpha testers**. Expect bugs and rapid changes. [Report a bug](https://git
 
 1. **Download** `UltraLab-Setup.exe` from the [latest release](https://github.com/xerael/ultralab/releases/latest).
 2. **Requirements**: Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) — UltraLab detects them and can **install them automatically** (winget). Optional: [R](https://cran.r-project.org/) for the statistical analysis module (+ RStudio, Quarto).
-3. **Run the installer** (installer and app are self-signed "Mika Gavaudan"; SmartScreen may prompt).
+3. **Run the installer** (installer and app are self-signed; SmartScreen may prompt).
 4. **Verify integrity** (optional): compare the SHA256 in the release notes.
 
 ## First launch
