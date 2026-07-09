@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.2--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.3--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -22,10 +22,16 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.4.2)
+### Fonctionnalités (v0.4.3)
 
+- 🧭 **Copilote méthodologique** : décrivez votre projet en langage naturel, l'IA recommande les modules, l'ordre et le pourquoi, répond à vos questions et **pré-programme le pipeline** en un clic
+- ⚡ **Modules interactifs** : screening **en direct** avec correction humaine tracée, **méta-analyse live** (forest cliquable, leave-one-out instantané), **GRADE** et **risque de biais re-jugeables**, clustering ajustable, dédup arbitrée, comptage de recherche en temps réel, **essai sur 3 articles**, **points d'arrêt** dans le pipeline
+- 🔗 **Chaîne extraction → méta-analyse** : cadre « données chiffrées », **vérification humaine des chiffres** avant pooling, la méta réutilise sans ré-extraire ; extraction possible **depuis les abstracts** (priorité au PDF)
+- ❄️ **Snowballing actionnable** : screener les candidats en un clic (abstracts récupérés — y compris **par titre sans DOI** —, question/critères pré-remplis), itération manuelle jusqu'à saturation, fusion guidée des inclus
+- 📋 **PRISMA de bout en bout** : checklist générée **depuis le corpus fusionné** (identification multi-sources + méthodes agrégées), **flux PRISMA vivant** du projet (cliquable), équations mémorisées
+- 📏 **Gwet AC1 + PABAK** en plus du kappa de Cohen (corrige le paradoxe de prévalence)
 - 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix — interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
-- 🤖 **Screening par apprentissage actif** : file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
+- 🤖 **Screening par apprentissage actif** (type ASReview) : file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
 - 📐 **Calibration de la confiance IA** (ECE / fiabilité) + **sensibilité du seuil** + **courbe rappel vs proportion lue** dans le benchmark
 - 🔎 **Aide à la revue de l'équation (PRESS)** : vérifications automatiques + suggestions (synonymes, MeSH, orthographe)
 - 🗣️ **Assistant IA de configuration** : réglez le logiciel en langage naturel (avec confirmation) ; **screening multilingue**
@@ -37,7 +43,7 @@ UltraLab est une application de bureau (Windows) qui automatise les étapes d'un
 - 🧪 **Littérature grise** : ClinicalTrials.gov, **Europe PMC (préprints)** et **ISRCTN** (optionnels) pour réduire le biais de publication
 - ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **enrichissement des abstracts manquants** multi-sources
 - 🧠 **Pré-screening IA** (Include / Maybe / Exclude) : justification **critère par critère** (esprit PRISMA), **score de confiance**, drapeau « vérification humaine »
-- 👥 **Double relecture optionnelle** : 2ᵉ modèle (obligatoirement différent) + **accord inter-juges (kappa de Cohen)** ; s'applique au screening, à la lecture intégrale et à l'extraction
+- 👥 **Double relecture optionnelle** : 2ᵉ modèle (obligatoirement différent) + **accord inter-juges (kappa de Cohen, Gwet AC1, PABAK)** ; s'applique au screening, à la lecture intégrale et à l'extraction
 - 🙋 **Relecture humaine intégrée** (opt-in, a posteriori) avec accord humain–IA (κ)
 - 📖 **Lecture intégrale** (full-text) : réévaluation de l'inclusion sur le PDF complet
 - 📊 **Ranking** (score de pertinence 0-100) et **clustering** thématique
@@ -63,7 +69,7 @@ Destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. [Sign
 
 1. **Télécharger** `UltraLab-Setup.exe` depuis la [dernière release](https://github.com/xerael/ultralab/releases/latest).
 2. **Pré-requis** : Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) — UltraLab les détecte et peut les **installer automatiquement** (winget). Optionnel : [R](https://cran.r-project.org/) pour le module d'analyse statistique (+ RStudio, Quarto).
-3. **Lancer l'installateur** (installeur et application signés self-signed; SmartScreen peut demander une confirmation).
+3. **Lancer l'installateur** (installeur et application auto-signés ; SmartScreen peut demander une confirmation).
 4. **Vérifier l'intégrité** (optionnel) : comparer le SHA256 indiqué dans les notes de release.
 
 ## Premier lancement
@@ -100,10 +106,16 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.4.2)
+### Features (v0.4.3)
 
+- 🧭 **Methodology copilot**: describe your project in natural language, the AI recommends modules, order and rationale, answers your questions and **pre-programs the pipeline** in one click
+- ⚡ **Interactive modules**: **live screening** with tracked human correction, **live meta-analysis** (clickable forest, instant leave-one-out), **re-judgeable GRADE** and **risk of bias**, adjustable clustering, arbitrated dedup, real-time search counts, **3-article trial**, pipeline **checkpoints**
+- 🔗 **Extraction → meta-analysis chain**: "numeric data" framework, **human verification of extracted numbers** before pooling, meta reuses without re-extracting; extraction **from abstracts** possible (PDF takes priority)
+- ❄️ **Actionable snowballing**: screen candidates in one click (abstracts recovered — including **by title without DOI** —, question/criteria pre-filled), manual iteration until saturation, guided merge of included
+- 📋 **PRISMA end to end**: checklist generated **from the merged corpus** (multi-source identification + aggregated methods), **living project PRISMA flow** (clickable), remembered search queries
+- 📏 **Gwet's AC1 + PABAK** on top of Cohen's kappa (corrects the prevalence paradox)
 - 🖥️ **Native app** (window) or **web version** (browser) — UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
-- 🤖 **Active-learning screening** : a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
+- 🤖 **Active-learning screening** (ASReview-like): a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
 - 📐 **AI confidence calibration** (ECE / reliability) + **threshold sensitivity** + **recall vs proportion screened curve** in the benchmark
 - 🔎 **Search-string review help (PRESS)**: automatic checks + suggestions (synonyms, MeSH, spelling)
 - 🗣️ **AI configuration assistant**: tune the app in natural language (with confirmation); **multilingual screening**
@@ -115,7 +127,7 @@ UltraLab is a Windows desktop app that automates the steps of a systematic liter
 - 🧪 **Grey literature**: ClinicalTrials.gov, **Europe PMC (preprints)** and **ISRCTN** (optional) to reduce publication bias
 - ♻️ **Deduplication** (DOI then title+year, field merge) + **multi-source missing-abstract enrichment**
 - 🧠 **AI pre-screening** (Include / Maybe / Exclude): **per-criterion** justification (PRISMA-minded), **confidence score**, "human review" flag
-- 👥 **Optional double review**: a 2nd (necessarily different) model + **inter-rater agreement (Cohen's kappa)**; applies to screening, full-text and extraction
+- 👥 **Optional double review**: a 2nd (necessarily different) model + **inter-rater agreement (Cohen's kappa, Gwet's AC1, PABAK)**; applies to screening, full-text and extraction
 - 🙋 **Built-in human review** (opt-in, after the fact) with human–AI agreement (κ)
 - 📖 **Full-text screening**: re-assess inclusion on the complete PDF
 - 📊 **Ranking** (0-100 relevance) and thematic **clustering**
