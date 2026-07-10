@@ -31,7 +31,7 @@ UltraLab est une application de bureau (Windows) qui automatise les étapes d'un
 - 📋 **PRISMA de bout en bout** : checklist générée **depuis le corpus fusionné** (identification multi-sources + méthodes agrégées), **flux PRISMA vivant** du projet (cliquable), équations mémorisées
 - 📏 **Gwet AC1 + PABAK** en plus du kappa de Cohen (corrige le paradoxe de prévalence)
 - 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix — interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
-- 🤖 **Screening par apprentissage actif** (type ASReview) : file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
+- 🤖 **Screening par apprentissage actif** file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
 - 📐 **Calibration de la confiance IA** (ECE / fiabilité) + **sensibilité du seuil** + **courbe rappel vs proportion lue** dans le benchmark
 - 🔎 **Aide à la revue de l'équation (PRESS)** : vérifications automatiques + suggestions (synonymes, MeSH, orthographe)
 - 🗣️ **Assistant IA de configuration** : réglez le logiciel en langage naturel (avec confirmation) ; **screening multilingue**
@@ -115,7 +115,7 @@ UltraLab is a Windows desktop app that automates the steps of a systematic liter
 - 📋 **PRISMA end to end**: checklist generated **from the merged corpus** (multi-source identification + aggregated methods), **living project PRISMA flow** (clickable), remembered search queries
 - 📏 **Gwet's AC1 + PABAK** on top of Cohen's kappa (corrects the prevalence paradox)
 - 🖥️ **Native app** (window) or **web version** (browser) — UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
-- 🤖 **Active-learning screening** (ASReview-like): a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
+- 🤖 **Active-learning screening** a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
 - 📐 **AI confidence calibration** (ECE / reliability) + **threshold sensitivity** + **recall vs proportion screened curve** in the benchmark
 - 🔎 **Search-string review help (PRESS)**: automatic checks + suggestions (synonyms, MeSH, spelling)
 - 🗣️ **AI configuration assistant**: tune the app in natural language (with confirmation); **multilingual screening**
