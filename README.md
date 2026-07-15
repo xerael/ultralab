@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.3--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.4--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -22,7 +22,16 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.4.3)
+### Fonctionnalités (v0.4.4)
+
+- 🗺️ **État de l'art automatique** : avant de commencer, bilan des revues systématiques existantes + travaux en cours (Europe PMC, préprints, OSF, lien PROSPERO) avec synthèse d'orientation par l'IA locale
+- 📮 **Aide au choix du journal** : revues candidates depuis vos études incluses + travaux similaires (OpenAlex) + open access / APC (DOAJ), prédatrices écartées
+- 📋 **Table Summary of Findings (GRADE)** au format Cochrane (effets absolus pour 1000, certitude ⊕) + **brouillon de la section Méthodes (FR+EN)** rédigé depuis les traces réelles des runs
+- 🧬 **Companion papers** : les rapports d'une même étude sont regroupés — la méta compte par étude, pas par article ; **motifs d'exclusion standardisés** (PRISMA 16b) ; **alerte rétractations** sur tout corpus
+- 🎯 **Calibration entre relecteurs** (pilote 20 articles, κ/AC1 + verdict) et **méta-analyses par critère de jugement**
+- 🔁 **Import Rayyan / Covidence** (décisions conservées) + **veille planifiée** (recherches favorites relancées tous les N jours, alertes à l'ouverture)
+- 🖥️ **Interface repensée** : hub PRISMA cliquable en accueil de projet, file **« À valider »** unifiée (badge nav), explorateur de résultats intégré (+ visuels, + régénération des fichiers après correction), bandeau contexte, mode compact + raccourcis I/M/E, visite guidée, notifications système
+- 🛰️ **Contrôle admin du PC distant** (jeton partagé, ports en temps réel, multi-run) + guide de connexion intégré ; **préfixe EZproxy** pour l'accès institutionnel aux PDFs
 
 - 🧭 **Copilote méthodologique** : décrivez votre projet en langage naturel, l'IA recommande les modules, l'ordre et le pourquoi, répond à vos questions et **pré-programme le pipeline** en un clic
 - ⚡ **Modules interactifs** : screening **en direct** avec correction humaine tracée, **méta-analyse live** (forest cliquable, leave-one-out instantané), **GRADE** et **risque de biais re-jugeables**, clustering ajustable, dédup arbitrée, comptage de recherche en temps réel, **essai sur 3 articles**, **points d'arrêt** dans le pipeline
@@ -106,7 +115,16 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.4.3)
+### Features (v0.4.4)
+
+- 🗺️ **Automated state of the art**: before starting, survey of existing systematic reviews + ongoing work (Europe PMC, preprints, OSF, PROSPERO link) with a local-AI orientation summary
+- 📮 **Journal finder**: candidate journals from your included studies + similar works (OpenAlex) + open access / APC (DOAJ), predatory filtered out
+- 📋 **GRADE Summary of Findings table** in Cochrane format (absolute effects per 1,000, certainty ⊕) + **Methods-section draft (FR+EN)** written from actual run traces
+- 🧬 **Companion papers**: reports of the same study are grouped — meta counts studies, not articles; **standardized exclusion reasons** (PRISMA 16b); **retraction alerts** on any corpus
+- 🎯 **Reviewer calibration exercise** (20-article pilot, κ/AC1 + verdict) and **per-outcome meta-analyses**
+- 🔁 **Rayyan / Covidence import** (decisions preserved) + **scheduled monitoring** (favorite searches re-run every N days, alerts at startup)
+- 🖥️ **Redesigned interface**: clickable PRISMA hub as project home, unified **“To validate”** queue (nav badge), built-in results explorer (+ charts, + file regeneration after corrections), review-context banner, compact mode + I/M/E shortcuts, guided tour, system notifications
+- 🛰️ **Remote PC admin control** (shared token, live port states, multi-run) + built-in connection guide; **EZproxy prefix** for institutional PDF access
 
 - 🧭 **Methodology copilot**: describe your project in natural language, the AI recommends modules, order and rationale, answers your questions and **pre-programs the pipeline** in one click
 - ⚡ **Interactive modules**: **live screening** with tracked human correction, **live meta-analysis** (clickable forest, instant leave-one-out), **re-judgeable GRADE** and **risk of bias**, adjustable clustering, arbitrated dedup, real-time search counts, **3-article trial**, pipeline **checkpoints**
