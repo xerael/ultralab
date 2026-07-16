@@ -3,13 +3,13 @@
   "$comment_workflow": "Quand on modifie un workflow .json : (1) commit dans le repo, (2) incrementer workflows.version ici, (3) push. Les apps detecteront la mise a jour au prochain check.",
   "$comment_app": "Quand on release une nouvelle version de l'app : (1) build + Inno Setup, (2) creer une release GitHub avec UltraLab-Setup.exe, (3) mettre a jour app.latest_version + download_url ici.",
   "app": {
-    "latest_version": "0.4.4-alpha",
-    "release_date": "2026-07-15",
+    "latest_version": "0.4.5-alpha",
+    "release_date": "2026-07-16",
     "download_url": "https://github.com/xerael/ultralab/releases/latest/download/UltraLab-Setup.exe",
     "release_notes_url": "https://github.com/xerael/ultralab/releases/latest"
   },
   "workflows": {
-    "version": "0.4.4-alpha",
+    "version": "0.4.5-alpha",
     "files": [
       {
         "name": "ultralab-systematicreview-orchestrator.json",

@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.4--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.5--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -22,7 +22,15 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.4.4)
+### Fonctionnalités (v0.4.5)
+
+**Nouveau en 0.4.5 :**
+- 📐 **Statistiques niveau Cochrane** : estimateurs τ² REML/Paule-Mandel + ajustement Hartung-Knapp + intervalle de prédiction ; suite de biais de publication (Egger, Begg, trim-and-fill, funnel à contours) ; **méta-analyse de proportions** (Freeman-Tukey) ; **imputation des stats manquantes** (Wan 2014, vérifiée contre R) ; **garde-fous d'unité d'analyse** (contrôle partagé, grappes, cross-over) ; checklist **PRISMA-S**
+- 🧑‍🔬 **Terrain** : **relecture en aveugle** (κ humain-IA valide), **surlignage des critères** dans les abstracts + Annuler (Z), **pack relecteur autonome** (HTML autoporté, co-relecteur sans installation), **chasse aux PDFs manquants** (statuts + case PRISMA « not retrieved »), **export figures TIFF/PDF/EPS 300-600 dpi** aux largeurs journal
+- 🔁 **Reprise partielle** : relancer un run interrompu **uniquement sur les articles échoués**, fusion dans le run d'origine
+- 📁 **Projets persistants** : contexte (question/critères/équation) enregistré dans le projet, dossier personnalisable, **snapshots ZIP** restaurables, planificateur séparé
+- 🛡️ **Fiabilité** : sorties LLM **contraintes par schéma JSON** (fin des réponses malformées), socle de **19 tests automatiques** (maths méta figées), **projet démo « Revue express »** sans Docker ni modèle, **mise à jour intégrée** de l'app, « **Citer UltraLab** » + fiche transparence
+
 
 - 🗺️ **État de l'art automatique** : avant de commencer, bilan des revues systématiques existantes + travaux en cours (Europe PMC, préprints, OSF, lien PROSPERO) avec synthèse d'orientation par l'IA locale
 - 📮 **Aide au choix du journal** : revues candidates depuis vos études incluses + travaux similaires (OpenAlex) + open access / APC (DOAJ), prédatrices écartées
@@ -115,7 +123,15 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.4.4)
+### Features (v0.4.5)
+
+**New in 0.4.5:**
+- 📐 **Cochrane-grade statistics**: REML/Paule-Mandel τ² estimators + Hartung-Knapp adjustment + prediction interval; publication-bias suite (Egger, Begg, trim-and-fill, contour-enhanced funnel); **meta-analysis of proportions** (Freeman-Tukey); **missing-statistics imputation** (Wan 2014, verified against R); **unit-of-analysis safeguards** (shared control, clusters, cross-over); **PRISMA-S** checklist
+- 🧑‍🔬 **Field work**: **blind review** (valid human-AI κ), **criteria highlighting** in abstracts + Undo (Z), **standalone reviewer pack** (self-contained HTML, co-reviewer installs nothing), **missing-PDF hunt board** (statuses + PRISMA “not retrieved” box), **TIFF/PDF/EPS figure export** at 300–600 dpi journal widths
+- 🔁 **Partial resume**: relaunch an interrupted run **only on failed articles**, merged back into the original run
+- 📁 **Persistent projects**: context (question/criteria/query) saved in the project, customisable folder, restorable **ZIP snapshots**, separate run scheduler
+- 🛡️ **Reliability**: LLM outputs **constrained by JSON schema** (no more malformed replies), **19 automated tests** (frozen meta maths), **“Express review” demo project** without Docker or a model, **integrated app updater**, “**Cite UltraLab**” + transparency sheet
+
 
 - 🗺️ **Automated state of the art**: before starting, survey of existing systematic reviews + ongoing work (Europe PMC, preprints, OSF, PROSPERO link) with a local-AI orientation summary
 - 📮 **Journal finder**: candidate journals from your included studies + similar works (OpenAlex) + open access / APC (DOAJ), predatory filtered out
