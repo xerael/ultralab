@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.5--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.6--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -22,9 +22,19 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.4.5)
+### Fonctionnalités (v0.4.6)
 
-**Nouveau en 0.4.5 :**
+**Nouveau en 0.4.6 :**
+- 🔎 **Équations expertes enfin respectées** : PubMed interrogé en POST (fin de l'« URI trop longue », une équation à 1155 résultats sur pubmed.gov en renvoie 1155 dans le module), **requête dérivée de l'équation pour chaque base** (rappel multiplié par 10 à 1000 selon la base), panneau « requête réellement exécutée par base » (transparence PRISMA), ⚠ sur les comptages suspects, mécanique unifiée question / équation
+- 📚 **Interroger les PDFs du corpus** (RAG 100 % local) : question en langage naturel sur le plein texte, réponse **citant chaque passage** (article + page + extrait), index local par page
+- 🩺 **Méta-analyse diagnostique** : modèle bivarié de Reitsma (sensibilité/spécificité poolées, **courbe SROC**, AUC), détection automatique des comptages 2x2
+- 🤖 **Screening durci** : **correction de Platt** (confiances recalées sur votre relecture), **test canari** (3 textes-pièges avant les longs runs), **vote de cohérence** sur les cas incertains (0/3/5), **embeddings multilingues** validés FR/EN/ES
+- 🗃️ **Très grands corpus** : déduplication en flux via SQLite au-delà de 10 000 références (12 000 réfs testées en une fraction de seconde)
+- 📄 **Texte intégral** : correction tracée du **motif d'exclusion** (taxonomie PRISMA, item 16b), connecteurs **Wiley TDM** et **Springer Nature**, email Unpaywall réellement utilisé
+- 🖥️ **PC distant** : blocage multi-run corrigé (messages d'erreur différenciés), panneau admin avancé (instances, plafond RAM, drain, **extinction programmée quotidienne**), alerte Monitor en retard
+- 🛡️ **Fiabilité** : export HD du module R **persistant au redémarrage**, chaîne de mise à jour intégrée signée et vérifiée à chaque build, image n8n épinglée (1.94.1), début du portage Linux (interne)
+
+**En 0.4.5 :**
 - 📐 **Statistiques niveau Cochrane** : estimateurs τ² REML/Paule-Mandel + ajustement Hartung-Knapp + intervalle de prédiction ; suite de biais de publication (Egger, Begg, trim-and-fill, funnel à contours) ; **méta-analyse de proportions** (Freeman-Tukey) ; **imputation des stats manquantes** (Wan 2014, vérifiée contre R) ; **garde-fous d'unité d'analyse** (contrôle partagé, grappes, cross-over) ; checklist **PRISMA-S**
 - 🧑‍🔬 **Terrain** : **relecture en aveugle** (κ humain-IA valide), **surlignage des critères** dans les abstracts + Annuler (Z), **pack relecteur autonome** (HTML autoporté, co-relecteur sans installation), **chasse aux PDFs manquants** (statuts + case PRISMA « not retrieved »), **export figures TIFF/PDF/EPS 300-600 dpi** aux largeurs journal
 - 🔁 **Reprise partielle** : relancer un run interrompu **uniquement sur les articles échoués**, fusion dans le run d'origine
@@ -35,7 +45,7 @@ UltraLab est une application de bureau (Windows) qui automatise les étapes d'un
 - 🗺️ **État de l'art automatique** : avant de commencer, bilan des revues systématiques existantes + travaux en cours (Europe PMC, préprints, OSF, lien PROSPERO) avec synthèse d'orientation par l'IA locale
 - 📮 **Aide au choix du journal** : revues candidates depuis vos études incluses + travaux similaires (OpenAlex) + open access / APC (DOAJ), prédatrices écartées
 - 📋 **Table Summary of Findings (GRADE)** au format Cochrane (effets absolus pour 1000, certitude ⊕) + **brouillon de la section Méthodes (FR+EN)** rédigé depuis les traces réelles des runs
-- 🧬 **Companion papers** : les rapports d'une même étude sont regroupés — la méta compte par étude, pas par article ; **motifs d'exclusion standardisés** (PRISMA 16b) ; **alerte rétractations** sur tout corpus
+- 🧬 **Companion papers** : les rapports d'une même étude sont regroupés : la méta compte par étude, pas par article ; **motifs d'exclusion standardisés** (PRISMA 16b) ; **alerte rétractations** sur tout corpus
 - 🎯 **Calibration entre relecteurs** (pilote 20 articles, κ/AC1 + verdict) et **méta-analyses par critère de jugement**
 - 🔁 **Import Rayyan / Covidence** (décisions conservées) + **veille planifiée** (recherches favorites relancées tous les N jours, alertes à l'ouverture)
 - 🖥️ **Interface repensée** : hub PRISMA cliquable en accueil de projet, file **« À valider »** unifiée (badge nav), explorateur de résultats intégré (+ visuels, + régénération des fichiers après correction), bandeau contexte, mode compact + raccourcis I/M/E, visite guidée, notifications système
@@ -44,19 +54,19 @@ UltraLab est une application de bureau (Windows) qui automatise les étapes d'un
 - 🧭 **Copilote méthodologique** : décrivez votre projet en langage naturel, l'IA recommande les modules, l'ordre et le pourquoi, répond à vos questions et **pré-programme le pipeline** en un clic
 - ⚡ **Modules interactifs** : screening **en direct** avec correction humaine tracée, **méta-analyse live** (forest cliquable, leave-one-out instantané), **GRADE** et **risque de biais re-jugeables**, clustering ajustable, dédup arbitrée, comptage de recherche en temps réel, **essai sur 3 articles**, **points d'arrêt** dans le pipeline
 - 🔗 **Chaîne extraction → méta-analyse** : cadre « données chiffrées », **vérification humaine des chiffres** avant pooling, la méta réutilise sans ré-extraire ; extraction possible **depuis les abstracts** (priorité au PDF)
-- ❄️ **Snowballing actionnable** : screener les candidats en un clic (abstracts récupérés — y compris **par titre sans DOI** —, question/critères pré-remplis), itération manuelle jusqu'à saturation, fusion guidée des inclus
+- ❄️ **Snowballing actionnable** : screener les candidats en un clic (abstracts récupérés, y compris **par titre sans DOI**, question/critères pré-remplis), itération manuelle jusqu'à saturation, fusion guidée des inclus
 - 📋 **PRISMA de bout en bout** : checklist générée **depuis le corpus fusionné** (identification multi-sources + méthodes agrégées), **flux PRISMA vivant** du projet (cliquable), équations mémorisées
 - 📏 **Gwet AC1 + PABAK** en plus du kappa de Cohen (corrige le paradoxe de prévalence)
-- 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix — interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
-- 🤖 **Screening par apprentissage actif** file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe » — 100 % local
+- 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix ; interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
+- 🤖 **Screening par apprentissage actif** file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe », 100 % local
 - 📐 **Calibration de la confiance IA** (ECE / fiabilité) + **sensibilité du seuil** + **courbe rappel vs proportion lue** dans le benchmark
 - 🔎 **Aide à la revue de l'équation (PRESS)** : vérifications automatiques + suggestions (synonymes, MeSH, orthographe)
 - 🗣️ **Assistant IA de configuration** : réglez le logiciel en langage naturel (avec confirmation) ; **screening multilingue**
 - 🧠 **Rapport d'interprétation du module R** : significativité, précautions et lecture globale, reliées à chaque graphique ; **méta-analyse en réseau** + analyses de sensibilité/sous-groupes
 - ♻️ **Déduplication sémantique** (embeddings) en complément du DOI + titre
 - 📝 **Protocole PROSPERO-ready**, **PRISMA-ScR** (revues de portée), **export RevMan / GRADEpro**, **rapports Word (.docx)**
-- 📁 **Mode projet** : les runs de tous les modules regroupés dans un dossier projet, réutilisables comme corpus par les autres modules — avec **pipeline pré-programmé** (recherche → dédup → screening → … → rapport) et **reprise depuis l'étape en échec**
-- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — équation adaptée par base, dates natives, plafonds et activation par base
+- 📁 **Mode projet** : les runs de tous les modules regroupés dans un dossier projet, réutilisables comme corpus par les autres modules, avec **pipeline pré-programmé** (recherche → dédup → screening → … → rapport) et **reprise depuis l'étape en échec**
+- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect ; équation adaptée par base, dates natives, plafonds et activation par base
 - 🧪 **Littérature grise** : ClinicalTrials.gov, **Europe PMC (préprints)** et **ISRCTN** (optionnels) pour réduire le biais de publication
 - ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **enrichissement des abstracts manquants** multi-sources
 - 🧠 **Pré-screening IA** (Include / Maybe / Exclude) : justification **critère par critère** (esprit PRISMA), **score de confiance**, drapeau « vérification humaine »
@@ -70,7 +80,7 @@ UltraLab est une application de bureau (Windows) qui automatise les étapes d'un
 - 📄 **Téléchargement de PDFs** en libre accès (Unpaywall, Europe PMC, CORE, Zotero)
 - 📋 **Extraction de données structurée** : **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + champs personnalisés
 - 📈 **Méta-analyse** (forest/funnel, I², effets poolés) + **GRADE** (certitude des preuves, Summary of Findings)
-- 📊 **Analyse statistique en langage naturel (R)** : 3 modes (Automatique / Guidé / Libre), import CSV/Excel ou run UltraLab, figures interactives, **rapport HTML Quarto** en un clic, ouverture dans **RStudio** — nécessite R installé
+- 📊 **Analyse statistique en langage naturel (R)** : 3 modes (Automatique / Guidé / Libre), import CSV/Excel ou run UltraLab, figures interactives, **rapport HTML Quarto** en un clic, ouverture dans **RStudio** (nécessite R installé)
 - 🔬 **Rigueur scientifique** : **benchmark du screening** (WSS@95 %, rappel, travail économisé), **journal d'audit** horodaté, **bundle de reproductibilité** par run
 - 🧩 **Mode Fusion** (multi-dossiers ou projet entier → corpus unifié) + **rapport consolidé** prêt-soumission
 - ✅ **Checklist + diagramme de flux PRISMA 2020** + `methods.json` (reproductibilité) + export RIS / nbib / BibTeX / Excel
@@ -85,13 +95,13 @@ Destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. [Sign
 ## Installation
 
 1. **Télécharger** `UltraLab-Setup.exe` depuis la [dernière release](https://github.com/xerael/ultralab/releases/latest).
-2. **Pré-requis** : Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) — UltraLab les détecte et peut les **installer automatiquement** (winget). Optionnel : [R](https://cran.r-project.org/) pour le module d'analyse statistique (+ RStudio, Quarto).
+2. **Pré-requis** : Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/). UltraLab les détecte et peut les **installer automatiquement** (winget). Optionnel : [R](https://cran.r-project.org/) pour le module d'analyse statistique (+ RStudio, Quarto).
 3. **Lancer l'installateur** (installeur et application auto-signés ; SmartScreen peut demander une confirmation).
 4. **Vérifier l'intégrité** (optionnel) : comparer le SHA256 indiqué dans les notes de release.
 
 ## Premier lancement
 
-Un assistant vérifie les composants, peut installer les prérequis, puis configure : interface (native / web) → mode IA (local / distant Tailscale) → modèles recommandés selon votre machine. Le bouton **« ⚙ Configurer les services »** calibre Docker + n8n pas à pas (1ᵉʳ téléchargement d'images ~400 Mo — les phases s'affichent en direct). Le 1ᵉʳ téléchargement des modèles prend 5-15 min (1-3 Go chacun).
+Un assistant vérifie les composants, peut installer les prérequis, puis configure : interface (native / web) → mode IA (local / distant Tailscale) → modèles recommandés selon votre machine. Le bouton **« ⚙ Configurer les services »** calibre Docker + n8n pas à pas (1ᵉʳ téléchargement d'images ~400 Mo, les phases s'affichent en direct). Le 1ᵉʳ téléchargement des modèles prend 5-15 min (1-3 Go chacun).
 
 ## Utilisation
 
@@ -123,9 +133,19 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.4.5)
+### Features (v0.4.6)
 
-**New in 0.4.5:**
+**New in 0.4.6:**
+- 🔎 **Expert equations finally honoured**: PubMed queried via POST (no more "URI too long", an equation with 1155 results on pubmed.gov returns 1155 in the module), **per-database queries derived from your equation** (recall multiplied by 10 to 1000 depending on the database), "query actually executed per database" panel (PRISMA transparency), ⚠ flags on suspicious counts, unified question / equation mechanism
+- 📚 **Ask your corpus PDFs** (100% local RAG): natural-language questions against the full text, answers **citing every passage** (article + page + excerpt), local per-page index
+- 🩺 **Diagnostic test meta-analysis**: Reitsma bivariate model (pooled sensitivity/specificity, **SROC curve**, AUC), automatic detection of 2x2 counts
+- 🤖 **Hardened screening**: **Platt scaling** (confidence recalibrated against your review), **canary test** (3 trap texts before long runs), **consistency voting** on uncertain cases (0/3/5), **multilingual embeddings** validated FR/EN/ES
+- 🗃️ **Very large corpora**: streaming deduplication through SQLite beyond 10,000 references (12,000 refs tested in a fraction of a second)
+- 📄 **Full text**: tracked **exclusion-reason correction** (PRISMA taxonomy, item 16b), **Wiley TDM** and **Springer Nature** connectors, Unpaywall email actually used
+- 🖥️ **Remote PC**: multi-run deadlock fixed (differentiated error messages), advanced admin panel (instances, RAM cap, drain, **daily scheduled shutdown**), outdated-Monitor alert
+- 🛡️ **Reliability**: R module HD export **persists across restarts**, integrated update chain signed and verified at every build, n8n image pinned (1.94.1), Linux port started (internal)
+
+**In 0.4.5:**
 - 📐 **Cochrane-grade statistics**: REML/Paule-Mandel τ² estimators + Hartung-Knapp adjustment + prediction interval; publication-bias suite (Egger, Begg, trim-and-fill, contour-enhanced funnel); **meta-analysis of proportions** (Freeman-Tukey); **missing-statistics imputation** (Wan 2014, verified against R); **unit-of-analysis safeguards** (shared control, clusters, cross-over); **PRISMA-S** checklist
 - 🧑‍🔬 **Field work**: **blind review** (valid human-AI κ), **criteria highlighting** in abstracts + Undo (Z), **standalone reviewer pack** (self-contained HTML, co-reviewer installs nothing), **missing-PDF hunt board** (statuses + PRISMA “not retrieved” box), **TIFF/PDF/EPS figure export** at 300–600 dpi journal widths
 - 🔁 **Partial resume**: relaunch an interrupted run **only on failed articles**, merged back into the original run
@@ -136,7 +156,7 @@ UltraLab is a Windows desktop app that automates the steps of a systematic liter
 - 🗺️ **Automated state of the art**: before starting, survey of existing systematic reviews + ongoing work (Europe PMC, preprints, OSF, PROSPERO link) with a local-AI orientation summary
 - 📮 **Journal finder**: candidate journals from your included studies + similar works (OpenAlex) + open access / APC (DOAJ), predatory filtered out
 - 📋 **GRADE Summary of Findings table** in Cochrane format (absolute effects per 1,000, certainty ⊕) + **Methods-section draft (FR+EN)** written from actual run traces
-- 🧬 **Companion papers**: reports of the same study are grouped — meta counts studies, not articles; **standardized exclusion reasons** (PRISMA 16b); **retraction alerts** on any corpus
+- 🧬 **Companion papers**: reports of the same study are grouped: meta counts studies, not articles; **standardized exclusion reasons** (PRISMA 16b); **retraction alerts** on any corpus
 - 🎯 **Reviewer calibration exercise** (20-article pilot, κ/AC1 + verdict) and **per-outcome meta-analyses**
 - 🔁 **Rayyan / Covidence import** (decisions preserved) + **scheduled monitoring** (favorite searches re-run every N days, alerts at startup)
 - 🖥️ **Redesigned interface**: clickable PRISMA hub as project home, unified **“To validate”** queue (nav badge), built-in results explorer (+ charts, + file regeneration after corrections), review-context banner, compact mode + I/M/E shortcuts, guided tour, system notifications
@@ -145,19 +165,19 @@ UltraLab is a Windows desktop app that automates the steps of a systematic liter
 - 🧭 **Methodology copilot**: describe your project in natural language, the AI recommends modules, order and rationale, answers your questions and **pre-programs the pipeline** in one click
 - ⚡ **Interactive modules**: **live screening** with tracked human correction, **live meta-analysis** (clickable forest, instant leave-one-out), **re-judgeable GRADE** and **risk of bias**, adjustable clustering, arbitrated dedup, real-time search counts, **3-article trial**, pipeline **checkpoints**
 - 🔗 **Extraction → meta-analysis chain**: "numeric data" framework, **human verification of extracted numbers** before pooling, meta reuses without re-extracting; extraction **from abstracts** possible (PDF takes priority)
-- ❄️ **Actionable snowballing**: screen candidates in one click (abstracts recovered — including **by title without DOI** —, question/criteria pre-filled), manual iteration until saturation, guided merge of included
+- ❄️ **Actionable snowballing**: screen candidates in one click (abstracts recovered, including **by title without DOI**, question/criteria pre-filled), manual iteration until saturation, guided merge of included
 - 📋 **PRISMA end to end**: checklist generated **from the merged corpus** (multi-source identification + aggregated methods), **living project PRISMA flow** (clickable), remembered search queries
 - 📏 **Gwet's AC1 + PABAK** on top of Cohen's kappa (corrects the prevalence paradox)
-- 🖥️ **Native app** (window) or **web version** (browser) — UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
-- 🤖 **Active-learning screening** a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe" — fully local
+- 🖥️ **Native app** (window) or **web version** (browser); UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
+- 🤖 **Active-learning screening** a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe", fully local
 - 📐 **AI confidence calibration** (ECE / reliability) + **threshold sensitivity** + **recall vs proportion screened curve** in the benchmark
 - 🔎 **Search-string review help (PRESS)**: automatic checks + suggestions (synonyms, MeSH, spelling)
 - 🗣️ **AI configuration assistant**: tune the app in natural language (with confirmation); **multilingual screening**
 - 🧠 **R-module interpretation report**: significance, caveats and global reading, tied to each chart; **network meta-analysis** + sensitivity/subgroup analyses
 - ♻️ **Semantic deduplication** (embeddings) on top of DOI + title
 - 📝 **PROSPERO-ready protocol**, **PRISMA-ScR** (scoping reviews), **RevMan / GRADEpro export**, **Word (.docx) reports**
-- 📁 **Project mode**: runs from every module grouped in one project folder and reusable as corpus by other modules — with a **pre-programmed pipeline** (search → dedup → screening → … → report) and **resume from the failed step**
-- 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect — per-database query syntax, native date filters, per-database caps and on/off toggles
+- 📁 **Project mode**: runs from every module grouped in one project folder and reusable as corpus by other modules, with a **pre-programmed pipeline** (search → dedup → screening → … → report) and **resume from the failed step**
+- 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect; per-database query syntax, native date filters, per-database caps and on/off toggles
 - 🧪 **Grey literature**: ClinicalTrials.gov, **Europe PMC (preprints)** and **ISRCTN** (optional) to reduce publication bias
 - ♻️ **Deduplication** (DOI then title+year, field merge) + **multi-source missing-abstract enrichment**
 - 🧠 **AI pre-screening** (Include / Maybe / Exclude): **per-criterion** justification (PRISMA-minded), **confidence score**, "human review" flag
@@ -171,7 +191,7 @@ UltraLab is a Windows desktop app that automates the steps of a systematic liter
 - 📄 **Open-access PDF fetching** (Unpaywall, Europe PMC, CORE, Zotero)
 - 📋 **Structured data extraction**: **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + custom fields
 - 📈 **Meta-analysis** (forest/funnel, I², pooled effects) + **GRADE** (certainty of evidence, Summary of Findings)
-- 📊 **Natural-language statistical analysis (R)**: 3 modes (Automatic / Guided / Free), CSV/Excel or UltraLab-run input, interactive figures, one-click **Quarto HTML report**, open in **RStudio** — requires R installed
+- 📊 **Natural-language statistical analysis (R)**: 3 modes (Automatic / Guided / Free), CSV/Excel or UltraLab-run input, interactive figures, one-click **Quarto HTML report**, open in **RStudio** (requires R installed)
 - 🔬 **Scientific rigor**: **screening benchmark** (WSS@95%, recall, work saved), timestamped **audit log**, per-run **reproducibility bundle**
 - 🧩 **Fusion mode** (multiple folders or a whole project → unified corpus) + **submission-ready consolidated report**
 - ✅ **PRISMA 2020 checklist + flow diagram** + `methods.json` (reproducibility) + RIS / nbib / BibTeX / Excel export
@@ -186,13 +206,13 @@ For **alpha testers**. Expect bugs and rapid changes. [Report a bug](https://git
 ## Installation
 
 1. **Download** `UltraLab-Setup.exe` from the [latest release](https://github.com/xerael/ultralab/releases/latest).
-2. **Requirements**: Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/) — UltraLab detects them and can **install them automatically** (winget). Optional: [R](https://cran.r-project.org/) for the statistical analysis module (+ RStudio, Quarto).
+2. **Requirements**: Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Ollama](https://ollama.com/). UltraLab detects them and can **install them automatically** (winget). Optional: [R](https://cran.r-project.org/) for the statistical analysis module (+ RStudio, Quarto).
 3. **Run the installer** (installer and app are self-signed; SmartScreen may prompt).
 4. **Verify integrity** (optional): compare the SHA256 in the release notes.
 
 ## First launch
 
-A wizard checks components, can install prerequisites, then configures: interface (native / web) → AI mode (local / remote Tailscale) → models recommended for your machine. The **"⚙ Configure services"** button calibrates Docker + n8n step by step (first image download ~400 MB — phases shown live). First model download takes 5-15 min (1-3 GB each).
+A wizard checks components, can install prerequisites, then configures: interface (native / web) → AI mode (local / remote Tailscale) → models recommended for your machine. The **"⚙ Configure services"** button calibrates Docker + n8n step by step (first image download ~400 MB, phases shown live). First model download takes 5-15 min (1-3 GB each).
 
 ## Usage
 
