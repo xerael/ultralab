@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.6--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.7--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -22,71 +22,80 @@
 
 UltraLab est une application de bureau (Windows) qui automatise les étapes d'une revue systématique de littérature scientifique, **en gardant vos données et l'IA en local**.
 
-### Fonctionnalités (v0.4.6)
+### Ce que fait UltraLab
 
-**Nouveau en 0.4.6 :**
-- 🔎 **Équations expertes enfin respectées** : PubMed interrogé en POST (fin de l'« URI trop longue », une équation à 1155 résultats sur pubmed.gov en renvoie 1155 dans le module), **requête dérivée de l'équation pour chaque base** (rappel multiplié par 10 à 1000 selon la base), panneau « requête réellement exécutée par base » (transparence PRISMA), ⚠ sur les comptages suspects, mécanique unifiée question / équation
-- 📚 **Interroger les PDFs du corpus** (RAG 100 % local) : question en langage naturel sur le plein texte, réponse **citant chaque passage** (article + page + extrait), index local par page
-- 🩺 **Méta-analyse diagnostique** : modèle bivarié de Reitsma (sensibilité/spécificité poolées, **courbe SROC**, AUC), détection automatique des comptages 2x2
-- 🤖 **Screening durci** : **correction de Platt** (confiances recalées sur votre relecture), **test canari** (3 textes-pièges avant les longs runs), **vote de cohérence** sur les cas incertains (0/3/5), **embeddings multilingues** validés FR/EN/ES
-- 🗃️ **Très grands corpus** : déduplication en flux via SQLite au-delà de 10 000 références (12 000 réfs testées en une fraction de seconde)
-- 📄 **Texte intégral** : correction tracée du **motif d'exclusion** (taxonomie PRISMA, item 16b), connecteurs **Wiley TDM** et **Springer Nature**, email Unpaywall réellement utilisé
-- 🖥️ **PC distant** : blocage multi-run corrigé (messages d'erreur différenciés), panneau admin avancé (instances, plafond RAM, drain, **extinction programmée quotidienne**), alerte Monitor en retard
-- 🛡️ **Fiabilité** : export HD du module R **persistant au redémarrage**, chaîne de mise à jour intégrée signée et vérifiée à chaque build, image n8n épinglée (1.94.1), début du portage Linux (interne)
+UltraLab couvre la revue systématique **de bout en bout**, étape PRISMA par étape PRISMA. Chaque module est utilisable seul, et les runs se réutilisent d'un module à l'autre.
 
-**En 0.4.5 :**
-- 📐 **Statistiques niveau Cochrane** : estimateurs τ² REML/Paule-Mandel + ajustement Hartung-Knapp + intervalle de prédiction ; suite de biais de publication (Egger, Begg, trim-and-fill, funnel à contours) ; **méta-analyse de proportions** (Freeman-Tukey) ; **imputation des stats manquantes** (Wan 2014, vérifiée contre R) ; **garde-fous d'unité d'analyse** (contrôle partagé, grappes, cross-over) ; checklist **PRISMA-S**
-- 🧑‍🔬 **Terrain** : **relecture en aveugle** (κ humain-IA valide), **surlignage des critères** dans les abstracts + Annuler (Z), **pack relecteur autonome** (HTML autoporté, co-relecteur sans installation), **chasse aux PDFs manquants** (statuts + case PRISMA « not retrieved »), **export figures TIFF/PDF/EPS 300-600 dpi** aux largeurs journal
-- 🔁 **Reprise partielle** : relancer un run interrompu **uniquement sur les articles échoués**, fusion dans le run d'origine
-- 📁 **Projets persistants** : contexte (question/critères/équation) enregistré dans le projet, dossier personnalisable, **snapshots ZIP** restaurables, planificateur séparé
-- 🛡️ **Fiabilité** : sorties LLM **contraintes par schéma JSON** (fin des réponses malformées), socle de **19 tests automatiques** (maths méta figées), **projet démo « Revue express »** sans Docker ni modèle, **mise à jour intégrée** de l'app, « **Citer UltraLab** » + fiche transparence
+**1 · Cadrer la revue**
+- 🧭 **Copilote méthodologique** : décrivez votre projet en langage naturel, l'IA recommande les modules, l'ordre et le pourquoi, et **pré-programme le pipeline** en un clic
+- 🗺️ **État de l'art automatique** : bilan des revues systématiques et méta-analyses existantes (filtrage par type de publication, tri par pertinence) et des travaux en cours, avec synthèse d'orientation
+- 📝 **Protocole PROSPERO-ready** et **PRISMA-ScR** (revues de portée)
+- 🗣️ **Assistant IA de configuration** : réglez le logiciel en langage naturel, avec confirmation
 
+**2 · Rechercher**
+- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect, avec **requête dérivée de votre équation pour chaque base**, dates natives, plafonds et activation par base
+- 📋 **Transparence PRISMA** : panneau de la requête réellement exécutée par base, alertes sur les comptages suspects
+- 🧪 **Littérature grise** : ClinicalTrials.gov, Europe PMC (préprints), ISRCTN, pour réduire le biais de publication
+- 🔎 **Aide à la revue de l'équation (PRESS)** : vérifications automatiques et suggestions (synonymes, MeSH, orthographe)
+- ❄️ **Snowballing** (chaînage de citations) : OpenAlex, Semantic Scholar, Europe PMC, OpenCitations, itérable jusqu'à saturation
+- 🔁 **Veille planifiée** et **living review** : recherches favorites relancées tous les N jours, alertes à l'ouverture
+- 📥 **Imports** : Rayyan, Covidence (décisions conservées), Zotero, dossier de PDFs, fichier en glisser-déposer
 
-- 🗺️ **État de l'art automatique** : avant de commencer, bilan des revues systématiques existantes + travaux en cours (Europe PMC, préprints, OSF, lien PROSPERO) avec synthèse d'orientation par l'IA locale
-- 📮 **Aide au choix du journal** : revues candidates depuis vos études incluses + travaux similaires (OpenAlex) + open access / APC (DOAJ), prédatrices écartées
-- 📋 **Table Summary of Findings (GRADE)** au format Cochrane (effets absolus pour 1000, certitude ⊕) + **brouillon de la section Méthodes (FR+EN)** rédigé depuis les traces réelles des runs
-- 🧬 **Companion papers** : les rapports d'une même étude sont regroupés : la méta compte par étude, pas par article ; **motifs d'exclusion standardisés** (PRISMA 16b) ; **alerte rétractations** sur tout corpus
-- 🎯 **Calibration entre relecteurs** (pilote 20 articles, κ/AC1 + verdict) et **méta-analyses par critère de jugement**
-- 🔁 **Import Rayyan / Covidence** (décisions conservées) + **veille planifiée** (recherches favorites relancées tous les N jours, alertes à l'ouverture)
-- 🖥️ **Interface repensée** : hub PRISMA cliquable en accueil de projet, file **« À valider »** unifiée (badge nav), explorateur de résultats intégré (+ visuels, + régénération des fichiers après correction), bandeau contexte, mode compact + raccourcis I/M/E, visite guidée, notifications système
-- 🛰️ **Contrôle admin du PC distant** (jeton partagé, ports en temps réel, multi-run) + guide de connexion intégré ; **préfixe EZproxy** pour l'accès institutionnel aux PDFs
+**3 · Trier**
+- ♻️ **Déduplication** : DOI, puis titre et année avec fusion de champs, plus une passe **sémantique** par embeddings ; mode **grand corpus** au-delà de 10 000 références
+- 🧠 **Pré-screening IA** (Include / Maybe / Exclude) : justification **critère par critère**, score de confiance, drapeau de vérification humaine
+- 🤖 **Apprentissage actif** : file de priorité qui apprend de vos décisions, jauge d'arrêt
+- 👥 **Double relecture** avec un 2ᵉ modèle obligatoirement différent, et **accord inter-juges** (kappa de Cohen, Gwet AC1, PABAK)
+- 🙋 **Relecture humaine** intégrée, **en aveugle**, **surlignage des critères**, et **pack relecteur autonome** (HTML autoporté, co-relecteur sans installation)
+- 🤝 **Réconciliation à deux relecteurs** avec arbitrage des désaccords
+- 📐 **Calibration de la confiance** (ECE, sensibilité du seuil) et **benchmark du screening** (WSS@95 %, rappel, travail économisé)
+- 📊 **Ranking** (score de pertinence) et **clustering** thématique
 
-- 🧭 **Copilote méthodologique** : décrivez votre projet en langage naturel, l'IA recommande les modules, l'ordre et le pourquoi, répond à vos questions et **pré-programme le pipeline** en un clic
-- ⚡ **Modules interactifs** : screening **en direct** avec correction humaine tracée, **méta-analyse live** (forest cliquable, leave-one-out instantané), **GRADE** et **risque de biais re-jugeables**, clustering ajustable, dédup arbitrée, comptage de recherche en temps réel, **essai sur 3 articles**, **points d'arrêt** dans le pipeline
-- 🔗 **Chaîne extraction → méta-analyse** : cadre « données chiffrées », **vérification humaine des chiffres** avant pooling, la méta réutilise sans ré-extraire ; extraction possible **depuis les abstracts** (priorité au PDF)
-- ❄️ **Snowballing actionnable** : screener les candidats en un clic (abstracts récupérés, y compris **par titre sans DOI**, question/critères pré-remplis), itération manuelle jusqu'à saturation, fusion guidée des inclus
-- 📋 **PRISMA de bout en bout** : checklist générée **depuis le corpus fusionné** (identification multi-sources + méthodes agrégées), **flux PRISMA vivant** du projet (cliquable), équations mémorisées
-- 📏 **Gwet AC1 + PABAK** en plus du kappa de Cohen (corrige le paradoxe de prévalence)
-- 🖥️ **Application native** (fenêtre) ou **version web** (navigateur) au choix ; interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**
-- 🤖 **Screening par apprentissage actif** file de priorité qui apprend de vos décisions, jauge d'arrêt, idéal pour trancher les « Maybe », 100 % local
-- 📐 **Calibration de la confiance IA** (ECE / fiabilité) + **sensibilité du seuil** + **courbe rappel vs proportion lue** dans le benchmark
-- 🔎 **Aide à la revue de l'équation (PRESS)** : vérifications automatiques + suggestions (synonymes, MeSH, orthographe)
-- 🗣️ **Assistant IA de configuration** : réglez le logiciel en langage naturel (avec confirmation) ; **screening multilingue**
-- 🧠 **Rapport d'interprétation du module R** : significativité, précautions et lecture globale, reliées à chaque graphique ; **méta-analyse en réseau** + analyses de sensibilité/sous-groupes
-- ♻️ **Déduplication sémantique** (embeddings) en complément du DOI + titre
-- 📝 **Protocole PROSPERO-ready**, **PRISMA-ScR** (revues de portée), **export RevMan / GRADEpro**, **rapports Word (.docx)**
-- 📁 **Mode projet** : les runs de tous les modules regroupés dans un dossier projet, réutilisables comme corpus par les autres modules, avec **pipeline pré-programmé** (recherche → dédup → screening → … → rapport) et **reprise depuis l'étape en échec**
-- 🔍 **Recherche multi-bases** : PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect ; équation adaptée par base, dates natives, plafonds et activation par base
-- 🧪 **Littérature grise** : ClinicalTrials.gov, **Europe PMC (préprints)** et **ISRCTN** (optionnels) pour réduire le biais de publication
-- ♻️ **Déduplication** (DOI puis titre+année, fusion de champs) + **enrichissement des abstracts manquants** multi-sources
-- 🧠 **Pré-screening IA** (Include / Maybe / Exclude) : justification **critère par critère** (esprit PRISMA), **score de confiance**, drapeau « vérification humaine »
-- 👥 **Double relecture optionnelle** : 2ᵉ modèle (obligatoirement différent) + **accord inter-juges (kappa de Cohen, Gwet AC1, PABAK)** ; s'applique au screening, à la lecture intégrale et à l'extraction
-- 🙋 **Relecture humaine intégrée** (opt-in, a posteriori) avec accord humain–IA (κ)
-- 📖 **Lecture intégrale** (full-text) : réévaluation de l'inclusion sur le PDF complet
-- 📊 **Ranking** (score de pertinence 0-100) et **clustering** thématique
-- 🩺 **Évaluation du risque de biais** : 7 outils (RoB 2, ROBINS-I, Newcastle-Ottawa cohorte & cas-témoins, AXIS, QUADAS-2, AMSTAR-2) + **outil personnalisé** (JSON ou PDF), réponses question par question → Excel détaillé + synthèse prête pour publication
-- 🔗 **Snowballing** (chaînage de citations) : OpenAlex, Semantic Scholar, Europe PMC, OpenCitations
-- 🚩 **Détection de revues prédatrices** (liste Beall + heuristiques) + **rétractations** (Crossref)
-- 📄 **Téléchargement de PDFs** en libre accès (Unpaywall, Europe PMC, CORE, Zotero)
-- 📋 **Extraction de données structurée** : **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + champs personnalisés
-- 📈 **Méta-analyse** (forest/funnel, I², effets poolés) + **GRADE** (certitude des preuves, Summary of Findings)
-- 📊 **Analyse statistique en langage naturel (R)** : 3 modes (Automatique / Guidé / Libre), import CSV/Excel ou run UltraLab, figures interactives, **rapport HTML Quarto** en un clic, ouverture dans **RStudio** (nécessite R installé)
-- 🔬 **Rigueur scientifique** : **benchmark du screening** (WSS@95 %, rappel, travail économisé), **journal d'audit** horodaté, **bundle de reproductibilité** par run
-- 🧩 **Mode Fusion** (multi-dossiers ou projet entier → corpus unifié) + **rapport consolidé** prêt-soumission
-- ✅ **Checklist + diagramme de flux PRISMA 2020** + `methods.json` (reproductibilité) + export RIS / nbib / BibTeX / Excel
-- ⏱️ **Avancement temps réel** par module + **reprise de run** interrompu (cache LLM) + **living review** (favoris de requêtes)
-- 🔌 **Connecteurs** : cartes par service (Semantic Scholar, Lens, ScienceDirect, Unpaywall, Zotero…) avec badge d'état et **test réel en un clic**
-- 🔐 **Tout en local** : l'IA tourne sur votre PC (Ollama) ou un PC distant privé (Tailscale), plusieurs utilisateurs en parallèle (file d'attente + instances dédiées). Aucune donnée utilisateur envoyée à des tiers, aucune télémétrie.
+**4 · Lire et extraire**
+- 📄 **Téléchargement de PDFs** en libre accès (Unpaywall, Europe PMC, CORE, Zotero) et **chasse aux PDFs manquants** avec statuts PRISMA
+- 📖 **Lecture intégrale** : réévaluation de l'inclusion sur le PDF complet, motifs d'exclusion standardisés (PRISMA 16b)
+- 📚 **Interroger les PDFs du corpus** (100 % local) : question en langage naturel sur le plein texte, réponse **citant chaque passage** (article + page + extrait)
+- 📋 **Extraction structurée** : PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN et champs personnalisés, avec **vérification humaine des chiffres** avant analyse
+- 🩺 **Risque de biais** : 7 outils (RoB 2, ROBINS-I, Newcastle-Ottawa cohorte et cas-témoins, AXIS, QUADAS-2, AMSTAR-2) plus un **outil personnalisé**
+- 🧬 **Qualité du corpus** : regroupement des **companion papers** (la méta compte par étude, pas par article), **alerte rétractations**, **détection de revues prédatrices**
+
+**5 · Analyser**
+- 📈 **Méta-analyse** : forest et funnel, I², effets poolés, estimateurs τ² REML et Paule-Mandel, ajustement Hartung-Knapp, intervalle de prédiction
+- 🔬 **Biais de publication** : Egger, Begg, trim-and-fill, funnel à contours ; **imputation des statistiques manquantes** ; garde-fous d'unité d'analyse
+- 🩺 **Variantes** : méta-analyse **diagnostique** (Reitsma, SROC), **en réseau**, **de proportions**, **par critère de jugement**, analyses de **sensibilité et sous-groupes**
+- 📋 **GRADE** et table **Summary of Findings** au format Cochrane
+- 📊 **Analyse statistique en langage naturel (R)** : 3 modes (Automatique, Guidé, Libre), import CSV/Excel ou run UltraLab, **rapport HTML Quarto**, **rapport d'interprétation**, export des figures en **TIFF / PDF / EPS 300-600 dpi** aux largeurs journal, ouverture dans RStudio
+
+**6 · Rédiger et publier**
+- ✅ **Checklist et diagramme de flux PRISMA 2020**, générés depuis le corpus fusionné, avec **flux PRISMA vivant** cliquable
+- 📄 **Brouillon de la section Méthodes** (FR et EN) rédigé depuis les traces réelles des runs
+- 📤 **Exports** : Word (.docx), RevMan, GRADEpro, RIS, nbib, BibTeX, Excel, plus `methods.json` pour la reproductibilité
+- 📮 **Aide au choix du journal** : revues candidates depuis vos études incluses et des travaux similaires, open access et APC, prédatrices écartées
+- 🧩 **Mode Fusion** (plusieurs dossiers ou un projet entier) et **rapport consolidé** prêt-soumission
+
+**Transversal**
+- 📁 **Mode projet** : les runs de tous les modules regroupés dans le dossier du projet, réutilisables comme corpus, avec **pipeline pré-programmé** et reprise depuis l'étape en échec
+- ⚡ **Modules interactifs** : screening **en direct** avec correction tracée, **méta-analyse live** (forest cliquable, leave-one-out), GRADE et risque de biais re-jugeables, **points d'arrêt** dans le pipeline
+- ⏱️ **Avancement temps réel**, **reprise de run** interrompu, et **reprise partielle** sur les seuls articles en échec
+- 🔬 **Rigueur et traçabilité** : **journal d'audit** horodaté, **bundle de reproductibilité** par run, sorties du modèle contraintes par schéma
+- 🖥️ **Application native ou version web**, interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**, mode compact, visite guidée
+- 🛰️ **PC distant** privé (Tailscale) avec file d'attente, instances dédiées et panneau d'administration
+- 🔌 **Connecteurs** : une carte par service, avec badge d'état et test réel en un clic
+- 🔐 **Tout en local** : l'IA tourne sur votre PC (Ollama) ou sur votre PC distant privé. Aucune donnée envoyée à des tiers, aucune télémétrie.
+
+### Quelle version a apporté quoi
+
+Le détail des correctifs de chaque version se trouve dans les [notes de release](https://github.com/xerael/ultralab/releases).
+
+| Version | Apports principaux |
+| --- | --- |
+| **0.4.7** | Durcissement et stabilisation : pas de nouvelle fonctionnalité, correction de défauts de fiabilité issus d'un audit complet du code |
+| **0.4.6** | Équations expertes respectées base par base, interrogation des PDFs du corpus, méta-analyse diagnostique, screening durci (calibration de Platt, test canari, vote de cohérence), très grands corpus |
+| **0.4.5** | Statistiques niveau Cochrane, relecture en aveugle, pack relecteur autonome, chasse aux PDFs manquants, export des figures aux formats journal, reprise partielle, projets persistants |
+| **0.4.4** | Copilote méthodologique, modules interactifs, hub PRISMA et file de validation, chaîne extraction vers méta-analyse, aide au choix du journal |
+| **0.4.3** | Déduplication sémantique, méta-analyse en réseau, PRESS, assistant IA de configuration, screening multilingue, Gwet AC1 et PABAK |
+| **0.4.2** | Apprentissage actif, analyses de sensibilité et de sous-groupes, rapport de projet consolidé |
+| **0.4.1** | Module d'analyse statistique R complet, benchmark du screening, journal d'audit, bundle de reproductibilité |
 
 ## ⚠️ Statut : alpha en développement actif
 
@@ -133,71 +142,80 @@ Développé par [@xerael](https://github.com/xerael). Stack : Python · Flask ·
 
 UltraLab is a Windows desktop app that automates the steps of a systematic literature review **while keeping your data and the AI local**.
 
-### Features (v0.4.6)
+### What UltraLab does
 
-**New in 0.4.6:**
-- 🔎 **Expert equations finally honoured**: PubMed queried via POST (no more "URI too long", an equation with 1155 results on pubmed.gov returns 1155 in the module), **per-database queries derived from your equation** (recall multiplied by 10 to 1000 depending on the database), "query actually executed per database" panel (PRISMA transparency), ⚠ flags on suspicious counts, unified question / equation mechanism
-- 📚 **Ask your corpus PDFs** (100% local RAG): natural-language questions against the full text, answers **citing every passage** (article + page + excerpt), local per-page index
-- 🩺 **Diagnostic test meta-analysis**: Reitsma bivariate model (pooled sensitivity/specificity, **SROC curve**, AUC), automatic detection of 2x2 counts
-- 🤖 **Hardened screening**: **Platt scaling** (confidence recalibrated against your review), **canary test** (3 trap texts before long runs), **consistency voting** on uncertain cases (0/3/5), **multilingual embeddings** validated FR/EN/ES
-- 🗃️ **Very large corpora**: streaming deduplication through SQLite beyond 10,000 references (12,000 refs tested in a fraction of a second)
-- 📄 **Full text**: tracked **exclusion-reason correction** (PRISMA taxonomy, item 16b), **Wiley TDM** and **Springer Nature** connectors, Unpaywall email actually used
-- 🖥️ **Remote PC**: multi-run deadlock fixed (differentiated error messages), advanced admin panel (instances, RAM cap, drain, **daily scheduled shutdown**), outdated-Monitor alert
-- 🛡️ **Reliability**: R module HD export **persists across restarts**, integrated update chain signed and verified at every build, n8n image pinned (1.94.1), Linux port started (internal)
+UltraLab covers a systematic review **end to end**, PRISMA stage by PRISMA stage. Every module works on its own, and runs are reusable from one module to the next.
 
-**In 0.4.5:**
-- 📐 **Cochrane-grade statistics**: REML/Paule-Mandel τ² estimators + Hartung-Knapp adjustment + prediction interval; publication-bias suite (Egger, Begg, trim-and-fill, contour-enhanced funnel); **meta-analysis of proportions** (Freeman-Tukey); **missing-statistics imputation** (Wan 2014, verified against R); **unit-of-analysis safeguards** (shared control, clusters, cross-over); **PRISMA-S** checklist
-- 🧑‍🔬 **Field work**: **blind review** (valid human-AI κ), **criteria highlighting** in abstracts + Undo (Z), **standalone reviewer pack** (self-contained HTML, co-reviewer installs nothing), **missing-PDF hunt board** (statuses + PRISMA “not retrieved” box), **TIFF/PDF/EPS figure export** at 300–600 dpi journal widths
-- 🔁 **Partial resume**: relaunch an interrupted run **only on failed articles**, merged back into the original run
-- 📁 **Persistent projects**: context (question/criteria/query) saved in the project, customisable folder, restorable **ZIP snapshots**, separate run scheduler
-- 🛡️ **Reliability**: LLM outputs **constrained by JSON schema** (no more malformed replies), **19 automated tests** (frozen meta maths), **“Express review” demo project** without Docker or a model, **integrated app updater**, “**Cite UltraLab**” + transparency sheet
+**1 · Frame the review**
+- 🧭 **Methodological copilot**: describe your project in plain language, the AI recommends the modules, the order and the rationale, and **pre-programmes the pipeline** in one click
+- 🗺️ **Automatic state of the art**: overview of existing systematic reviews and meta-analyses (filtered by publication type, ranked by relevance) and of ongoing work, with an orientation summary
+- 📝 **PROSPERO-ready protocol** and **PRISMA-ScR** (scoping reviews)
+- 🗣️ **AI configuration assistant**: set the software up in plain language, with confirmation
 
+**2 · Search**
+- 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect, with a **query derived from your equation for each database**, native date filters, caps and per-database toggles
+- 📋 **PRISMA transparency**: panel showing the query actually executed per database, with warnings on suspicious counts
+- 🧪 **Grey literature**: ClinicalTrials.gov, Europe PMC (preprints), ISRCTN, to reduce publication bias
+- 🔎 **Search strategy review (PRESS)**: automatic checks and suggestions (synonyms, MeSH, spelling)
+- ❄️ **Snowballing** (citation chaining): OpenAlex, Semantic Scholar, Europe PMC, OpenCitations, iterable until saturation
+- 🔁 **Scheduled monitoring** and **living review**: favourite searches re-run every N days, alerts on opening
+- 📥 **Imports**: Rayyan, Covidence (decisions preserved), Zotero, a folder of PDFs, drag and drop files
 
-- 🗺️ **Automated state of the art**: before starting, survey of existing systematic reviews + ongoing work (Europe PMC, preprints, OSF, PROSPERO link) with a local-AI orientation summary
-- 📮 **Journal finder**: candidate journals from your included studies + similar works (OpenAlex) + open access / APC (DOAJ), predatory filtered out
-- 📋 **GRADE Summary of Findings table** in Cochrane format (absolute effects per 1,000, certainty ⊕) + **Methods-section draft (FR+EN)** written from actual run traces
-- 🧬 **Companion papers**: reports of the same study are grouped: meta counts studies, not articles; **standardized exclusion reasons** (PRISMA 16b); **retraction alerts** on any corpus
-- 🎯 **Reviewer calibration exercise** (20-article pilot, κ/AC1 + verdict) and **per-outcome meta-analyses**
-- 🔁 **Rayyan / Covidence import** (decisions preserved) + **scheduled monitoring** (favorite searches re-run every N days, alerts at startup)
-- 🖥️ **Redesigned interface**: clickable PRISMA hub as project home, unified **“To validate”** queue (nav badge), built-in results explorer (+ charts, + file regeneration after corrections), review-context banner, compact mode + I/M/E shortcuts, guided tour, system notifications
-- 🛰️ **Remote PC admin control** (shared token, live port states, multi-run) + built-in connection guide; **EZproxy prefix** for institutional PDF access
+**3 · Screen**
+- ♻️ **Deduplication**: DOI, then title and year with field merging, plus a **semantic** pass using embeddings; **large corpus** mode beyond 10,000 references
+- 🧠 **AI pre-screening** (Include / Maybe / Exclude): **criterion-by-criterion** justification, confidence score, human verification flag
+- 🤖 **Active learning**: priority queue that learns from your decisions, with a stopping gauge
+- 👥 **Double screening** with a mandatorily different second model, and **inter-rater agreement** (Cohen's kappa, Gwet AC1, PABAK)
+- 🙋 **Built-in human review**, **blinded**, with **criteria highlighting**, and a **standalone reviewer pack** (self-contained HTML, co-reviewer needs no installation)
+- 🤝 **Two-reviewer reconciliation** with arbitration of disagreements
+- 📐 **Confidence calibration** (ECE, threshold sensitivity) and **screening benchmark** (WSS@95%, recall, work saved)
+- 📊 **Ranking** (relevance score) and topic **clustering**
 
-- 🧭 **Methodology copilot**: describe your project in natural language, the AI recommends modules, order and rationale, answers your questions and **pre-programs the pipeline** in one click
-- ⚡ **Interactive modules**: **live screening** with tracked human correction, **live meta-analysis** (clickable forest, instant leave-one-out), **re-judgeable GRADE** and **risk of bias**, adjustable clustering, arbitrated dedup, real-time search counts, **3-article trial**, pipeline **checkpoints**
-- 🔗 **Extraction → meta-analysis chain**: "numeric data" framework, **human verification of extracted numbers** before pooling, meta reuses without re-extracting; extraction **from abstracts** possible (PDF takes priority)
-- ❄️ **Actionable snowballing**: screen candidates in one click (abstracts recovered, including **by title without DOI**, question/criteria pre-filled), manual iteration until saturation, guided merge of included
-- 📋 **PRISMA end to end**: checklist generated **from the merged corpus** (multi-source identification + aggregated methods), **living project PRISMA flow** (clickable), remembered search queries
-- 📏 **Gwet's AC1 + PABAK** on top of Cohen's kappa (corrects the prevalence paradox)
-- 🖥️ **Native app** (window) or **web version** (browser); UI organized by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette
-- 🤖 **Active-learning screening** a priority queue that learns from your decisions, stopping gauge, ideal to resolve "Maybe", fully local
-- 📐 **AI confidence calibration** (ECE / reliability) + **threshold sensitivity** + **recall vs proportion screened curve** in the benchmark
-- 🔎 **Search-string review help (PRESS)**: automatic checks + suggestions (synonyms, MeSH, spelling)
-- 🗣️ **AI configuration assistant**: tune the app in natural language (with confirmation); **multilingual screening**
-- 🧠 **R-module interpretation report**: significance, caveats and global reading, tied to each chart; **network meta-analysis** + sensitivity/subgroup analyses
-- ♻️ **Semantic deduplication** (embeddings) on top of DOI + title
-- 📝 **PROSPERO-ready protocol**, **PRISMA-ScR** (scoping reviews), **RevMan / GRADEpro export**, **Word (.docx) reports**
-- 📁 **Project mode**: runs from every module grouped in one project folder and reusable as corpus by other modules, with a **pre-programmed pipeline** (search → dedup → screening → … → report) and **resume from the failed step**
-- 🔍 **Multi-database search**: PubMed, OpenAlex, Crossref, Semantic Scholar, DOAJ, BASE, Lens.org, ScienceDirect; per-database query syntax, native date filters, per-database caps and on/off toggles
-- 🧪 **Grey literature**: ClinicalTrials.gov, **Europe PMC (preprints)** and **ISRCTN** (optional) to reduce publication bias
-- ♻️ **Deduplication** (DOI then title+year, field merge) + **multi-source missing-abstract enrichment**
-- 🧠 **AI pre-screening** (Include / Maybe / Exclude): **per-criterion** justification (PRISMA-minded), **confidence score**, "human review" flag
-- 👥 **Optional double review**: a 2nd (necessarily different) model + **inter-rater agreement (Cohen's kappa, Gwet's AC1, PABAK)**; applies to screening, full-text and extraction
-- 🙋 **Built-in human review** (opt-in, after the fact) with human–AI agreement (κ)
-- 📖 **Full-text screening**: re-assess inclusion on the complete PDF
-- 📊 **Ranking** (0-100 relevance) and thematic **clustering**
-- 🩺 **Risk-of-bias assessment**: 7 tools (RoB 2, ROBINS-I, Newcastle-Ottawa cohort & case-control, AXIS, QUADAS-2, AMSTAR-2) + **custom tool** (JSON or PDF), question-by-question answers → detailed Excel + publication-ready summary
-- 🔗 **Snowballing** (citation chasing): OpenAlex, Semantic Scholar, Europe PMC, OpenCitations
-- 🚩 **Predatory journal detection** (Beall list + heuristics) + **retractions** (Crossref)
-- 📄 **Open-access PDF fetching** (Unpaywall, Europe PMC, CORE, Zotero)
-- 📋 **Structured data extraction**: **PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN** + custom fields
-- 📈 **Meta-analysis** (forest/funnel, I², pooled effects) + **GRADE** (certainty of evidence, Summary of Findings)
-- 📊 **Natural-language statistical analysis (R)**: 3 modes (Automatic / Guided / Free), CSV/Excel or UltraLab-run input, interactive figures, one-click **Quarto HTML report**, open in **RStudio** (requires R installed)
-- 🔬 **Scientific rigor**: **screening benchmark** (WSS@95%, recall, work saved), timestamped **audit log**, per-run **reproducibility bundle**
-- 🧩 **Fusion mode** (multiple folders or a whole project → unified corpus) + **submission-ready consolidated report**
-- ✅ **PRISMA 2020 checklist + flow diagram** + `methods.json` (reproducibility) + RIS / nbib / BibTeX / Excel export
-- ⏱️ **Real-time per-module progress** + **resume interrupted runs** (LLM cache) + **living review** (favorite queries)
-- 🔌 **Connectors**: one card per service (Semantic Scholar, Lens, ScienceDirect, Unpaywall, Zotero…) with status badge and **real one-click test**
-- 🔐 **Fully local**: AI runs on your PC (Ollama) or a private remote PC (Tailscale), several users in parallel (queue + dedicated instances). No user data sent to third parties, no telemetry.
+**4 · Read and extract**
+- 📄 **Open access PDF download** (Unpaywall, Europe PMC, CORE, Zotero) and **missing PDF hunt** with PRISMA statuses
+- 📖 **Full-text reading**: inclusion re-assessed on the complete PDF, standardised exclusion reasons (PRISMA 16b)
+- 📚 **Ask your corpus PDFs** (100% local): natural-language questions against the full text, answers **citing every passage** (article + page + excerpt)
+- 📋 **Structured extraction**: PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN and custom fields, with **human verification of the figures** before analysis
+- 🩺 **Risk of bias**: 7 tools (RoB 2, ROBINS-I, Newcastle-Ottawa cohort and case-control, AXIS, QUADAS-2, AMSTAR-2) plus a **custom tool**
+- 🧬 **Corpus quality**: **companion papers** grouped (the meta-analysis counts studies, not articles), **retraction alerts**, **predatory journal detection**
+
+**5 · Analyse**
+- 📈 **Meta-analysis**: forest and funnel plots, I², pooled effects, τ² REML and Paule-Mandel estimators, Hartung-Knapp adjustment, prediction interval
+- 🔬 **Publication bias**: Egger, Begg, trim-and-fill, contour-enhanced funnel; **imputation of missing statistics**; unit-of-analysis safeguards
+- 🩺 **Variants**: **diagnostic** meta-analysis (Reitsma, SROC), **network**, **proportion**, **per outcome**, plus **sensitivity and subgroup** analyses
+- 📋 **GRADE** and Cochrane-format **Summary of Findings** table
+- 📊 **Natural-language statistical analysis (R)**: 3 modes (Automatic, Guided, Free), CSV/Excel import or an UltraLab run, **Quarto HTML report**, **interpretation report**, figure export in **TIFF / PDF / EPS at 300-600 dpi** at journal widths, opening in RStudio
+
+**6 · Write and publish**
+- ✅ **PRISMA 2020 checklist and flow diagram**, generated from the merged corpus, with a clickable **living PRISMA flow**
+- 📄 **Methods section draft** (French and English) written from the actual run traces
+- 📤 **Exports**: Word (.docx), RevMan, GRADEpro, RIS, nbib, BibTeX, Excel, plus `methods.json` for reproducibility
+- 📮 **Journal selection help**: candidate journals from your included studies and similar work, open access and APC information, predatory ones filtered out
+- 🧩 **Merge mode** (several folders or a whole project) and a submission-ready **consolidated report**
+
+**Across the whole app**
+- 📁 **Project mode**: runs from every module gathered in the project folder, reusable as a corpus, with a **pre-programmed pipeline** and resume from the failed step
+- ⚡ **Interactive modules**: **live** screening with traced corrections, **live meta-analysis** (clickable forest, leave-one-out), re-judgeable GRADE and risk of bias, **breakpoints** in the pipeline
+- ⏱️ **Real-time progress**, **resume interrupted runs**, and **partial resume** on failed articles only
+- 🔬 **Rigour and traceability**: timestamped **audit log**, per-run **reproducibility bundle**, schema-constrained model output
+- 🖥️ **Native application or web version**, interface organised by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette, compact mode, guided tour
+- 🛰️ **Private remote PC** (Tailscale) with a queue, dedicated instances and an admin panel
+- 🔌 **Connectors**: one card per service, with a status badge and a real one-click test
+- 🔐 **Fully local**: the AI runs on your PC (Ollama) or on your own private remote PC. No data sent to third parties, no telemetry.
+
+### Which version brought what
+
+The detailed fix list for each version lives in the [release notes](https://github.com/xerael/ultralab/releases).
+
+| Version | Main additions |
+| --- | --- |
+| **0.4.7** | Hardening and stabilisation: no new feature, reliability defects fixed following a full code audit |
+| **0.4.6** | Expert equations honoured database by database, ask your corpus PDFs, diagnostic meta-analysis, hardened screening (Platt calibration, canary test, consistency voting), very large corpora |
+| **0.4.5** | Cochrane-level statistics, blinded review, standalone reviewer pack, missing PDF hunt, journal-format figure export, partial resume, persistent projects |
+| **0.4.4** | Methodological copilot, interactive modules, PRISMA hub and validation queue, extraction to meta-analysis chain, journal selection help |
+| **0.4.3** | Semantic deduplication, network meta-analysis, PRESS, AI configuration assistant, multilingual screening, Gwet AC1 and PABAK |
+| **0.4.2** | Active learning, sensitivity and subgroup analyses, consolidated project report |
+| **0.4.1** | Complete R statistical analysis module, screening benchmark, audit log, reproducibility bundle |
 
 ## ⚠️ Status: active alpha
 
