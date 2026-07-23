@@ -1,0 +1,18 @@
+# Statistiques de langage du depot (GitHub Linguist).
+#
+# manifest.json.sig est une signature Ed25519 binaire de 128 octets. Linguist
+# associe l'extension .sig au langage Standard ML. Comme tous les autres
+# fichiers sont exclus par defaut des statistiques (JSON = donnees,
+# Markdown = prose), cette unique signature representait 100 % du depot,
+# qui s'affichait donc comme un projet Standard ML.
+manifest.json.sig linguist-generated=true
+*.sig linguist-generated=true
+
+# Contenu reel de ce depot : les workflows n8n et la documentation.
+# Linguist les ignore par defaut ; on les reintegre pour que la barre de
+# langages reflete ce que le depot contient vraiment.
+workflows/*.json linguist-detectable=true
+*.md linguist-detectable=true
+
+# Le manifest de release est de la configuration, pas du contenu.
+manifest.json linguist-generated=true
