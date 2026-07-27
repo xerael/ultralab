@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.7--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.8--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -79,6 +79,8 @@ UltraLab couvre la revue systématique **de bout en bout**, étape PRISMA par é
 - ⏱️ **Avancement temps réel**, **reprise de run** interrompu, et **reprise partielle** sur les seuls articles en échec
 - 🔬 **Rigueur et traçabilité** : **journal d'audit** horodaté, **bundle de reproductibilité** par run, sorties du modèle contraintes par schéma
 - 🖥️ **Application native ou version web**, interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**, mode compact, visite guidée
+- 🧭 **Assistant de premier paramétrage** : détecte les prérequis et guide l'installation pas à pas (Ollama, Docker, R, mode distant), pensé pour les personnes peu à l'aise avec l'informatique
+- 🗑️ **Gestion des données** : supprimer runs et projets, effacer les caches, avec vue de l'espace occupé, depuis l'application
 - 🛰️ **PC distant** privé (Tailscale) avec file d'attente, instances dédiées et panneau d'administration
 - 🔌 **Connecteurs** : une carte par service, avec badge d'état et test réel en un clic
 - 🔐 **Tout en local** : l'IA tourne sur votre PC (Ollama) ou sur votre PC distant privé. Aucune donnée envoyée à des tiers, aucune télémétrie.
@@ -89,6 +91,7 @@ Le détail des correctifs de chaque version se trouve dans les [notes de release
 
 | Version | Apports principaux |
 | --- | --- |
+| **0.4.8** | Assistant de premier paramétrage guidé, module « À valider » avec détail de l'article et traduction locale du résumé, suppression de données depuis l'application, mode distant fiabilisé avec diagnostic clair |
 | **0.4.7** | Durcissement et stabilisation : pas de nouvelle fonctionnalité, correction de défauts de fiabilité issus d'un audit complet du code |
 | **0.4.6** | Équations expertes respectées base par base, interrogation des PDFs du corpus, méta-analyse diagnostique, screening durci (calibration de Platt, test canari, vote de cohérence), très grands corpus |
 | **0.4.5** | Statistiques niveau Cochrane, relecture en aveugle, pack relecteur autonome, chasse aux PDFs manquants, export des figures aux formats journal, reprise partielle, projets persistants |
@@ -199,6 +202,8 @@ UltraLab covers a systematic review **end to end**, PRISMA stage by PRISMA stage
 - ⏱️ **Real-time progress**, **resume interrupted runs**, and **partial resume** on failed articles only
 - 🔬 **Rigour and traceability**: timestamped **audit log**, per-run **reproducibility bundle**, schema-constrained model output
 - 🖥️ **Native application or web version**, interface organised by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette, compact mode, guided tour
+- 🧭 **First-run setup assistant**: detects prerequisites and guides installation step by step (Ollama, Docker, R, remote mode), designed for people not comfortable with computers
+- 🗑️ **Data management**: delete runs and projects, clear caches, with a view of disk usage, from within the application
 - 🛰️ **Private remote PC** (Tailscale) with a queue, dedicated instances and an admin panel
 - 🔌 **Connectors**: one card per service, with a status badge and a real one-click test
 - 🔐 **Fully local**: the AI runs on your PC (Ollama) or on your own private remote PC. No data sent to third parties, no telemetry.
@@ -209,6 +214,7 @@ The detailed fix list for each version lives in the [release notes](https://gith
 
 | Version | Main additions |
 | --- | --- |
+| **0.4.8** | Guided first-run setup assistant, "to validate" module with article detail and local abstract translation, in-app data deletion, reliable remote mode with clear diagnosis |
 | **0.4.7** | Hardening and stabilisation: no new feature, reliability defects fixed following a full code audit |
 | **0.4.6** | Expert equations honoured database by database, ask your corpus PDFs, diagnostic meta-analysis, hardened screening (Platt calibration, canary test, consistency voting), very large corpora |
 | **0.4.5** | Cochrane-level statistics, blinded review, standalone reviewer pack, missing PDF hunt, journal-format figure export, partial resume, persistent projects |
