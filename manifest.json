@@ -3,13 +3,13 @@
   "$comment_workflow": "Quand on modifie un workflow .json : (1) commit dans le repo, (2) incrementer workflows.version ici, (3) push. Les apps detecteront la mise a jour au prochain check.",
   "$comment_app": "Quand on release une nouvelle version de l'app : (1) build + Inno Setup, (2) creer une release GitHub avec UltraLab-Setup.exe, (3) mettre a jour app.latest_version + download_url ici.",
   "app": {
-    "latest_version": "0.4.8-alpha",
-    "release_date": "2026-07-27",
+    "latest_version": "0.4.9-alpha",
+    "release_date": "2026-07-28",
     "download_url": "https://github.com/xerael/ultralab/releases/latest/download/UltraLab-Setup.exe",
     "release_notes_url": "https://github.com/xerael/ultralab/releases/latest"
   },
   "workflows": {
-    "version": "0.4.8-alpha",
+    "version": "0.4.9-alpha",
     "files": [
       {
         "name": "ultralab-systematicreview-orchestrator.json",
@@ -44,7 +44,7 @@
       {
         "name": "ultralab-ranking.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-ranking.json",
-        "sha256": "a3dfd129525553c8ae090f76d17f092f3b474ae235f1499ce06bdba07394c5f7"
+        "sha256": "187aa2dcacedf22de272af2c67f571137eb901fc1eb7b34a3bb4aa8f8351cf25"
       },
       {
         "name": "ultralab-clustering.json",
@@ -54,12 +54,12 @@
       {
         "name": "ultralab-screening.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-screening.json",
-        "sha256": "9cb972f6d8ba0caa9c372206edcbcf6899bc603d2dac5fa078fb88e446e1cf61"
+        "sha256": "8f5ca14a7f68e8fb5a6cd4afb6b5f2d8cea3986e7fd5039f1489d67a7a6d8244"
       },
       {
         "name": "ultralab-pdf-fetch.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-pdf-fetch.json",
-        "sha256": "8f9eb86b6c4abf8fb85fdbc53e66495a36728e168cb89e948df77a026c188aad"
+        "sha256": "176ed34e24d1c7e8934382aec0890a631c18b6709cd3e3883918507caea8b37d"
       },
       {
         "name": "ultralab-pdf-extract.json",
@@ -79,7 +79,7 @@
       {
         "name": "ultralab-module.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-module.json",
-        "sha256": "f527025e2eaecf1e0338989f722b5fd148be438c7bbccfc1d61c2fd76fbed970"
+        "sha256": "e7c3cb3792828a54e1b923d0e794a97e7f3c91ad38f2fbb515bdfe70bfdd7018"
       },
       {
         "name": "ultralab-api-search-isolated.json",
@@ -109,17 +109,17 @@
       {
         "name": "ultralab-metaanalysis.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-metaanalysis.json",
-        "sha256": "6c0ce7f168c0833d12d4dd5d50215ecde73f4ab728e7506347bdbf47b8f9662d"
+        "sha256": "b8a337d631f2349c490253c4c86b32b7e6831d9312f37b544b5545c14fe6959c"
       },
       {
         "name": "ultralab-grade.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-grade.json",
-        "sha256": "1e3d5d20306452397ecff762126773757cc07ab2e577bf46beea6a8b366edeed"
+        "sha256": "ed16c1316bc3a53459c9ad2b169dc48dc6b26d4ec9925942d35f2f8f0e61dbd3"
       }
     ]
   },
   "monitor": {
-    "latest_version": "0.1.4",
+    "latest_version": "0.1.5",
     "download_url": "https://github.com/xerael/ultralab/releases/latest/download/UltraLab-Monitor-Setup.exe",
     "release_notes_url": "https://github.com/xerael/ultralab/releases/latest"
   }

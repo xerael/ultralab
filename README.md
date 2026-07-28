@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.4.8--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.9--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -49,12 +49,13 @@ UltraLab couvre la revue systématique **de bout en bout**, étape PRISMA par é
 - 🙋 **Relecture humaine** intégrée, **en aveugle**, **surlignage des critères**, et **pack relecteur autonome** (HTML autoporté, co-relecteur sans installation)
 - 🤝 **Réconciliation à deux relecteurs** avec arbitrage des désaccords
 - 📐 **Calibration de la confiance** (ECE, sensibilité du seuil) et **benchmark du screening** (WSS@95 %, rappel, travail économisé)
+- 🎛️ **Contrôle des runs** : mise en pause qui conserve le travail déjà fait, reprise, et **relance ciblée** sur une catégorie (non traités, Maybe, résumé manquant, confiance faible, désaccords), avec changement de modèle pour la seule relance
 - 📊 **Ranking** (score de pertinence) et **clustering** thématique
 
 **4 · Lire et extraire**
 - 📄 **Téléchargement de PDFs** en libre accès (Unpaywall, Europe PMC, CORE, Zotero) et **chasse aux PDFs manquants** avec statuts PRISMA
 - 📖 **Lecture intégrale** : réévaluation de l'inclusion sur le PDF complet, motifs d'exclusion standardisés (PRISMA 16b)
-- 📚 **Interroger les PDFs du corpus** (100 % local) : question en langage naturel sur le plein texte, réponse **citant chaque passage** (article + page + extrait)
+- 📓 **Carnet d'interrogation des PDFs** (100 % local) : conversation suivie sur le plein texte, chaque affirmation **citant son passage** (article + page + extrait), choix des documents interrogés et liste de ceux qui ont réellement servi, notes et réponses épinglées exportables
 - 📋 **Extraction structurée** : PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN et champs personnalisés, avec **vérification humaine des chiffres** avant analyse
 - 🩺 **Risque de biais** : 7 outils (RoB 2, ROBINS-I, Newcastle-Ottawa cohorte et cas-témoins, AXIS, QUADAS-2, AMSTAR-2) plus un **outil personnalisé**
 - 🧬 **Qualité du corpus** : regroupement des **companion papers** (la méta compte par étude, pas par article), **alerte rétractations**, **détection de revues prédatrices**
@@ -91,6 +92,7 @@ Le détail des correctifs de chaque version se trouve dans les [notes de release
 
 | Version | Apports principaux |
 | --- | --- |
+| **0.4.9** | Carnet d'interrogation des PDFs, contrôle des runs (pause sans perte, reprise, relance ciblée), bouton de 2ᵉ avis, suivi des runs par le moteur, rigueur statistique renforcée |
 | **0.4.8** | Assistant de premier paramétrage guidé, module « À valider » avec détail de l'article et traduction locale du résumé, suppression de données depuis l'application, mode distant fiabilisé avec diagnostic clair |
 | **0.4.7** | Durcissement et stabilisation : pas de nouvelle fonctionnalité, correction de défauts de fiabilité issus d'un audit complet du code |
 | **0.4.6** | Équations expertes respectées base par base, interrogation des PDFs du corpus, méta-analyse diagnostique, screening durci (calibration de Platt, test canari, vote de cohérence), très grands corpus |
@@ -172,12 +174,13 @@ UltraLab covers a systematic review **end to end**, PRISMA stage by PRISMA stage
 - 🙋 **Built-in human review**, **blinded**, with **criteria highlighting**, and a **standalone reviewer pack** (self-contained HTML, co-reviewer needs no installation)
 - 🤝 **Two-reviewer reconciliation** with arbitration of disagreements
 - 📐 **Confidence calibration** (ECE, threshold sensitivity) and **screening benchmark** (WSS@95%, recall, work saved)
+- 🎛️ **Run control**: pause that preserves the work already done, resume, and a **targeted re-run** on one category (unprocessed, Maybe, missing abstract, low confidence, disagreements), with a model switch for that re-run only
 - 📊 **Ranking** (relevance score) and topic **clustering**
 
 **4 · Read and extract**
 - 📄 **Open access PDF download** (Unpaywall, Europe PMC, CORE, Zotero) and **missing PDF hunt** with PRISMA statuses
 - 📖 **Full-text reading**: inclusion re-assessed on the complete PDF, standardised exclusion reasons (PRISMA 16b)
-- 📚 **Ask your corpus PDFs** (100% local): natural-language questions against the full text, answers **citing every passage** (article + page + excerpt)
+- 📓 **PDF library notebook** (100% local): an ongoing conversation over the full text, every claim **citing its passage** (article + page + excerpt), you pick which documents are queried and see which ones actually contributed, with exportable notes and pinned answers
 - 📋 **Structured extraction**: PICO, PECO, SPIDER, SPICE, ECLIPSE, COSMIN and custom fields, with **human verification of the figures** before analysis
 - 🩺 **Risk of bias**: 7 tools (RoB 2, ROBINS-I, Newcastle-Ottawa cohort and case-control, AXIS, QUADAS-2, AMSTAR-2) plus a **custom tool**
 - 🧬 **Corpus quality**: **companion papers** grouped (the meta-analysis counts studies, not articles), **retraction alerts**, **predatory journal detection**
@@ -214,6 +217,7 @@ The detailed fix list for each version lives in the [release notes](https://gith
 
 | Version | Main additions |
 | --- | --- |
+| **0.4.9** | PDF library notebook, run control (lossless pause, resume, targeted re-run), 2nd opinion button, engine-side run tracking, stronger statistical rigour |
 | **0.4.8** | Guided first-run setup assistant, "to validate" module with article detail and local abstract translation, in-app data deletion, reliable remote mode with clear diagnosis |
 | **0.4.7** | Hardening and stabilisation: no new feature, reliability defects fixed following a full code audit |
 | **0.4.6** | Expert equations honoured database by database, ask your corpus PDFs, diagnostic meta-analysis, hardened screening (Platt calibration, canary test, consistency voting), very large corpora |
