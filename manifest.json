@@ -14,107 +14,107 @@
       {
         "name": "ultralab-systematicreview-orchestrator.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-systematicreview-orchestrator.json",
-        "sha256": "a1ca94d68b228f1bd2a717205f814f751e3c834ba8631232f54d906661bc5275"
+        "sha256": "64b0b2d8311ed3f9b7673d431d2bf97c87b890b7c93bb6e827847a78b0d3eb07"
       },
       {
         "name": "ultralab-search-apis.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-search-apis.json",
-        "sha256": "b7a25e77c414c7836dccd80af008cf532c2ff73105db779d0ae12297845254e3"
+        "sha256": "54fb98205d90112f77e5fd546452d83e87c2443e56bcb64244d37c224090d0bb"
       },
       {
         "name": "ultralab-normalize.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-normalize.json",
-        "sha256": "0b5cbda903bf0ed7126f2d6bbd2188078dc772efc2914375765aac061e3046c1"
+        "sha256": "cd0ebd5ed304fb71e6130cef2d12843b9fdb281270b33e398ef74fba2784540a"
       },
       {
         "name": "ultralab-embedding.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-embedding.json",
-        "sha256": "42b4118b74394c60b160a5786783ff014bdfb8a5b274216633e50a3c39d6a865"
+        "sha256": "f437976c8d9fb024d0b519eb3ba51d2f976bdc08830226e949c54c48c0f752d4"
       },
       {
         "name": "ultralab-qdrant-store.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-qdrant-store.json",
-        "sha256": "d6c6ca7c990207c570b39e329bbdfbf94a39d02b4875398f338f388efcf74e5b"
+        "sha256": "b9122b6aff3e29807c7a42a304ebf33901434129e5ce937bbf951bcba5598f1f"
       },
       {
         "name": "ultralab-deduplicate.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-deduplicate.json",
-        "sha256": "be96b45ac0a0bf423bd7f1fd9d1f4f6b53897b414d728f2e96a1342bcebff119"
+        "sha256": "41821ebf56a75c06a96f546565b82cd80ca037612a63093f5dc0ad6ed4802ed9"
       },
       {
         "name": "ultralab-ranking.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-ranking.json",
-        "sha256": "187aa2dcacedf22de272af2c67f571137eb901fc1eb7b34a3bb4aa8f8351cf25"
+        "sha256": "15ad1e0705c1d9277cc569f86e628943e2bf9bb27191460dc0e3232d08713723"
       },
       {
         "name": "ultralab-clustering.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-clustering.json",
-        "sha256": "8b7a59e12f7cf1bfb2367f579e85d18e6ab1e06df7cdd87a763ab8067a019f90"
+        "sha256": "023f969f98d4f186fe9e528f5f4f16cad0f42621738a0d991af887d2e32376a1"
       },
       {
         "name": "ultralab-screening.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-screening.json",
-        "sha256": "8f5ca14a7f68e8fb5a6cd4afb6b5f2d8cea3986e7fd5039f1489d67a7a6d8244"
+        "sha256": "0bab23a7105005e0f8335078e09397991bf57b873d5088da5caed519c92bb644"
       },
       {
         "name": "ultralab-pdf-fetch.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-pdf-fetch.json",
-        "sha256": "176ed34e24d1c7e8934382aec0890a631c18b6709cd3e3883918507caea8b37d"
+        "sha256": "de45de23a0b01195d8e000f8921bb3900dac3f127d6c5fb80e5e116769d1bc38"
       },
       {
         "name": "ultralab-pdf-extract.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-pdf-extract.json",
-        "sha256": "9651c72e44f4578ff48b0f35e6f1822c340d78782f6adb531daec6b13930f854"
+        "sha256": "e045f9f8b1399f64917cf512707038181298b62625213d58f553bcb9fc27e4f9"
       },
       {
         "name": "ultralab-export.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-export.json",
-        "sha256": "951d2152f2ea9c904eb04ca9c766bfaf2392cc5741d6a3e41967107e7ac61dce"
+        "sha256": "79dcfbf00f00e52dfa21bc15b0a23ce2ff90e5cf634d6f409df6bd7776c2328a"
       },
       {
         "name": "ultralab-prisma.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-prisma.json",
-        "sha256": "304d2d75397df03ed84829e4cbf3b76b4d579db7f769fc3ce62eb5a61fcfdae2"
+        "sha256": "3c6c103f8bb825b866dcbe87e5b7d3a99731f33ec43d1530a76e180051d563e6"
       },
       {
         "name": "ultralab-module.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-module.json",
-        "sha256": "e7c3cb3792828a54e1b923d0e794a97e7f3c91ad38f2fbb515bdfe70bfdd7018"
+        "sha256": "dd9ede7ac86196df7d286ea7bfc5d0b6f805004e5d765cec8a871b84d92c7407"
       },
       {
         "name": "ultralab-api-search-isolated.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-api-search-isolated.json",
-        "sha256": "fd4454e1499718e4050fabbb39a4d134da110e79c2ebd09a51f61bb229bdfc37"
+        "sha256": "c8fa69f2726eeb93c91665922cf3a101e0cdfd964e8e59c906f8230a65493453"
       },
       {
         "name": "ultralab-predatory.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-predatory.json",
-        "sha256": "c5a50c6a0d84ce7f7b8d04f5491b348ab7f2590d8da086fedfc3d543b1c7bc25"
+        "sha256": "7913daea7b05deb5da36131f2b89600eb06ae9b89422fb38528a0ffdfeedafa0"
       },
       {
         "name": "ultralab-fulltext.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-fulltext.json",
-        "sha256": "b869e5b239b0ace17e41eace0f379b90e4e148385a55d11ffe21d57923737cca"
+        "sha256": "dbbf7d9213903062052086f15a0febec8fafe7bed060fdb36cb0a63b2ccd6c7f"
       },
       {
         "name": "ultralab-riskofbias.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-riskofbias.json",
-        "sha256": "214162511d41391e77fcaf530ffc8ed1d273405087e232b7e465ca1551c49d0d"
+        "sha256": "50e87f9b9f9f3a8502b4295a41c0a314dbbd6b88363157f3e863707d402a3c0e"
       },
       {
         "name": "ultralab-snowballing.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-snowballing.json",
-        "sha256": "e2e00825af46976e3f6f1b7647806f3f3be11f2737586205cf538caae705b6fe"
+        "sha256": "33a37cb5d88c79e88f593e68244e0f3feea331a43165931642dad701d4657e11"
       },
       {
         "name": "ultralab-metaanalysis.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-metaanalysis.json",
-        "sha256": "b8a337d631f2349c490253c4c86b32b7e6831d9312f37b544b5545c14fe6959c"
+        "sha256": "7fb95c841e811de3b994a0cda5ae9136a9e7c5141f3078e13ce1c5182c34e745"
       },
       {
         "name": "ultralab-grade.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-grade.json",
-        "sha256": "ed16c1316bc3a53459c9ad2b169dc48dc6b26d4ec9925942d35f2f8f0e61dbd3"
+        "sha256": "4d7582cb6b3b0707e96967c83a47d9c5acd842131b810428d3ef7f8a4e4036bd"
       }
     ]
   },
