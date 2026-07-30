@@ -3,13 +3,16 @@
   "$comment_workflow": "Quand on modifie un workflow .json : (1) commit dans le repo, (2) incrementer workflows.version ici, (3) push. Les apps detecteront la mise a jour au prochain check.",
   "$comment_app": "Quand on release une nouvelle version de l'app : (1) build + Inno Setup, (2) creer une release GitHub avec UltraLab-Setup.exe, (3) mettre a jour app.latest_version + download_url ici.",
   "app": {
-    "latest_version": "0.4.9-alpha",
-    "release_date": "2026-07-28",
+    "latest_version": "0.5.0-alpha",
+    "release_date": "2026-07-30",
     "download_url": "https://github.com/xerael/ultralab/releases/latest/download/UltraLab-Setup.exe",
-    "release_notes_url": "https://github.com/xerael/ultralab/releases/latest"
+    "release_notes_url": "https://github.com/xerael/ultralab/releases/latest",
+    "downloads": {
+      "windows-x86_64": "https://github.com/xerael/ultralab/releases/latest/download/UltraLab-Setup.exe"
+    }
   },
   "workflows": {
-    "version": "0.4.9-alpha",
+    "version": "0.5.0-alpha",
     "files": [
       {
         "name": "ultralab-systematicreview-orchestrator.json",
@@ -79,12 +82,12 @@
       {
         "name": "ultralab-module.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-module.json",
-        "sha256": "dd9ede7ac86196df7d286ea7bfc5d0b6f805004e5d765cec8a871b84d92c7407"
+        "sha256": "8272ae159eff1e95e1cece2d716c3985807dd785466afde18fdb900d27a7f5f4"
       },
       {
         "name": "ultralab-api-search-isolated.json",
         "url": "https://raw.githubusercontent.com/xerael/ultralab/main/workflows/ultralab-api-search-isolated.json",
-        "sha256": "c8fa69f2726eeb93c91665922cf3a101e0cdfd964e8e59c906f8230a65493453"
+        "sha256": "e851a1aea333b43694c42ceb7c5bc652a9848edd2ccb4f35946e821bcedf8c18"
       },
       {
         "name": "ultralab-predatory.json",
@@ -119,7 +122,7 @@
     ]
   },
   "monitor": {
-    "latest_version": "0.1.5",
+    "latest_version": "0.1.6",
     "download_url": "https://github.com/xerael/ultralab/releases/latest/download/UltraLab-Monitor-Setup.exe",
     "release_notes_url": "https://github.com/xerael/ultralab/releases/latest"
   }
