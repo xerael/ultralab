@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.5.0--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.5.1--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -92,6 +92,7 @@ Le détail des correctifs de chaque version se trouve dans les [notes de release
 
 | Version | Apports principaux |
 | --- | --- |
+| **0.5.1** | Correctif du mode distant : une instance de serveur de modèles indisponible ne bloque plus les requêtes ni ne fait déclarer une panne totale |
 | **0.5.0** | Carnet d'interrogation des PDFs qui cite tous vos articles, projets rangés hors du Bureau enfin pris en charge, import d'un run venu d'un autre ordinateur, mémoire des cartes graphiques visible carte par carte, fermeture propre et diagnostics distants exacts |
 | **0.4.9** | Carnet d'interrogation des PDFs, contrôle des runs (pause sans perte, reprise, relance ciblée), bouton de 2ᵉ avis, suivi des runs par le moteur, rigueur statistique renforcée |
 | **0.4.8** | Assistant de premier paramétrage guidé, module « À valider » avec détail de l'article et traduction locale du résumé, suppression de données depuis l'application, mode distant fiabilisé avec diagnostic clair |
@@ -218,6 +219,7 @@ The detailed fix list for each version lives in the [release notes](https://gith
 
 | Version | Main additions |
 | --- | --- |
+| **0.5.1** | Remote mode fix: an unavailable model server instance no longer blocks requests nor triggers a false total failure |
 | **0.5.0** | PDF library notebook now citing all your articles, projects stored outside the Desktop finally supported, importing a run from another computer, graphics card memory shown card by card, clean shutdown and accurate remote diagnoses |
 | **0.4.9** | PDF library notebook, run control (lossless pause, resume, targeted re-run), 2nd opinion button, engine-side run tracking, stronger statistical rigour |
 | **0.4.8** | Guided first-run setup assistant, "to validate" module with article detail and local abstract translation, in-app data deletion, reliable remote mode with clear diagnosis |
