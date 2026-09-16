@@ -5,7 +5,7 @@
 **Automatisation de revues systématiques de la littérature scientifique**
 **Systematic literature review automation**
 
-![Version](https://img.shields.io/badge/version-0.5.1--alpha-orange)
+![Version](https://img.shields.io/badge/version-0.5.2--alpha-orange)
 ![Plateforme](https://img.shields.io/badge/Windows-10%2F11-blue)
 ![Statut](https://img.shields.io/badge/statut-alpha-yellow)
 ![Langues](https://img.shields.io/badge/UI-FR%20%2F%20EN-success)
@@ -79,7 +79,7 @@ UltraLab couvre la revue systématique **de bout en bout**, étape PRISMA par é
 - ⚡ **Modules interactifs** : screening **en direct** avec correction tracée, **méta-analyse live** (forest cliquable, leave-one-out), GRADE et risque de biais re-jugeables, **points d'arrêt** dans le pipeline
 - ⏱️ **Avancement temps réel**, **reprise de run** interrompu, et **reprise partielle** sur les seuls articles en échec
 - 🔬 **Rigueur et traçabilité** : **journal d'audit** horodaté, **bundle de reproductibilité** par run, sorties du modèle contraintes par schéma
-- 🖥️ **Application native ou version web**, interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**, mode compact, visite guidée
+- 🖥️ **Application native ou version web** : une fenêtre, ou l'interface ouverte dans votre navigateur et servie par UltraLab sur votre PC ; interface organisée par **étapes PRISMA**, **100 % bilingue FR / EN**, palette de commandes **Ctrl+K**, mode compact, visite guidée
 - 🧭 **Assistant de premier paramétrage** : détecte les prérequis et guide l'installation pas à pas (Ollama, Docker, R, mode distant), pensé pour les personnes peu à l'aise avec l'informatique
 - 🗑️ **Gestion des données** : supprimer runs et projets, effacer les caches, avec vue de l'espace occupé, depuis l'application
 - 🛰️ **PC distant** privé (Tailscale) avec file d'attente, instances dédiées et panneau d'administration
@@ -92,6 +92,7 @@ Le détail des correctifs de chaque version se trouve dans les [notes de release
 
 | Version | Apports principaux |
 | --- | --- |
+| **0.5.2** | Fiabilité : les runs ne disparaissent plus sur les grands corpus, tri plus juste, nouvel écran de validation humaine, relecteur externe en module, accords publiés avec leur intervalle de confiance, limites de recherche dites |
 | **0.5.1** | Correctif du mode distant : une instance de serveur de modèles indisponible ne bloque plus les requêtes ni ne fait déclarer une panne totale |
 | **0.5.0** | Carnet d'interrogation des PDFs qui cite tous vos articles, projets rangés hors du Bureau enfin pris en charge, import d'un run venu d'un autre ordinateur, mémoire des cartes graphiques visible carte par carte, fermeture propre et diagnostics distants exacts |
 | **0.4.9** | Carnet d'interrogation des PDFs, contrôle des runs (pause sans perte, reprise, relance ciblée), bouton de 2ᵉ avis, suivi des runs par le moteur, rigueur statistique renforcée |
@@ -117,21 +118,23 @@ Destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. [Sign
 
 ## Premier lancement
 
-Un assistant vérifie les composants, peut installer les prérequis, puis configure : interface (native / web) → mode IA (local / distant Tailscale) → modèles recommandés selon votre machine. Le bouton **« ⚙ Configurer les services »** calibre Docker + n8n pas à pas (1ᵉʳ téléchargement d'images ~400 Mo, les phases s'affichent en direct). Le 1ᵉʳ téléchargement des modèles prend 5-15 min (1-3 Go chacun).
+Un assistant vérifie les composants, peut installer les prérequis et vous guide sur ce qui manque (modèle recommandé selon votre machine, mode IA local ou distant Tailscale). Il vous fait aussi choisir l'interface : application native (une fenêtre) ou version web (aucune fenêtre, UltraLab s'ouvre dans votre navigateur et se quitte depuis l'interface) ; le choix prend effet au prochain démarrage et se change dans Paramètres → Application → Interface. Le bouton **« ⚙ Configurer les services »** calibre Docker + n8n pas à pas (1ᵉʳ téléchargement d'images ~400 Mo, les phases s'affichent en direct). Le 1ᵉʳ téléchargement des modèles prend 5-15 min (1-3 Go chacun).
 
 ## Utilisation
 
 - **Navigation par étapes PRISMA** : chaque module explique à quoi il sert ; corpus chargeable depuis un run, un projet, Zotero, un dossier de PDFs ou un fichier (glisser-déposer).
 - **Projets** : créez un projet, pré-programmez une séquence de modules et suivez la timeline en direct ; tous les runs restent réutilisables.
 - Les résultats sont regroupés dans des dossiers dédiés sur le Bureau. **Ctrl+K** pour naviguer au clavier.
+- **Une seule copie à la fois** (application installée) : rouvrir UltraLab alors qu'il tourne déjà ne lance pas de seconde copie ; sa fenêtre revient au premier plan, même réduite, ou, en version web, l'onglet de l'interface se rouvre dans votre navigateur. Deux ouvertures lancées au même instant ne font plus deux copies ; seule une première copie bloquée plus de 2 secondes à son démarrage laisse passer la seconde.
+- **Quitter pendant un run** : « Quitter UltraLab » et la croix de la fenêtre posent la même question quand un run tourne (les runs en cours sont nommés) ; choisir de rester garde la fenêtre et le run, et une seule question est posée à la fois. La question s'affiche dans la fenêtre de l'application, au clavier comme à la souris (Tab, Entrée, Échap pour rester) ; tant qu'elle est ouverte, un clic sur la croix ou sur « Fermer la fenêtre » dans la barre des tâches ramène la fenêtre au premier plan sans rien fermer. Toutes les confirmations de l'interface s'affichent de la même façon. Sans run, elles ferment comme avant. Une fenêtre dont l'interface ne répond plus se ferme au deuxième clic sur la croix. Rouvrir UltraLab pendant cette question, ou pendant l'arrêt qui suit « Quitter UltraLab » en version web, n'est pas perdu : l'application se relance. Tant que la question est affichée, les raccourcis clavier des écrans ne font rien (Entrée active le bouton qui a le focus, Échap fait rester). Limites connues, mesurées : un double clic sur la croix plus rapide que l'accusé de l'interface peut encore fermer sans question pendant un run (interface très occupée : 5 fois sur 5 à 5 et à 20 ms d'intervalle, 1 fois sur 5 à 80 ms ; interface libre : 1 fois sur 5 à 5 ms) ; en version web, rouvrir UltraLab pendant qu'un traitement empêche le moteur de répondre, puis quitter depuis ce nouvel onglet avant qu'il ne réponde, relance l'application ; enfin, si le moteur ne répond pas pendant son arrêt, l'onglet ouvert par la réouverture reste sur une page morte, à côté de celui de la relance.
 
 ## Réglages (Paramètres)
 
-Onglets clairs : **IA et modèles** (modèles + strictesse + règles personnalisées + double relecture), **Connecteurs** (clés API avec test), **Mode distant** (IP, test, ports), **Rigueur scientifique** (journal d'audit, cache LLM), **Application**, **Avancé** (console, diagnostic, maintenance Docker/n8n).
+Onglets clairs : **IA et modèles** (modèles + strictesse + règles personnalisées + double relecture), **Connecteurs** (clés API avec test), **Mode distant** (IP, test, ports), **Rigueur scientifique** (journal d'audit, cache LLM), **Application** (démarrage, mode d'interface, mises à jour, veille planifiée, configuration initiale, données et stockage), **Dépannage** (rapport de diagnostic, console développeur, paramètres Ollama manuels). La langue et le thème se changent par les deux boutons en bas de la barre latérale.
 
 ## Mises à jour
 
-Vérification automatique au démarrage. Nouvelle version → Paramètres → Mises à jour → télécharger le nouveau Setup et relancer (config préservée). Workflows seuls : Paramètres → Mettre à jour les workflows.
+Vérification automatique au démarrage. Nouvelle version → Paramètres → Application → Mises à jour. Dans l'application native, « Mettre à jour l'application » la télécharge et l'installe ; en version web ce bouton n'existe pas, et « Télécharger la mise à jour » donne le nouveau Setup à lancer (config préservée). Workflows seuls : Paramètres → Application → Mises à jour → « Mettre à jour les workflows ».
 
 ## Confidentialité
 
@@ -206,7 +209,7 @@ UltraLab covers a systematic review **end to end**, PRISMA stage by PRISMA stage
 - ⚡ **Interactive modules**: **live** screening with traced corrections, **live meta-analysis** (clickable forest, leave-one-out), re-judgeable GRADE and risk of bias, **breakpoints** in the pipeline
 - ⏱️ **Real-time progress**, **resume interrupted runs**, and **partial resume** on failed articles only
 - 🔬 **Rigour and traceability**: timestamped **audit log**, per-run **reproducibility bundle**, schema-constrained model output
-- 🖥️ **Native application or web version**, interface organised by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette, compact mode, guided tour
+- 🖥️ **Native application or web version**: a window, or the interface opened in your browser and served by UltraLab on your PC; interface organised by **PRISMA stages**, **fully bilingual FR / EN**, **Ctrl+K** command palette, compact mode, guided tour
 - 🧭 **First-run setup assistant**: detects prerequisites and guides installation step by step (Ollama, Docker, R, remote mode), designed for people not comfortable with computers
 - 🗑️ **Data management**: delete runs and projects, clear caches, with a view of disk usage, from within the application
 - 🛰️ **Private remote PC** (Tailscale) with a queue, dedicated instances and an admin panel
@@ -219,6 +222,7 @@ The detailed fix list for each version lives in the [release notes](https://gith
 
 | Version | Main additions |
 | --- | --- |
+| **0.5.2** | Reliability: runs no longer disappear on large corpora, fairer screening, new human validation screen, external reviewer as a module, agreement published with its confidence interval, search limits stated |
 | **0.5.1** | Remote mode fix: an unavailable model server instance no longer blocks requests nor triggers a false total failure |
 | **0.5.0** | PDF library notebook now citing all your articles, projects stored outside the Desktop finally supported, importing a run from another computer, graphics card memory shown card by card, clean shutdown and accurate remote diagnoses |
 | **0.4.9** | PDF library notebook, run control (lossless pause, resume, targeted re-run), 2nd opinion button, engine-side run tracking, stronger statistical rigour |
@@ -244,21 +248,23 @@ For **alpha testers**. Expect bugs and rapid changes. [Report a bug](https://git
 
 ## First launch
 
-A wizard checks components, can install prerequisites, then configures: interface (native / web) → AI mode (local / remote Tailscale) → models recommended for your machine. The **"⚙ Configure services"** button calibrates Docker + n8n step by step (first image download ~400 MB, phases shown live). First model download takes 5-15 min (1-3 GB each).
+A wizard checks components, can install prerequisites and guides you through what is missing (model recommended for your machine, AI mode local or remote Tailscale). It also lets you choose the interface: native application (a window) or web version (no window, UltraLab opens in your browser and is quit from the interface); the choice takes effect at the next start and can be changed in Settings → Application → Interface. The **"⚙ Configure services"** button calibrates Docker + n8n step by step (first image download ~400 MB, phases shown live). First model download takes 5-15 min (1-3 GB each).
 
 ## Usage
 
 - **PRISMA-stage navigation**: every module explains its purpose; corpus loadable from a run, a project, Zotero, a PDF folder or a file (drag & drop).
 - **Projects**: create a project, pre-program a module sequence and follow the live timeline; every run stays reusable.
 - Results are grouped in dedicated folders on the Desktop. **Ctrl+K** for keyboard navigation.
+- **One copy at a time** (installed app): opening UltraLab again while it is already running does not start a second copy; its window comes back to the front, even if minimised, or, in the web version, the interface tab reopens in your browser. Two openings started at the same moment no longer make two copies; only a first copy stuck for more than 2 seconds while starting lets the second one through.
+- **Quitting during a run**: "Quit UltraLab" and the window's close button ask the same question while a run is in progress (the running runs are named); choosing to stay keeps the window and the run, and only one question is asked at a time. The question is shown inside the application window, with the keyboard as with the mouse (Tab, Enter, Esc to stay); while it is open, a click on the close button or on "Close window" in the taskbar brings the window to the front without closing anything. Every confirmation in the interface is shown the same way. Without a run, they close as before. A window whose interface no longer responds closes on the second click on the close button. Opening UltraLab again during this question, or during the shutdown that follows "Quit UltraLab" in the web version, is not lost: the application restarts. While the question is shown, the screens' keyboard shortcuts do nothing (Enter activates the focused button, Esc stays). Known, measured limits: a double click on the close button faster than the interface's acknowledgement can still close without a question during a run (very busy interface: 5 times out of 5 at 5 and at 20 ms apart, 1 time out of 5 at 80 ms; idle interface: 1 time out of 5 at 5 ms); in the web version, opening UltraLab again while a task keeps the engine from answering, then quitting from that new tab before it answers, restarts the application; finally, if the engine does not answer while it stops, the tab opened by the reopening stays on a dead page, next to the restart's tab.
 
 ## Settings
 
-Clear tabs: **AI & models** (models + strictness + custom rules + double review), **Connectors** (API keys with tests), **Remote mode** (IP, test, ports), **Scientific rigor** (audit log, LLM cache), **Application**, **Advanced** (console, diagnostics, Docker/n8n maintenance).
+Clear tabs: **AI & models** (models + strictness + custom rules + double review), **Connectors** (API keys with tests), **Remote mode** (IP, test, ports), **Scientific rigor** (audit log, LLM cache), **Application** (startup, interface mode, updates, scheduled monitoring, initial setup, data & storage), **Troubleshooting** (diagnostic report, developer console, manual Ollama params). Language and theme are switched with the two buttons at the bottom of the sidebar.
 
 ## Updates
 
-Automatic check on startup. New version → Settings → Updates → download the new Setup and reinstall (config preserved). Workflows only: Settings → Update workflows.
+Automatic check on startup. New version → Settings → Application → Updates. In the native application, "Update the app" downloads and installs it; in the web version this button does not exist, and "Download update" gives the new Setup to run (config preserved). Workflows only: Settings → Application → Updates → "Update workflows".
 
 ## Privacy
 

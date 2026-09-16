@@ -43,7 +43,7 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ model: 'llama3.2:latest', stream: false, prompt: $json.prompt, options: { num_predict: 2000 } }) }}",
         "options": {
-          "timeout": 600000
+          "timeout": 420000
         }
       },
       "id": "hr-prisma-001",

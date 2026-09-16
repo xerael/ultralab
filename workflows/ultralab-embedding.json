@@ -61,7 +61,7 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ model: $json.model, _ultralab_task: 'embedding', input: $json.texts, keep_alive: '30m' }) }}",
         "options": {
-          "timeout": 600000,
+          "timeout": 420000,
           "batching": {
             "batch": {
               "batchSize": 1,
