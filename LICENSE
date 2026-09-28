@@ -1,81 +1,294 @@
-Required Notice: Copyright © 2026 Mika Gavaudan : UltraLab.
-Commercial use requires a separate license. Contact: ultralab.app@gmail.com
+UltraLab
+Copyright © 2026 Mika Gavaudan. Tous droits réservés. / All rights reserved.
 
-"UltraLab" and the UltraLab logo are trademarks of Mika Gavaudan and are NOT
-licensed under these terms (see NOTICE).
+Licence d'utilisation alpha, version 1.0 du 28 septembre 2026 (texte français, qui fait foi, puis texte anglais).
+Alpha use license, version 1.0, dated September 28, 2026 (French text, which prevails, then English text).
+Contact : ultralab.app@gmail.com
 
 ================================================================================
 
-# PolyForm Noncommercial License 1.0.0
+LICENCE D'UTILISATION ALPHA D'ULTRALAB
+Version 1.0 du 28 septembre 2026
 
-<https://polyformproject.org/licenses/noncommercial/1.0.0>
+La présente licence est rédigée en français et en anglais. La version française fait foi ; la version anglaise est fournie à titre d'information. En cas de divergence entre les deux versions, la version française prévaut.
 
-## Acceptance
 
-In order to get any license under these terms, you must agree to them as both strict obligations and conditions to all your licenses.
+PRÉAMBULE
 
-## Copyright License
+UltraLab est un logiciel en cours de développement, diffusé pendant une phase de test (« alpha ») auprès de participants admis par son auteur. La présente licence fixe les conditions dans lesquelles ces participants peuvent l'utiliser. Sous réserve du dernier alinéa de l'article 3, elle ne donne aucun droit à une personne qui n'a pas été admise à cette phase de test ou qui n'a pas accepté la présente licence.
 
-The licensor grants you a copyright license for the software to do everything you might do with the software that would otherwise infringe the licensor's copyright in it for any permitted purpose. However, you may only distribute the software according to Distribution License and make changes or new works based on the software according to Changes and New Works License.
 
-## Distribution License
+ARTICLE 1. DÉFINITIONS
 
-The licensor grants you an additional copyright license to distribute copies of the software. Your license to distribute covers distributing the software with changes and new works permitted by Changes and New Works License.
+« Auteur » : la personne physique titulaire des droits d'auteur sur le Logiciel, désignée dans la mention de droit d'auteur placée en tête du présent document et dans le fichier NOTICE du Logiciel.
 
-## Notices
+« Logiciel » : UltraLab sous toutes ses formes, notamment ses installeurs, ses exécutables, son moteur, son programme d'administration du poste de calcul distant (« Monitor »), ses enchaînements de traitement (« workflows »), ses invites adressées aux modèles de langue, ses fichiers de configuration, sa documentation et ses mises à jour, à l'exclusion des Composants tiers.
 
-You must ensure that anyone who gets a copy of any part of the software from you also gets a copy of these terms or the URL for them above, as well as copies of any plain-text lines beginning with `Required Notice:` that the licensor provided with the software. For example:
+« Composants tiers » : les logiciels et bibliothèques de tiers intégrés au Logiciel ou utilisés par lui, régis par leurs propres licences.
 
-> Required Notice: Copyright Yoyodyne, Inc. (http://example.com)
+« Page de diffusion officielle » : la page de publication des versions du Logiciel dans son dépôt, sur sa plateforme d'hébergement, ou toute autre page que l'Auteur désigne comme telle.
 
-## Changes and New Works License
+« Participant » : la personne physique admise par l'Auteur au Programme alpha, soit par un écrit qui la désigne nommément (courriel ou message), soit par la remise d'un code d'accès personnel, et qui a accepté la présente licence dans les conditions de l'article 2. Sont également admises, sauf avis contraire écrit de l'Auteur, les personnes qui utilisaient avant le 28 septembre 2026 une version du Logiciel obtenue auprès de l'Auteur ou depuis la Page de diffusion officielle. Un avis contraire adressé à une personne qui a déjà accepté la présente licence y met fin dans les conditions du troisième alinéa de l'article 12.
 
-The licensor grants you an additional copyright license to make changes and new works based on the software for any permitted purpose.
+« Programme alpha » : la phase de test du Logiciel, qui dure jusqu'à la date de fin que l'Auteur annonce dans les conditions de l'article 12.
 
-## Patent License
+« Usage commercial » : tout usage du Logiciel (i) par une entreprise ou pour son compte, dans le cadre de son activité lucrative, notamment par un laboratoire pharmaceutique, un fabricant de dispositifs médicaux, un prestataire de recherche sous contrat, un cabinet de conseil ou un éditeur de logiciels ; (ii) pour fournir à un tiers, contre rémunération, une prestation, un service, une expertise ou une formation ; (iii) consistant à vendre, louer ou revendre le Logiciel, à le mettre à disposition sous forme de service ou à l'intégrer dans un produit ou un service. Toutefois, ne constitue pas un Usage commercial l'utilisation par un Participant pour des travaux de recherche, d'étude ou d'enseignement menés seul ou en équipe, au sein ou pour le compte d'un établissement d'enseignement supérieur ou de recherche public ou privé, d'un établissement de santé public ou privé à but non lucratif, d'une administration, d'une fondation ou d'une association, y compris lorsque le Participant est rémunéré par cet organisme, lorsque ces travaux sont financés par des fonds publics ou privés, ou lorsqu'ils donnent lieu à une thèse, un mémoire ou une publication, même dans une revue payante. Cette exception ne s'applique pas aux travaux menés au sein ou pour le compte d'un laboratoire pharmaceutique, d'un fabricant de dispositifs médicaux, d'un prestataire de recherche sous contrat, d'un cabinet de conseil ou d'un éditeur de logiciels. En cas de doute, le Participant interroge l'Auteur, dont la réponse écrite fait foi.
 
-The licensor grants you a patent license for the software that covers patent claims the licensor can license, or becomes able to license, that you would infringe by using the software.
 
-## Noncommercial Purposes
+ARTICLE 2. ACCEPTATION
 
-Any noncommercial purpose is a permitted purpose.
+La présente licence est conclue entre l'Auteur et le Participant lorsque celui-ci, après avoir pu la lire en entier, l'accepte en cliquant sur le bouton d'acceptation de l'installeur ou de l'application. Le Logiciel enregistre sur l'ordinateur du Participant la version de la licence acceptée et la date de l'acceptation. Le texte de la licence reste consultable dans l'application et sur la Page de diffusion officielle ; il peut être enregistré et imprimé.
 
-## Personal Uses
+Sous réserve du dernier alinéa de l'article 3, aucun droit n'est accordé sans cette acceptation. La mise à disposition du Logiciel sur la Page de diffusion officielle ne vaut pas admission au Programme alpha : une personne qui n'est pas Participant n'acquiert aucun droit d'utilisation, même si elle se procure une copie du Logiciel ou clique sur le bouton d'acceptation.
 
-Personal use for research, experiment, and testing for the benefit of public knowledge, personal study, private entertainment, hobby projects, amateur pursuits, or religious observance, without any anticipated commercial application, is use for a permitted purpose.
 
-## Noncommercial Organizations
+ARTICLE 3. DROITS ACCORDÉS
 
-Use by any charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization, or government institution is use for a permitted purpose regardless of the source of funding or obligations resulting from the funding.
+Dans les conditions de la présente licence, l'Auteur accorde au Participant, pour la durée prévue à l'article 12, un droit personnel, non exclusif, non cessible, non transférable, sans droit de sous-licence, gratuit, valable dans le monde entier et révocable dans les seules conditions de l'article 12, de :
 
-## Fair Use
+a) installer le Logiciel sur les ordinateurs qu'il utilise lui-même, le cas échéant par l'intermédiaire du service informatique de son établissement, ainsi que sur un poste de calcul distant qu'il administre ou qu'il est autorisé à utiliser, à condition que seuls lui-même et, le cas échéant, d'autres Participants utilisent le Logiciel sur ces ordinateurs ;
 
-You may have "fair use" rights for the software under the law. These terms do not limit them.
+b) utiliser le Logiciel, à l'exclusion de tout Usage commercial, pour l'évaluer et pour ses travaux de recherche, d'étude ou d'enseignement, menés seul ou en équipe ;
 
-## No Other Rights
+c) réaliser une copie de sauvegarde lorsqu'elle est nécessaire pour préserver cette utilisation.
 
-These terms do not allow you to sublicense or transfer any of your licenses to anyone else, or prevent the licensor from granting licenses to anyone else. These terms do not imply any other licenses.
+L'Auteur ne revendique aucun droit sur les données du Participant ni sur les résultats que celui-ci produit avec le Logiciel (corpus, décisions de tri, rapports, tableaux, figures, exports, analyses). Le Participant peut les conserver, les utiliser et les publier librement, y compris après la fin de la présente licence, sous réserve des droits des tiers sur les contenus qu'ils reprennent, tels que les résumés et les articles récupérés auprès des bases bibliographiques. Lorsque ces résultats reprennent des éléments du Logiciel, notamment le brouillon de section « Méthodes », les scripts d'analyse générés, les paramètres et les invites adressées aux modèles, le journal d'audit, le dossier de reproductibilité ou le pack relecteur, l'Auteur autorise le Participant, gratuitement, pour le monde entier et pour toute la durée des droits, y compris après la fin de la présente licence, à les reproduire, à les adapter, à les publier et à les communiquer, notamment à ses coauteurs, relecteurs, éditeurs et lecteurs, dans la mesure nécessaire à ses travaux, à leur publication, à leur évaluation et à leur reproduction. La personne qui reçoit un pack relecteur peut l'utiliser pour les besoins du projet pour lequel il lui a été remis ; les autres destinataires de ces éléments peuvent les utiliser pour évaluer ces travaux et les reproduire. Cette autorisation ne permet pas d'extraire ces éléments pour créer un autre logiciel ou un autre service. Le Participant qui publie ces travaux cite le Logiciel (nom et version).
 
-## Patent Defense
 
-If you make any written claim that the software infringes or contributes to infringement of any patent, your patent license for the software granted under these terms ends immediately. If your company makes such a claim, your patent license ends immediately for work on behalf of your company.
+ARTICLE 4. RESTRICTIONS
 
-## Violations
+Sauf autorisation écrite et préalable de l'Auteur, le Participant s'interdit :
 
-The first time you are notified in writing that you have violated any of these terms, or done anything with the software not covered by your licenses, your licenses can nonetheless continue if you come into full compliance with these terms, and take practical steps to correct past violations, within 32 days of receiving notice. Otherwise, all your licenses end immediately.
+a) de reproduire le Logiciel, en tout ou en partie, au-delà de ce que permet l'article 3 ;
 
-## No Liability
+b) de modifier, adapter, traduire ou arranger le Logiciel, d'en créer des œuvres dérivées, ou de réutiliser tout ou partie de son code, de ses enchaînements de traitement, de ses invites ou de sa documentation dans un autre logiciel ou un autre document, sous réserve du dernier alinéa de l'article 3 et du dernier alinéa du présent article ;
 
-As far as the law allows, the software comes as is, without any warranty or condition, and the licensor will not be liable to you for any damages arising out of these terms or the use or nature of the software, under any kind of legal claim.
+c) de partager, distribuer, prêter, louer, vendre ou mettre à disposition de quiconque une copie du Logiciel ou de son installeur, ou le code d'accès personnel qui lui a été remis au titre de l'article 1, y compris au bénéfice d'un collègue ou de son établissement, sous réserve du dernier alinéa de l'article 3 ; le Participant peut en revanche indiquer à toute personne la Page de diffusion officielle et la manière de demander à participer au Programme alpha, et remettre aux autres Participants les codes d'appairage nécessaires à l'utilisation d'un poste de calcul distant dans les conditions de l'article 3 a) ;
 
-## Definitions
+d) de faire un Usage commercial du Logiciel ;
 
-The **licensor** is the individual or entity offering these terms, and the **software** is the software the licensor makes available under these terms.
+e) de décompiler, désassembler ou analyser le Logiciel par ingénierie inverse, ou de contourner une mesure technique qui le protège, sauf dans les cas permis par la loi (article 8) ou par la licence d'un Composant tiers (article 7) ;
 
-**You** refers to the individual or entity agreeing to these terms.
+f) de supprimer ou de modifier les mentions de droit d'auteur, de licence ou de marque qui figurent dans le Logiciel ;
 
-**Your company** is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization. **Control** means ownership of substantially all the assets of an entity, or the power to direct its management and policies by vote, contract, or otherwise. Control can be direct or indirect.
+g) d'utiliser le nom « UltraLab » ou son logo pour désigner un autre produit ou service, ou d'une manière qui laisserait croire que l'Auteur approuve ou soutient un produit, un service ou une publication.
 
-**Your licenses** are all the licenses granted to you for the software under these terms.
+Conformément au VI de l'article L. 122-6-1 et au III de l'article L. 122-5-3 du code de la propriété intellectuelle, l'Auteur s'oppose à la fouille de textes et de données prévue par ces dispositions sur le Logiciel, y compris en vue de l'entraînement de systèmes d'intelligence artificielle. Cette opposition ne vise ni la fouille réalisée à des fins de recherche scientifique dans les conditions du II de l'article L. 122-5-3, ni les droits que l'Auteur a consentis à l'hébergeur du dépôt public par les conditions d'utilisation de cette plateforme.
 
-**Use** means anything you do with the software requiring one of your licenses.
+La consultation du dépôt public du Logiciel sur sa plateforme d'hébergement, dans les limites des conditions d'utilisation de cette plateforme, ne confère aucun droit d'utiliser, de reproduire, de modifier ou de diffuser le Logiciel en dehors de cette plateforme.
+
+Sans préjudice du dernier alinéa de l'article 3, les restrictions ci-dessus n'interdisent pas au Participant de citer le Logiciel (nom, version et adresse de sa Page de diffusion officielle) dans une publication, un rapport, un mémoire ou une thèse, d'y décrire la méthode suivie et les réglages retenus, et d'y reproduire, à des fins de transparence et de reproductibilité scientifiques, les extraits des invites nécessaires à la compréhension de cette méthode, en indiquant leur source. L'utilisation des réglages, paramètres et fonctions de personnalisation prévus par le Logiciel, notamment des règles que le Participant ajoute aux invites, ne constitue pas une modification ou une adaptation au sens du b).
+
+
+ARTICLE 5. RETOURS ET SIGNALEMENTS
+
+Le Participant peut transmettre à l'Auteur ses remarques, suggestions et signalements d'erreurs. Pour ceux de ces retours qui seraient protégés par le droit d'auteur, notamment du code, des invites ou des textes, il concède à l'Auteur, à titre gratuit et non exclusif, pour le monde entier et pour toute la durée des droits, le droit de les reproduire, de les adapter, de les intégrer au Logiciel et à sa documentation, et de les diffuser avec eux, sous toute forme, sur tout support et sous toute licence. Il ne transmet que des retours qu'il a le droit de communiquer et veille à ne pas y joindre de données personnelles ou confidentielles de tiers.
+
+
+ARTICLE 6. DONNÉES
+
+Le Logiciel fonctionne sur les ordinateurs du Participant et, le cas échéant, sur le poste de calcul distant qu'il utilise. Il ne transmet à l'Auteur ni les documents ni les données du Participant : seuls parviennent à l'Auteur les éléments que le Participant choisit de lui envoyer (demande de participation, retours, rapports de diagnostic). Pour fonctionner, le Logiciel interroge des services extérieurs décrits dans sa documentation (bases bibliographiques, services d'accès aux articles, vérification des mises à jour) ; ces services reçoivent les requêtes, l'adresse IP du Participant et, selon ses réglages, l'adresse électronique qu'il renseigne, et les traitent selon leurs propres conditions.
+
+L'Auteur, responsable du traitement, joignable à l'adresse indiquée à l'article 16, traite les données que lui communiquent le Participant et toute personne qui demande à participer au Programme alpha (nom, adresse électronique, informations jointes à une demande de participation, retours et rapports de diagnostic) afin de gérer le Programme alpha et d'exécuter la présente licence, sur le fondement de l'article 6, paragraphe 1, point b), du règlement (UE) 2016/679. Ces données ne sont ni vendues ni cédées. Elles transitent par les services de messagerie et d'hébergement utilisés par l'Auteur, dont certains peuvent les traiter hors de l'Union européenne avec les garanties prévues par ce règlement. Elles sont conservées jusqu'à la fin du Programme alpha, puis supprimées, sauf si elles sont nécessaires à la preuve d'un droit en cas de litige. La personne concernée dispose d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité, qu'elle exerce à l'adresse indiquée à l'article 16, et peut introduire une réclamation auprès de la Commission nationale de l'informatique et des libertés (www.cnil.fr) ou de l'autorité de contrôle de l'État membre de sa résidence. Les messages publiés sur la page publique du dépôt (tickets, discussions) sont visibles de tous : le Participant n'y dépose aucun rapport de diagnostic, ni aucune donnée personnelle qu'il ne souhaite pas rendre publique.
+
+
+ARTICLE 7. COMPOSANTS TIERS
+
+Le Logiciel intègre ou utilise des Composants tiers. La liste de ceux qu'il intègre, leurs mentions de droit d'auteur et le texte de leurs licences figurent dans le fichier « THIRD-PARTY-NOTICES.txt » livré avec le Logiciel et publié dans son dépôt. Chaque Composant tiers reste régi par sa propre licence, qui prévaut sur la présente licence pour ce composant. Aucune disposition de la présente licence ne restreint les droits que ces licences accordent ; en particulier, lorsque la licence d'un Composant tiers le prévoit, le Participant peut modifier ce composant et, dans la mesure où cette licence l'exige, l'œuvre qui le contient, pour son propre usage, le remplacer par une version modifiée et procéder à l'ingénierie inverse nécessaire au débogage de ces modifications. Les modèles de langue, programmes et services que le Logiciel installe, télécharge ou interroge restent soumis à leurs propres conditions, que le Participant respecte.
+
+
+ARTICLE 8. DROITS GARANTIS PAR LA LOI
+
+Aucune disposition de la présente licence ne limite les droits que le Participant tient de la loi, notamment de l'article L. 122-6-1 du code de la propriété intellectuelle (copie de sauvegarde ; observation, étude et test du fonctionnement ou de la sécurité du Logiciel ; décompilation aux seules fins d'interopérabilité ; autres exceptions auxquelles cet article renvoie, dont la fouille de textes et de données à des fins de recherche scientifique), dans les conditions prévues par ces textes. Comme le permet le I de cet article, l'Auteur se réserve le droit exclusif de corriger les erreurs du Logiciel ; le Participant peut les lui signaler.
+
+
+ARTICLE 9. PROPRIÉTÉ
+
+Le Logiciel est et reste la propriété de l'Auteur. La présente licence ne transfère au Participant aucun droit de propriété. Tous les droits qui ne sont pas expressément accordés sont réservés. Le nom « UltraLab » et son logo, œuvre de l'Auteur, sont réservés à l'Auteur ; la présente licence n'accorde aucun droit de les utiliser.
+
+
+ARTICLE 10. VERSION DE TEST, ABSENCE DE GARANTIE
+
+Le Logiciel est une version de test, en cours de développement, destinée à assister la recherche documentaire et la conduite de revues de la littérature. Il n'est pas destiné au diagnostic, à la prévention, à la surveillance, au pronostic ou au traitement d'une personne, et ne doit pas être utilisé à ces fins. Il peut comporter des erreurs, produire des résultats inexacts, s'arrêter de manière imprévue ou perdre des données. Il est fourni en l'état, sans garantie d'aucune sorte, dans toute la mesure permise par la loi. Le Participant doit conserver des sauvegardes de ses données et vérifier les résultats produits avant tout usage scientifique ou décisionnel. Le Logiciel ne remplace pas le jugement d'un professionnel.
+
+
+ARTICLE 11. RESPONSABILITÉ
+
+Dans toute la mesure permise par la loi, l'Auteur, qui fournit gratuitement une version de test, n'est pas responsable des dommages indirects, ni des pertes de données, de temps ou de chance résultant de l'utilisation du Logiciel. Cette limitation ne s'applique ni en cas de faute lourde ou dolosive, ni aux dommages corporels, ni lorsque la loi l'interdit.
+
+
+ARTICLE 12. DURÉE ET FIN
+
+La présente licence prend effet à son acceptation et dure jusqu'à la fin du Programme alpha. L'Auteur annonce cette fin au moins trente jours à l'avance, par un message affiché dans le Logiciel, publié sur la Page de diffusion officielle ou adressé au Participant.
+
+Si le Participant manque à l'une des obligations de l'article 4 et n'y remédie pas dans les quinze jours d'une mise en demeure écrite de l'Auteur, adressée le cas échéant par courriel et visant le présent article, la licence prend fin de plein droit à l'expiration de ce délai. En cas de manquement aux points c) ou d) de l'article 4, la licence prend fin de plein droit, sans mise en demeure préalable, dès la réception d'une notification écrite de l'Auteur visant le présent article.
+
+L'Auteur peut aussi mettre fin à la licence à tout moment pour l'avenir, en respectant un préavis de trente jours donné par écrit au Participant ou, à défaut d'adresse connue, par un message affiché dans le Logiciel. Le Participant peut y mettre fin à tout moment en désinstallant le Logiciel.
+
+À la fin de la licence, le Participant cesse d'utiliser les versions du Logiciel régies par la présente licence, les désinstalle et détruit les copies qu'il en détient, y compris de sauvegarde. Il conserve ses données et ses résultats, dans les conditions du dernier alinéa de l'article 3. L'article 1, le dernier alinéa de l'article 3, les articles 4 à 11, l'article 13, le second alinéa de l'article 14 et les articles 15 et 16 survivent à la fin de la licence.
+
+
+ARTICLE 13. VERSIONS ANTÉRIEURES
+
+Les versions 0.3.0-alpha à 0.5.2-alpha du Logiciel ont été diffusées sous la licence PolyForm Noncommercial 1.0.0. Sous réserve de l'article 14, la présente licence régit les versions du Logiciel publiées à compter du 28 septembre 2026 inclus ; elle ne s'applique pas à ces versions antérieures. À compter de cette même date et pour l'avenir, l'Auteur retire l'offre de licence PolyForm Noncommercial 1.0.0 attachée aux versions antérieures, y compris dans l'historique et les publications de son dépôt : ces versions ne sont plus proposées au public sous cette licence. Les licences PolyForm Noncommercial déjà acquises sur ces versions ne sont ni modifiées ni retirées par la présente licence ou par son acceptation.
+
+
+ARTICLE 14. NOUVELLE VERSION DE LA LICENCE ET AUTRES AUTORISATIONS
+
+L'Auteur peut publier une nouvelle version de la présente licence. Cette nouvelle version s'applique aux versions du Logiciel publiées après elle, dès que le Participant l'a acceptée ; à défaut d'acceptation, le Participant ne peut pas utiliser ces versions.
+
+Toute autorisation qui dépasse la présente licence, notamment pour un Usage commercial, une modification, une réutilisation ou une diffusion, doit être demandée par écrit à l'Auteur et accordée par écrit.
+
+
+ARTICLE 15. DROIT APPLICABLE ET LITIGES
+
+La présente licence est régie par le droit français. En cas de différend, les parties s'efforcent de trouver une solution amiable, sans que cette démarche fasse obstacle à une action en justice ni aux mesures urgentes, provisoires ou conservatoires, notamment en matière de contrefaçon. À défaut d'accord, le litige est porté devant les juridictions compétentes selon les règles de compétence de droit commun, sous réserve des dispositions impératives qui protègent le Participant agissant comme consommateur.
+
+
+ARTICLE 16. CONTACT
+
+Toute demande relative à la présente licence ou au Programme alpha, y compris les demandes d'autorisation prévues à l'article 14 et l'exercice des droits prévus à l'article 6, est adressée par écrit à : ultralab.app@gmail.com.
+
+================================================================================
+
+ULTRALAB ALPHA USE LICENSE
+Version 1.0, dated September 28, 2026
+
+This license is written in French and in English. The French version is authoritative; the English version is provided for information only. In case of any discrepancy between the two versions, the French version prevails.
+
+
+PREAMBLE
+
+UltraLab is software under development, distributed during a test phase ("alpha") to participants admitted by its author. This license sets out the conditions under which those participants may use it. Subject to the last paragraph of Section 3, it grants no right to any person who has not been admitted to that test phase or who has not accepted this license.
+
+
+SECTION 1. DEFINITIONS
+
+"Author": the natural person who holds the copyright in the Software, named in the copyright notice at the top of this document and in the NOTICE file of the Software.
+
+"Software": UltraLab in all its forms, including its installers, executables, engine, remote computing station administration program ("Monitor"), processing sequences ("workflows"), prompts sent to language models, configuration files, documentation and updates, excluding Third-party components.
+
+"Third-party components": third-party software and libraries included in or used by the Software, governed by their own licenses.
+
+"Official distribution page": the page where versions of the Software are published in its repository, on its hosting platform, or any other page the Author designates as such.
+
+"Participant": the natural person admitted by the Author to the Alpha program, either by a written notice that names them (email or message) or by the delivery of a personal access code, and who has accepted this license under Section 2. Unless the Author states otherwise in writing, persons who, before September 28, 2026, were using a version of the Software obtained from the Author or from the Official distribution page are also admitted. A contrary notice sent to a person who has already accepted this license ends it under the third paragraph of Section 12.
+
+"Alpha program": the test phase of the Software, which lasts until the end date announced by the Author under Section 12.
+
+"Commercial use": any use of the Software (i) by a company or on its behalf, as part of its profit-making activity, including by a pharmaceutical company, a medical device manufacturer, a contract research provider, a consulting firm or a software publisher; (ii) to provide a third party, for remuneration, with a service, expertise or training; (iii) consisting of selling, renting or reselling the Software, making it available as a service or incorporating it into a product or service. However, use by a Participant for research, study or teaching work carried out alone or as part of a team, within or on behalf of a public or private higher education or research institution, a public or private non-profit healthcare institution, a public administration, a foundation or an association, is not Commercial use, including when the Participant is paid by that organization, when the work is funded by public or private funds, or when it leads to a thesis, a dissertation or a publication, even in a subscription journal. This exception does not apply to work carried out within or on behalf of a pharmaceutical company, a medical device manufacturer, a contract research provider, a consulting firm or a software publisher. In case of doubt, the Participant asks the Author, whose written answer is authoritative.
+
+
+SECTION 2. ACCEPTANCE
+
+This license is concluded between the Author and the Participant when the Participant, having been able to read it in full, accepts it by clicking the acceptance button of the installer or of the application. The Software records on the Participant's computer the version of the license accepted and the date of acceptance. The text of the license remains available in the application and on the Official distribution page; it can be saved and printed.
+
+Subject to the last paragraph of Section 3, no right is granted without such acceptance. Making the Software available on the Official distribution page does not amount to admission to the Alpha program: a person who is not a Participant acquires no right of use, even if they obtain a copy of the Software or click the acceptance button.
+
+
+SECTION 3. RIGHTS GRANTED
+
+Under the conditions of this license, the Author grants the Participant, for the term set out in Section 12, a personal, non-exclusive, non-assignable, non-transferable, non-sublicensable, royalty-free, worldwide right, revocable only under the conditions of Section 12, to:
+
+a) install the Software on the computers they use themselves, where applicable through the IT department of their institution, and on a remote computing station they administer or are authorized to use, provided that only they and, where applicable, other Participants use the Software on those computers;
+
+b) use the Software, excluding any Commercial use, to evaluate it and for their research, study or teaching work, carried out alone or as part of a team;
+
+c) make a backup copy where it is necessary to preserve that use.
+
+The Author claims no rights in the Participant's data or in the results the Participant produces with the Software (corpora, screening decisions, reports, tables, figures, exports, analyses). The Participant may keep, use and publish them freely, including after this license ends, subject to the rights of third parties in the content they include, such as abstracts and articles retrieved from bibliographic databases. Where these results include elements of the Software, in particular the draft "Methods" section, the generated analysis scripts, the settings and prompts sent to the models, the audit log, the reproducibility package or the reviewer pack, the Author authorizes the Participant, free of charge, worldwide and for the full term of the rights, including after this license ends, to reproduce, adapt, publish and communicate them, in particular to their co-authors, reviewers, publishers and readers, to the extent necessary for their work, its publication, its assessment and its reproduction. A person who receives a reviewer pack may use it for the needs of the project for which it was given to them; other recipients of those elements may use them to assess and reproduce that work. This authorization does not allow those elements to be extracted to create other software or another service. A Participant who publishes such work must cite the Software (name and version).
+
+
+SECTION 4. RESTRICTIONS
+
+Unless the Author has given prior written permission, the Participant shall not:
+
+a) reproduce the Software, in whole or in part, beyond what Section 3 allows;
+
+b) modify, adapt, translate or arrange the Software, create derivative works of it, or reuse all or part of its code, processing sequences, prompts or documentation in any other software or document, subject to the last paragraph of Section 3 and the last paragraph of this Section;
+
+c) share, distribute, lend, rent, sell or make available to anyone a copy of the Software or of its installer, or the personal access code delivered to them under Section 1, including for the benefit of a colleague or their institution, subject to the last paragraph of Section 3; the Participant may, however, refer anyone to the Official distribution page and to the way of applying to join the Alpha program, and give other Participants the pairing codes needed to use a remote computing station under Section 3 a);
+
+d) make any Commercial use of the Software;
+
+e) decompile, disassemble or reverse engineer the Software, or circumvent any technical measure protecting it, except where permitted by law (Section 8) or by the license of a Third-party component (Section 7);
+
+f) remove or alter any copyright, license or trademark notice in the Software;
+
+g) use the name "UltraLab" or its logo to designate another product or service, or in a way suggesting that the Author endorses or supports a product, service or publication.
+
+In accordance with paragraph VI of Article L. 122-6-1 and paragraph III of Article L. 122-5-3 of the French Intellectual Property Code, the Author objects to the text and data mining referred to in those provisions being carried out on the Software, including for the purpose of training artificial intelligence systems. This objection covers neither text and data mining carried out for scientific research purposes under the conditions of paragraph II of Article L. 122-5-3, nor the rights the Author has granted to the host of the public repository under that platform's terms of use.
+
+Viewing the public repository of the Software on its hosting platform, within the limits of that platform's terms of use, confers no right to use, reproduce, modify or distribute the Software outside that platform.
+
+Without prejudice to the last paragraph of Section 3, the restrictions above do not prevent the Participant from citing the Software (name, version and address of its Official distribution page) in a publication, report, dissertation or thesis, describing in it the method followed and the settings chosen, and reproducing in it, for scientific transparency and reproducibility, the excerpts of the prompts needed to understand that method, with their source. Using the settings, parameters and customization features provided by the Software, including the rules the Participant adds to the prompts, is not a modification or adaptation under item b).
+
+
+SECTION 5. FEEDBACK AND REPORTS
+
+The Participant may send the Author comments, suggestions and bug reports. For any such feedback protected by copyright, in particular code, prompts or texts, the Participant grants the Author, free of charge and on a non-exclusive basis, worldwide and for the full term of the rights, the right to reproduce, adapt and incorporate it into the Software and its documentation, and to distribute it with them, in any form, on any medium and under any license. The Participant must only send feedback they are entitled to communicate and must take care not to include personal or confidential data of third parties.
+
+
+SECTION 6. DATA
+
+The Software runs on the Participant's computers and, where applicable, on the remote computing station they use. It does not transmit the Participant's documents or data to the Author: the Author only receives what the Participant chooses to send (application to join, feedback, diagnostic reports). To operate, the Software queries external services described in its documentation (bibliographic databases, article access services, update checks); those services receive the queries, the Participant's IP address and, depending on the settings, the email address the Participant enters, and process them under their own terms.
+
+The Author, as controller, reachable at the address given in Section 16, processes the data sent by the Participant and by any person applying to join the Alpha program (name, email address, information attached to an application to join, feedback and diagnostic reports) in order to manage the Alpha program and perform this license, on the basis of Article 6(1)(b) of Regulation (EU) 2016/679. These data are neither sold nor transferred. They pass through the email and hosting services used by the Author, some of which may process them outside the European Union with the safeguards provided by that regulation. They are kept until the end of the Alpha program and then deleted, unless they are needed as evidence of a right in a dispute. The data subject has the rights of access, rectification, erasure, restriction, objection and portability, which they exercise at the address given in Section 16, and may lodge a complaint with the French data protection authority, the Commission nationale de l'informatique et des libertés (www.cnil.fr), or with the supervisory authority of the Member State where they live. Messages posted on the public page of the repository (issues, discussions) are visible to everyone: the Participant must not post there any diagnostic report, nor any personal data they do not wish to make public.
+
+
+SECTION 7. THIRD-PARTY COMPONENTS
+
+The Software includes or uses Third-party components. The list of those it includes, their copyright notices and the text of their licenses appear in the file "THIRD-PARTY-NOTICES.txt" delivered with the Software and published in its repository. Each Third-party component remains governed by its own license, which prevails over this license for that component. Nothing in this license restricts the rights granted by those licenses; in particular, where the license of a Third-party component so provides, the Participant may modify that component and, to the extent that license requires, the work containing it, for their own use, replace it with a modified version and carry out the reverse engineering needed to debug those modifications. The language models, programs and services that the Software installs, downloads or queries remain subject to their own terms, which the Participant must comply with.
+
+
+SECTION 8. RIGHTS GUARANTEED BY LAW
+
+Nothing in this license limits the rights the Participant holds under the law, in particular Article L. 122-6-1 of the French Intellectual Property Code (backup copy; observing, studying and testing the functioning or security of the Software; decompilation solely for interoperability; other exceptions to which that article refers, including text and data mining for scientific research purposes), under the conditions set by those provisions. As permitted by paragraph I of that article, the Author reserves the exclusive right to correct errors in the Software; the Participant may report them to the Author.
+
+
+SECTION 9. OWNERSHIP
+
+The Software is and remains the property of the Author. This license transfers no ownership right to the Participant. All rights not expressly granted are reserved. The name "UltraLab" and its logo, a work of the Author, are reserved to the Author; this license grants no right to use them.
+
+
+SECTION 10. TEST VERSION, NO WARRANTY
+
+The Software is a test version under development, intended to assist literature searching and the conduct of literature reviews. It is not intended for the diagnosis, prevention, monitoring, prognosis or treatment of any person, and must not be used for those purposes. It may contain errors, produce inaccurate results, stop unexpectedly or lose data. It is provided as is, without warranty of any kind, to the fullest extent permitted by law. The Participant must keep backups of their data and must check the results produced before any scientific or decision-making use. The Software does not replace the judgment of a professional.
+
+
+SECTION 11. LIABILITY
+
+To the fullest extent permitted by law, the Author, who provides a test version free of charge, is not liable for indirect damage, nor for loss of data, loss of time or loss of a chance resulting from the use of the Software. This limitation does not apply in case of gross negligence or willful misconduct, to personal injury, or where the law prohibits it.
+
+
+SECTION 12. TERM AND TERMINATION
+
+This license takes effect upon acceptance and lasts until the end of the Alpha program. The Author announces that end at least thirty days in advance, by a message displayed in the Software, published on the Official distribution page or sent to the Participant.
+
+If the Participant breaches any of the obligations of Section 4 and does not remedy the breach within fifteen days of a written formal notice from the Author, sent by email where appropriate and referring to this Section, the license ends automatically when that period expires. In case of breach of item c) or d) of Section 4, the license ends automatically, without prior formal notice, upon receipt of a written notification from the Author referring to this Section.
+
+The Author may also end the license at any time for the future, with thirty days' notice given in writing to the Participant or, where no address is known, by a message displayed in the Software. The Participant may end it at any time by uninstalling the Software.
+
+When the license ends, the Participant must stop using the versions of the Software governed by this license, uninstall them and destroy the copies they hold, including backups. They keep their data and results, under the conditions of the last paragraph of Section 3. Section 1, the last paragraph of Section 3, Sections 4 to 11, Section 13, the second paragraph of Section 14 and Sections 15 and 16 survive the end of the license.
+
+
+SECTION 13. EARLIER VERSIONS
+
+Versions 0.3.0-alpha to 0.5.2-alpha of the Software were distributed under the PolyForm Noncommercial License 1.0.0. Subject to Section 14, this license governs the versions of the Software published on or after September 28, 2026; it does not apply to those earlier versions. On and from that same date, and for the future, the Author withdraws the PolyForm Noncommercial License 1.0.0 offer attached to earlier versions, including in the history and releases of its repository: those versions are no longer offered to the public under that license. PolyForm Noncommercial licenses already acquired for those versions are neither modified nor withdrawn by this license or by its acceptance.
+
+
+SECTION 14. NEW VERSION OF THE LICENSE AND OTHER PERMISSIONS
+
+The Author may publish a new version of this license. That new version applies to versions of the Software published after it, once the Participant has accepted it; without such acceptance, the Participant may not use those versions.
+
+Any permission beyond this license, in particular for Commercial use, modification, reuse or distribution, must be requested in writing from the Author and granted in writing.
+
+
+SECTION 15. GOVERNING LAW AND DISPUTES
+
+This license is governed by French law. In the event of a dispute, the parties endeavor to find an amicable solution, without this preventing legal action or urgent, provisional or protective measures, in particular regarding infringement. Failing agreement, the dispute is brought before the competent courts under the general rules of jurisdiction, subject to the mandatory provisions protecting a Participant acting as a consumer.
+
+
+SECTION 16. CONTACT
+
+Any request regarding this license or the Alpha program, including requests for permission under Section 14 and the exercise of the rights under Section 6, must be sent in writing to: ultralab.app@gmail.com.

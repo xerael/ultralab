@@ -2,31 +2,42 @@ UltraLab
 Copyright © 2026 Mika Gavaudan. All rights reserved.
 
 --------------------------------------------------------------------------------
-LICENCE LOGICIEL / SOFTWARE LICENSE
+LICENCE / LICENSE
 --------------------------------------------------------------------------------
-Le code source d'UltraLab est distribué sous PolyForm Noncommercial License
-1.0.0 (voir le fichier LICENSE). Usage non commercial autorisé. Tout usage
-commercial, ou toute réutilisation/redistribution non couverte par cette licence,
-nécessite une autorisation écrite préalable.
+Depuis le 28 septembre 2026 (version 0.5.3-alpha et suivantes), UltraLab est
+distribué sous sa licence d'utilisation alpha (fichier LICENSE), réservée aux
+participants admis par l'auteur au programme de test. Sans autorisation écrite
+préalable, sont interdits : la modification et la réutilisation du logiciel
+(hors reprise, dans les résultats et les publications, des éléments que le
+logiciel y place : article 3 de la licence), son partage ou sa diffusion, et
+tout usage commercial. Les versions 0.3.0-alpha à 0.5.2-alpha avaient été
+diffusées sous PolyForm Noncommercial 1.0.0 ; depuis le 28 septembre 2026,
+l'auteur ne les propose plus sous cette licence, sans retirer les droits déjà
+acquis (article 13 de la licence).
 
-UltraLab's source code is licensed under the PolyForm Noncommercial License 1.0.0
-(see LICENSE). Noncommercial use is permitted. Any commercial use, or any reuse/
-redistribution not covered by that license, requires prior written permission.
+Since September 28, 2026 (version 0.5.3-alpha and later), UltraLab is distributed
+under its alpha use license (LICENSE file), reserved for participants admitted
+by the author to the test program. Without prior written permission, modifying
+or reusing the software (except for reusing, in results and publications, the
+elements the software places in them: Section 3 of the license), sharing or
+distributing it, and any commercial use are prohibited. Versions 0.3.0-alpha to
+0.5.2-alpha were distributed under the PolyForm Noncommercial License 1.0.0;
+since September 28, 2026, the author no longer offers them under that license,
+without withdrawing rights already acquired (Section 13 of the license).
 
-Usage commercial / Commercial licensing : ultralab.app@gmail.com
+Participer à l'alpha, usage commercial, autres autorisations /
+Joining the alpha, commercial use, other permissions : ultralab.app@gmail.com
 
 --------------------------------------------------------------------------------
-MARQUES / TRADEMARKS  (non couverts par la licence logiciel)
+NOM ET LOGO / NAME AND LOGO
 --------------------------------------------------------------------------------
-« UltraLab » (le nom) et le logo UltraLab sont des marques de Mika Gavaudan.
-La licence PolyForm ci-dessus NE concède AUCUN droit sur ces marques : elles ne
-peuvent pas être utilisées pour nommer, identifier ou promouvoir un produit
-dérivé sans autorisation écrite. Symbole ™ revendiqué ; un dépôt formel (INPI)
-pourra ajouter le symbole ®.
+Le nom « UltraLab » et le logo UltraLab sont réservés à Mika Gavaudan. La licence
+d'utilisation ne concède aucun droit sur eux : ils ne peuvent pas servir à
+nommer, identifier ou promouvoir un autre produit sans autorisation écrite.
 
-"UltraLab" (the name) and the UltraLab logo are trademarks of Mika Gavaudan.
-The PolyForm license above grants NO rights to these marks; they may not be used
-to name, identify, or promote a derivative product without written permission.
+The name "UltraLab" and the UltraLab logo are reserved to Mika Gavaudan. The use license
+grants no right to them: they may not be used to name, identify or promote
+another product without written permission.
 
 --------------------------------------------------------------------------------
 LOGO : DROIT D'AUTEUR / LOGO COPYRIGHT
@@ -35,10 +46,16 @@ Le logo UltraLab (static/logo-ultralab.png, static/icon.png, static/icon.ico,
 static/icon-tray.png) est une œuvre graphique originale.
 Copyright © 2026 Mika Gavaudan. Tous droits réservés.
 Reproduction, modification ou réutilisation interdites sans autorisation écrite.
-Le droit d'auteur sur ce dessin s'applique automatiquement dès sa création ;
-conserver les fichiers sources datés comme preuve d'antériorité.
 
 The UltraLab logo is an original graphic work. Copyright © 2026 Mika Gavaudan.
 All rights reserved. No reproduction, modification, or reuse without written
-permission. Copyright applies automatically from creation; keep dated source
-files as proof of authorship.
+permission.
+
+--------------------------------------------------------------------------------
+COMPOSANTS TIERS / THIRD-PARTY COMPONENTS
+--------------------------------------------------------------------------------
+UltraLab intègre des composants tiers régis par leurs propres licences, listées
+avec leurs mentions de droit d'auteur dans le fichier THIRD-PARTY-NOTICES.txt.
+
+UltraLab includes third-party components governed by their own licenses, listed
+with their copyright notices in the THIRD-PARTY-NOTICES.txt file.

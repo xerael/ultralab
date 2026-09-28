@@ -109,6 +109,24 @@ Le détail des correctifs de chaque version se trouve dans les [notes de release
 
 Destinée aux **alpha-testeurs**. Bugs et changements rapides à prévoir. [Signaler un bug](https://github.com/xerael/ultralab/issues).
 
+## Rejoindre l'alpha et licence
+
+UltraLab est en phase de test. Son utilisation est **réservée aux participants admis par l'auteur**.
+
+**Pour rejoindre l'alpha**, écrivez à **ultralab.app@gmail.com** en indiquant votre nom, votre établissement ou votre structure, et l'usage que vous envisagez (type de revue, discipline). L'admission se fait par un écrit de l'auteur qui vous désigne nommément, ou par la remise d'un code d'accès personnel. Les personnes qui utilisaient déjà UltraLab avant le 28 septembre 2026, dans une version obtenue auprès de l'auteur ou sur la page officielle de diffusion, sont admises d'office, sauf avis contraire écrit de l'auteur : il leur suffit d'accepter la licence. Les informations que vous envoyez servent à gérer l'alpha ; leur traitement et vos droits sont décrits à l'article 6 de la licence.
+
+**Les règles de l'alpha, en résumé** (le texte complet est dans le fichier [LICENSE](LICENSE) ; sa version française fait foi) :
+
+- **Usage personnel** : vous pouvez installer UltraLab sur les ordinateurs que vous utilisez vous-même, ainsi que sur un poste de calcul distant que vous administrez ou que vous êtes autorisé à utiliser, si seuls des participants s'en servent, et l'utiliser pour l'évaluer et pour vos travaux de recherche, d'étude ou d'enseignement, seul ou en équipe.
+- **Pas de partage** : ni l'installeur, ni une copie du logiciel, ni votre code d'accès ne se transmettent, pas même à un collègue. Vous pouvez en revanche indiquer la page officielle de diffusion ; chaque personne intéressée demande elle-même à participer.
+- **Pas de modification ni de réutilisation** du logiciel, de son code, de ses enchaînements de traitement ou de sa documentation sans autorisation écrite. Vous pouvez toutefois reprendre dans vos travaux et publications les éléments que le logiciel place dans vos résultats (brouillon de la section Méthodes, scripts d'analyse, réglages et invites, journal d'audit, pack relecteur), et citer le logiciel.
+- **Pas d'usage commercial** : ni vente, location ou mise à disposition du logiciel comme service, ni prestation payée pour un tiers, ni usage par une entreprise ou pour son compte dans le cadre de son activité lucrative. Les travaux de recherche, d'étude ou d'enseignement menés au sein ou pour le compte d'un établissement d'enseignement supérieur ou de recherche public ou privé, d'un établissement de santé public ou privé à but non lucratif, d'une administration, d'une fondation ou d'une association ne sont pas un usage commercial, même lorsque vous êtes rémunéré par cet organisme ou que ces travaux sont financés ou publiés. Cette exception ne couvre pas les laboratoires pharmaceutiques, les fabricants de dispositifs médicaux, les prestataires de recherche sous contrat, les cabinets de conseil ni les éditeurs de logiciels. En cas de doute, écrivez à l'auteur.
+- **Vos données et vos résultats** : l'auteur ne revendique aucun droit sur eux ; vous pouvez les conserver, les utiliser et les publier librement, sous réserve des droits des tiers sur les contenus repris (résumés, articles).
+- **Version de test** : UltraLab peut comporter des erreurs ; vérifiez les résultats et gardez des sauvegardes. Il est fourni sans garantie et n'est pas destiné au diagnostic ni au traitement d'une personne.
+- **Durée** : la licence dure jusqu'à la fin de l'alpha, annoncée au moins trente jours à l'avance ; l'auteur peut aussi y mettre fin avec un préavis de trente jours, ou plus tôt en cas de manquement à la licence. L'acceptation se fait dans l'installeur ou dans l'application.
+
+La licence d'utilisation alpha régit les versions publiées à compter du 28 septembre 2026. Les versions 0.3.0-alpha à 0.5.2-alpha avaient été diffusées sous PolyForm Noncommercial 1.0.0 ; depuis cette date, l'auteur ne les propose plus sous cette licence, sans retirer les droits déjà acquis (article 13 de la licence). Les composants tiers intégrés et leurs licences sont listés dans [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). La licence n'accorde aucun droit sur le nom ni sur le logo UltraLab (voir [NOTICE](NOTICE)).
+
 ## Installation
 
 1. **Télécharger** `UltraLab-Setup.exe` depuis la [dernière release](https://github.com/xerael/ultralab/releases/latest).
@@ -238,6 +256,24 @@ The detailed fix list for each version lives in the [release notes](https://gith
 ## ⚠️ Status: active alpha
 
 For **alpha testers**. Expect bugs and rapid changes. [Report a bug](https://github.com/xerael/ultralab/issues).
+
+## Joining the alpha and license
+
+UltraLab is in its test phase. Its use is **reserved for participants admitted by the author**.
+
+**To join the alpha**, write to **ultralab.app@gmail.com** with your name, your institution or organization, and your intended use (type of review, field). Admission is granted by a written message from the author that names you, or by the delivery of a personal access code. People who were already using UltraLab before September 28, 2026, in a version obtained from the author or from the official distribution page, are admitted automatically, unless the author states otherwise in writing: they only need to accept the license. The information you send is used to manage the alpha; its processing and your rights are described in Section 6 of the license.
+
+**The alpha rules, in short** (the full text, whose French version prevails, is in the [LICENSE](LICENSE) file):
+
+- **Personal use**: you may install UltraLab on the computers you use yourself and on a remote computing station you administer or are authorized to use, provided only participants use it there, and use it to evaluate it and for your research, study or teaching work, alone or as part of a team.
+- **No sharing**: the installer, a copy of the software or your access code must not be passed on to anyone, not even a colleague. You may, however, point to the official distribution page; each interested person applies to join themselves.
+- **No modification or reuse** of the software, its code, its workflows or its documentation without written permission. You may, however, reuse in your work and publications the elements the software places in your results (draft Methods section, analysis scripts, settings and prompts, audit log, reviewer pack), and cite the software.
+- **No commercial use**: no selling, renting or providing the software as a service, no paid service for a third party, no use by or on behalf of a company as part of its profit-making activity. Research, study or teaching work carried out within or on behalf of a public or private higher education or research institution, a public or private non-profit healthcare institution, a public administration, a foundation or an association is not commercial use, even when you are paid by that organization or the work is funded or published. This exception does not cover pharmaceutical companies, medical device manufacturers, contract research providers, consulting firms or software publishers. In case of doubt, write to the author.
+- **Your data and your results**: the author claims no rights in them; you may keep, use and publish them freely, subject to third-party rights in the content they include (abstracts, articles).
+- **Test version**: UltraLab may contain errors; check the results and keep backups. It is provided without warranty and is not intended for the diagnosis or treatment of any person.
+- **Term**: the license lasts until the end of the alpha, announced at least thirty days in advance; the author may also end it with thirty days' notice, or earlier in case of breach of the license. Acceptance takes place in the installer or in the application.
+
+The alpha use license governs the versions published on or after September 28, 2026. Versions 0.3.0-alpha to 0.5.2-alpha were distributed under the PolyForm Noncommercial License 1.0.0; since that date the author no longer offers them under that license, without withdrawing rights already acquired (Section 13 of the license). The third-party components included and their licenses are listed in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). The license grants no right to the UltraLab name or logo (see [NOTICE](NOTICE)).
 
 ## Installation
 
