@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Question generale (pas un bug)
+  - name: Question générale (pas un bug) / General question (not a bug)
     url: https://github.com/xerael/ultralab/discussions
-    about: Pour discuter d'usages, demander de l'aide, etc.
+    about: Pour discuter des usages, demander de l'aide, etc. / To discuss uses, ask for help, etc.

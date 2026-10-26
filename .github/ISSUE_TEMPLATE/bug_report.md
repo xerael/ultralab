@@ -1,35 +1,42 @@
 ---
-name: Bug report
-about: Signaler un bug rencontre dans UltraLab
+name: Signaler un bug / Bug report
+about: Signaler un bug rencontré dans UltraLab / Report a bug found in UltraLab
 title: "[BUG] "
 labels: bug
 assignees: ''
 ---
 
-## Description du bug
-*Que s'est-il passe ? Quel comportement avez-vous obtenu vs ce que vous attendiez ?*
+*Répondez en français ou en anglais. / Answer in French or in English.*
 
-## Etapes pour reproduire
+## Description du bug / Bug description
+*Que s'est-il passé ? Qu'attendiez-vous ? / What happened? What did you expect?*
+
+## Étapes pour reproduire / Steps to reproduce
 1.
 2.
 3.
 
-## Environnement
-- **Version UltraLab** : (Settings > A propos OU coin haut droit de l'UI)
-- **OS** : Windows 10 / Windows 11 / autre
-- **Mode** : Local / Distant
-- **Modele LLM utilise** : (ex: qwen2.5:3b, llama3.2:latest)
-- **Module concerne** : Pipeline complet / Screening / Ranking / Clustering / PDF-fetch / Extraction / autre
+## Environnement / Environment
+- **Version d'UltraLab / UltraLab version** : Paramètres → Application → Mises à jour, « Version installée » / Settings → Application → Updates, "Installed version"
+- **Système / System** : Windows 10 / Windows 11 / autre, other
+- **Mode** : local / distant, remote
+- **Modèle d'IA utilisé / AI model used** : (ex. / e.g. gemma3:4b, qwen3.5:4b)
+- **Module concerné / Module involved** : (nom affiché dans la barre latérale / name shown in the sidebar)
 
-## Capture d'ecran ou logs
-*Glissez-deposez une capture, OU copiez le texte de la console du `.bat` au moment du bug.*
+## Rapport de dépannage / Troubleshooting report
+*Paramètres → Dépannage → « Générer un rapport de dépannage » : le fichier est écrit sur le Bureau (versions, état des composants, matériel, configuration avec les clés masquées, journal). Relisez-le avant de le joindre : un ticket est public.*
 
-## Pour les bugs n8n (si signales par n8n)
-- **Nom du node** :
-- **Message d'erreur** :
+*Settings → Troubleshooting → "Generate troubleshooting report": the file is written on the Desktop (versions, component status, hardware, configuration with keys masked, log). Read it before attaching it: an issue is public.*
+
+## Capture d'écran / Screenshot
+*Glissez-déposez une capture. / Drag and drop a screenshot.*
+
+## Erreur du moteur de workflows (n8n), si elle s'affiche / Workflow engine (n8n) error, if shown
+- **Nom du nœud / Node name** :
+- **Message d'erreur / Error message** :
 ```
-(coller le stack trace ici)
+(collez la trace ici / paste the trace here)
 ```
 
-## Donnees du dossier de resultat (si pipeline / module a tourne)
-*Glissez le fichier `summary.json` du dossier de resultat si disponible.*
+## Dossier de résultat / Result folder
+*Si un pipeline ou un module a tourné, joignez le fichier `summary.json` de son dossier de résultat. / If a pipeline or a module ran, attach the `summary.json` file of its result folder.*
